@@ -28,6 +28,7 @@ class HistoriasController extends Controller
     public function index(Request $request)
     {
          $users=User::ofType($request->search)->has('paciente')->orderby('numerodocumento','ASC')->paginate(15);
+       
         return  view('historias.index')->with(['users'=>$users ]);
     }
 
