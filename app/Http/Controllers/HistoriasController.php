@@ -8,6 +8,8 @@ use Illuminate\Validation\Rule;
 use App\Http\Requests;
 use Image;
 use App\User;
+use App\Medico;
+use App\Asistente;
 use App\Role;
 use App\Pais;
 use App\Departamento;
@@ -17,6 +19,7 @@ use App\Paciente;
 use App\Empresa;
 use App\Arl;
 use App\Afp;
+use Auth;
 
 class HistoriasController extends Controller
 {
@@ -28,8 +31,32 @@ class HistoriasController extends Controller
     public function index(Request $request)
     {
          $users=User::ofType($request->search)->has('paciente')->orderby('numerodocumento','ASC')->paginate(15);
-       
-        return  view('historias.index')->with(['users'=>$users ]);
+         
+        $medico=Medico::has('user')->where('user_id',Auth::user()->id)->first();
+        $asistente=Asistente::has('user')->where('user_id',Auth::user()->id)->first();
+        if($medico){
+
+            $medicos=$medico->id;
+
+        }elseif($asistente){
+            
+
+            $querymedicos=User::findOrFail(Auth::user()->id);
+            $querymedicos->asistente();
+            dd($querymedicos->asistente);
+            foreach ($querymedicos as $asistente) {
+                $medicos[$asistente->medico->user->id]=$asistente->user->tipodocumento;
+            }
+
+        }else{
+          
+            $querymedicos=User::has('medico')->orderby('tipodocumento','ASC')->get();
+            foreach ($querymedicos as $medico) {
+                $medicos[$medico->medico->id]=$medico->tipodocumento.' '.$medico->numerodocumento.' '.$medico->primerapellido.' '.$medico->primernombre;
+            }
+        }
+         
+        return  view('historias.index')->with(['users'=>$users,'medicos'=>$medicos ]);
     }
 
     /**
