@@ -30,15 +30,18 @@ class DepartamentosTableSeeder extends Seeder
         $departamento->pais()->associate($pais);
         $departamento->save();
         
+<<<<<<< HEAD
         $pais = Pais::where(['descripcion'=>'Colombia'])->first();
         $departamento= New Departamento;
         $departamento->descripcion = 'Antioquia';
         $departamento->pais()->associate($pais);
         $departamento->save();
 
+=======
+>>>>>>> 110fe3108272e1a2101201d2d72162102f4997d1
         $pais = Pais::where(['descripcion'=>'Colombia'])->first();
         $departamento= New Departamento;
-        $departamento->descripcion = 'Medellin';
+        $departamento->descripcion = 'Antioca';
         $departamento->pais()->associate($pais);
         $departamento->save();
          
