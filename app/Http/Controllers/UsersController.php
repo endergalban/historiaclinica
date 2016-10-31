@@ -37,9 +37,22 @@ class UsersController extends Controller
     {
        
         $roles=Role::all()->pluck('descripcion', 'id');
-        $paises=Pais::all()->pluck('descripcion', 'id');
-        $paises->prepend('Seleccione una opción', $key = null);
-        return	view('users.create')->with(['paises' => $paises ,'roles' => $roles]);
+        $paises=Pais::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('Seleccione una opción', 0);
+        if(old('pais_id'))
+        {
+            $departamentos=Departamento::where('pais_id',old('pais_id'))->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id')->prepend('Seleccione una opción', 0);
+        }else{
+            $departamentos=['0'=>'Seleccione una opción'];
+        }
+
+        if(old('departamento_id'))
+        {
+            $municipios=Municipio::where('departamento_id',old('departamento_id'))->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id')->prepend('Seleccione una opción', 0);
+        }else{
+            $municipios=['0'=>'Seleccione una opción'];
+        }
+        $nacimiento=['municipios'=> $municipios,'departamentos'=> $departamentos,'paises'=> $paises];
+        return	view('users.create')->with(['nacimiento' => $nacimiento ,'roles' => $roles]);
 
     }
 

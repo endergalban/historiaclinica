@@ -15,6 +15,8 @@ class CreateTipoOrganosTable extends Migration
     {
         Schema::create('tipo_organos', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('descripcion');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

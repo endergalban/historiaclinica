@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAntecedenteFactoresTable extends Migration
+class CreateTiempoFumadoresTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class CreateAntecedenteFactoresTable extends Migration
      */
     public function up()
     {
-        Schema::create('antecedente_factores', function (Blueprint $table) {
+        Schema::create('tiempo_fumadores', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('descripcion');
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ class CreateAntecedenteFactoresTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('antecedente_factores');
+        Schema::dropIfExists('tiempo_fumadores');
     }
 }

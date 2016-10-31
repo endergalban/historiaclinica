@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateHistorialFactoresTable extends Migration
+class CreateEnfermedadesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class CreateHistorialFactoresTable extends Migration
      */
     public function up()
     {
-        Schema::create('historial_factores', function (Blueprint $table) {
+        Schema::create('enfermedades', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('descripcion');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ class CreateHistorialFactoresTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('historial_factores');
+        Schema::dropIfExists('enfermedades');
     }
 }

@@ -15,6 +15,8 @@ class CreateEscolaridadesTable extends Migration
     {
         Schema::create('escolaridades', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('descripcion');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ class CreateEscolaridadesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('escolaridads');
+        Schema::dropIfExists('escolaridades');
     }
 }

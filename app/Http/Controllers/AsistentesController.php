@@ -33,13 +33,28 @@ class AsistentesController extends Controller
     public function create()
     {
        
-        $paises=Pais::all()->pluck('descripcion', 'id')->prepend('Seleccione una opción', $key = null);
+       
         $querymedicos=User::has('medico')->orderby('tipodocumento','ASC')->get();
+        $paises=Pais::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('Seleccione una opción', 0);
+        if(old('pais_id'))
+        {
+            $departamentos=Departamento::where('pais_id',old('pais_id'))->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id')->prepend('Seleccione una opción', 0);
+        }else{
+            $departamentos=['0'=>'Seleccione una opción'];
+        }
+
+        if(old('departamento_id'))
+        {
+            $municipios=Municipio::where('departamento_id',old('departamento_id'))->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id')->prepend('Seleccione una opción', 0);
+        }else{
+            $municipios=['0'=>'Seleccione una opción'];
+        }
+        $nacimiento=['municipios'=> $municipios,'departamentos'=> $departamentos,'paises'=> $paises];
         $medicos=array();
         foreach ($querymedicos as $medico) {
             $medicos[$medico->medico->id]=$medico->tipodocumento.' '.$medico->numerodocumento.' '.$medico->primerapellido.' '.$medico->primernombre;
         }
-        return  view('asistentes.create')->with(['paises' => $paises ,'medicos' => $medicos]);
+        return  view('asistentes.create')->with(['nacimiento' => $nacimiento ,'medicos' => $medicos]);
     }
 
     /**

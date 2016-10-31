@@ -15,6 +15,10 @@ class CreateTipoExamenVisualesTable extends Migration
     {
         Schema::create('tipo_examen_visuales', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('ojo_id')->unsigned();
+            $table->foreign('ojo_id')->references('id')->on('ojos')->onDelete('restrict');
+            $table->string('descripcion');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

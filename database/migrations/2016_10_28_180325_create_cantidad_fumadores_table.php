@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAntecedenteOcupacionesTable extends Migration
+class CreateCantidadFumadoresTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class CreateAntecedenteOcupacionesTable extends Migration
      */
     public function up()
     {
-        Schema::create('antecedente_ocupaciones', function (Blueprint $table) {
+        Schema::create('cantidad_fumadores', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('descripcion');
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ class CreateAntecedenteOcupacionesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('antecedente_ocupaciones');
+        Schema::dropIfExists('cantidad_fumadores');
     }
 }

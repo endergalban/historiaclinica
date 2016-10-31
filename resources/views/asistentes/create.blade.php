@@ -140,28 +140,21 @@
 	             <div class="col-md-12">
 	            	<div class="form-group col-md-4">
 	            	  {!! Form::label('pais_id','País Nac.') !!}
-	                  {!! Form::select('pais_id',$paises, '0',['class' => 'form-control','style' => 'width: 100%']) !!}
+	                  {!! Form::select('pais_id',$nacimiento['paises'], old('pais_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
 	                </div>
 
 	                <div class="form-group col-md-4">
 	            	  {!! Form::label('departamento_id','Departamento Nac.') !!}
-	                  {!! Form::select('departamento_id', 
-	                  [
-		                   '0'  => 'Seleccione una opción'
-
-	                  ], null,['class' => 'form-control','style' => 'width: 100%']) !!}
+	                  {!! Form::select('departamento_id',$nacimiento['departamentos'], old('departamento_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
 	                </div>
 	            
 	            	<div class="form-group col-md-4">
 	            	  {!! Form::label('municipio_id','Municipio Nac.') !!}
-	                  {!! Form::select('municipio_id', 
-	                  [
-		                   '0'  => 'Seleccione una opción'
-
-	                  ], null,['class' => 'form-control','style' => 'width: 100%']) !!}
+	                  {!! Form::select('municipio_id',$nacimiento['municipios'], old('municipio_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
 	                </div>
 	              <!-- /.form-group -->
 	            </div>
+
 
 
 	            <div class="col-md-12">

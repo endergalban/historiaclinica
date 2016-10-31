@@ -108,6 +108,14 @@ Route::group(['middleware' => 'roles','site'=>'pacientes'], function () {
 Route::get('perfil','PerfilController@index')->name('perfil.index');
 Route::put('perfil/{id}','PerfilController@update')->name('perfil.update');
 
+/*Historias*/
+
+
+Route::resource('historias','HistoriasController',['except' => ['delete']]);
+Route::get('historias/{id}/destroy',['uses'=>'HistoriasController@destroy','as'=>'historias.destroy']);
+Route::get('historias/{id}/{tipo}',['uses'=>'HistoriasController@historia','as'=>'historias.historia']);
+
+
 
 
 

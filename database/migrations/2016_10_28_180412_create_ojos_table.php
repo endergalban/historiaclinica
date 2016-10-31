@@ -15,6 +15,8 @@ class CreateOjosTable extends Migration
     {
         Schema::create('ojos', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('descripcion');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

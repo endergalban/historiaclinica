@@ -15,6 +15,12 @@ class CreateVisualesTable extends Migration
     {
         Schema::create('visuales', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('historia_ocupacional_id')->unsigned();
+            $table->foreign('historia_ocupacional_id')->references('id')->on('historia_ocupacionales')->onDelete('restrict');
+            $table->integer('tipo_examen_visual_id')->unsigned();
+            $table->foreign('tipo_examen_visual_id')->references('id')->on('tipo_examen_visuales')->onDelete('restrict');
+            $table->string('descripcion');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

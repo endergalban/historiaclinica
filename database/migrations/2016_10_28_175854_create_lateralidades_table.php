@@ -15,6 +15,8 @@ class CreateLateralidadesTable extends Migration
     {
         Schema::create('lateralidades', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('descripcion');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -15,6 +15,8 @@ class CreateTipoExamenesTable extends Migration
     {
         Schema::create('tipo_examenes', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('descripcion');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

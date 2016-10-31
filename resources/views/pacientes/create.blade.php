@@ -140,25 +140,17 @@
 	             <div class="col-md-12">
 	            	<div class="form-group col-md-4">
 	            	  {!! Form::label('pais_id','País Nac.') !!}
-	                  {!! Form::select('pais_id',$paises, 0,['class' => 'form-control','style' => 'width: 100%']) !!}
+	                  {!! Form::select('pais_id',$nacimiento['paises'], old('pais_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
 	                </div>
 
 	                <div class="form-group col-md-4">
 	            	  {!! Form::label('departamento_id','Departamento Nac.') !!}
-	                  {!! Form::select('departamento_id', 
-	                  [
-		                   '0'  => 'Seleccione una opción'
-
-	                  ], 0,['class' => 'form-control','style' => 'width: 100%']) !!}
+	                  {!! Form::select('departamento_id',$nacimiento['departamentos'], old('departamento_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
 	                </div>
 	            
 	            	<div class="form-group col-md-4">
 	            	  {!! Form::label('municipio_id','Municipio Nac.') !!}
-	                  {!! Form::select('municipio_id', 
-	                  [
-		                   '0'  => 'Seleccione una opción'
-
-	                  ], 0,['class' => 'form-control','style' => 'width: 100%']) !!}
+	                  {!! Form::select('municipio_id',$nacimiento['municipios'], old('municipio_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
 	                </div>
 	              <!-- /.form-group -->
 	            </div>
@@ -167,25 +159,17 @@
 	            <div class="col-md-12">
 	            	<div class="form-group col-md-4">
 	            	  {!! Form::label('paisresidencia_id','País Residencia') !!}
-	                   {!! Form::select('paisresidencia_id',$paises, 0,['class' => 'form-control','style' => 'width: 100%']) !!}
+	                   {!! Form::select('paisresidencia_id',$residencia['paises'], old('paisresidencia_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
 	                </div>
 
 	                <div class="form-group col-md-4">
 	            	  {!! Form::label('departamentoresidencia_id','Departamento Residencia') !!}
-	                  {!! Form::select('departamentoresidencia_id', 
-	                  [
-		                   '0'  => 'Seleccione una opción'
-
-	                  ], 0,['class' => 'form-control','style' => 'width: 100%']) !!}
+	                  {!! Form::select('departamentoresidencia_id',$residencia['departamentos'], old('departamentoresidencia_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
 	                </div>
 	            
 	            	<div class="form-group col-md-4">
 	            	  {!! Form::label('municipioresidencia_id','Municipio Residencia') !!}
-	                  {!! Form::select('municipioresidencia_id', 
-	                  [
-		                   '0'  => 'Seleccione una opción'
-
-	                  ], 0,['class' => 'form-control','style' => 'width: 100%']) !!}
+	                  {!! Form::select('municipioresidencia_id',$residencia['municipios'], old('municipioresidencia_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
 	                </div>
 	              <!-- /.form-group -->
 	            </div>

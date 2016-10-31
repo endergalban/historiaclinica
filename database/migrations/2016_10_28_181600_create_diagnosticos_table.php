@@ -15,6 +15,10 @@ class CreateDiagnosticosTable extends Migration
     {
         Schema::create('diagnosticos', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('nombre');
+            $table->integer('codigo');
+            $table->integer('concepto');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

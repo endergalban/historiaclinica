@@ -15,6 +15,9 @@ class CreateFactorRiesgosTable extends Migration
     {
         Schema::create('factor_riesgos', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('tipo_factor_riesgo_id')->references('id')->on('tipo_factor_riesgos')->onDelete('restrict');
+            $table->string('descripcion');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

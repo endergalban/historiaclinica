@@ -43,9 +43,41 @@ class PacientesController extends Controller
         $arls=Arl::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A', 0);
         $afps=Afp::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A', 0);
         
-        $paises=Pais::all()->pluck('descripcion', 'id');
-        $paises->prepend('Seleccione una opción', $key = null);
-        return  view('pacientes.create')->with(['paises' => $paises ,'empresas' => $empresas,'afps' => $afps,'arls' => $arls]);
+
+        $paises=Pais::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('Seleccione una opción', 0);
+        if(old('pais_id'))
+        {
+            $departamentos=Departamento::where('pais_id',old('pais_id'))->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id')->prepend('Seleccione una opción', 0);
+        }else{
+            $departamentos=['0'=>'Seleccione una opción'];
+        }
+
+        if(old('departamento_id'))
+        {
+            $municipios=Municipio::where('departamento_id',old('departamento_id'))->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id')->prepend('Seleccione una opción', 0);
+        }else{
+            $municipios=['0'=>'Seleccione una opción'];
+        }
+        $nacimiento=['municipios'=> $municipios,'departamentos'=> $departamentos,'paises'=> $paises];
+
+
+        if(old('paisresidencia_id'))
+        {
+            $departamentos=Departamento::where('pais_id',old('paisresidencia_id'))->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id')->prepend('Seleccione una opción', 0);
+        }else{
+            $departamentos=['0'=>'Seleccione una opción'];
+        }
+
+        if(old('departamentoresidencia_id'))
+        {
+            $municipios=Municipio::where('departamento_id',old('departamentoresidencia_id'))->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id')->prepend('Seleccione una opción', 0);
+        }else{
+            $municipios=['0'=>'Seleccione una opción'];
+        }
+        $residencia=['municipios'=> $municipios,'departamentos'=> $departamentos,'paises'=> $paises];
+   
+   
+        return  view('pacientes.create')->with(['nacimiento' => $nacimiento ,'residencia' => $residencia ,'empresas' => $empresas,'afps' => $afps,'arls' => $arls]);
     }
 
     /**
@@ -154,16 +186,27 @@ class PacientesController extends Controller
     public function show($id)
     {
         $user=User::with('municipio.departamento.pais')->with('paciente')->where('id',$id)->first();
-        $paises=Pais::all()->pluck('descripcion', 'id');
+        $paises=Pais::all()->pluck('descripcion', 'id')->prepend('N/A', 0);
          //Nacimiento
         $departamentos=Departamento::where('pais_id',$user->municipio->departamento->pais->id)->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
         $municipios=Municipio::where('departamento_id',$user->municipio->departamento->id)->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
 
 
         //residencia
-        $residencia=Municipio::with('departamento.pais')->where('id',$user->paciente->municipio_id)->first();
-        $departamentoresidencias=Departamento::where('pais_id',$residencia->departamento->pais->id)->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
-        $municipioresidencias=Municipio::where('departamento_id',$residencia->departamento->id)->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
+        if($user->paciente->municipio_id)
+        {
+            $residenciadata=Municipio::with('departamento.pais')->where('id',$user->paciente->municipio_id)->first();
+            $residencia=['pais_id'=> $residenciadata->departamento->pais->id,'departamento_id'=> $residenciadata->departamento->id,'municipio_id'=> $residenciadata->id];
+
+           $departamentoresidencias=Departamento::where('pais_id', $residencia['pais_id'])->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
+            $municipioresidencias=Municipio::where('departamento_id',$residencia['departamento_id'])->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
+        } else{
+            
+            $residencia=['pais_id'=> '0','departamento_id'=> '0','municipio_id'=> '0'];
+            $departamentoresidencias= ['0'=>'N/A'];
+            $municipioresidencias= ['0'=>'N/A'];
+
+        }   
          
           $empresas=Empresa::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A', 0);
           $arls=Arl::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A', 0);
@@ -195,12 +238,26 @@ class PacientesController extends Controller
        
 
         //COMBOS PACIENTES
-        $paises=Pais::all()->sortBy('descripcion')->pluck('descripcion', 'id');
+        $paises=Pais::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('Seleccione una opción', 0);
         $departamentos=Departamento::where('pais_id',$user->municipio->departamento->pais->id)->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
         $municipios=Municipio::where('departamento_id',$user->municipio->departamento->id)->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
-        $residencia=Municipio::with('departamento.pais')->where('id',$user->paciente->municipio_id)->first();
-        $departamentoresidencias=Departamento::where('pais_id',$residencia->departamento->pais->id)->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
-        $municipioresidencias=Municipio::where('departamento_id',$residencia->departamento->id)->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
+
+        if($user->paciente->municipio_id)
+        {
+            $residenciadata=Municipio::with('departamento.pais')->where('id',$user->paciente->municipio_id)->first();
+
+            $residencia=['pais_id'=> $residenciadata->departamento->pais->id,'departamento_id'=> $residenciadata->departamento->id,'municipio_id'=> $residenciadata->id];
+
+            $departamentoresidencias=Departamento::where('pais_id', $residencia['pais_id'])->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
+            $municipioresidencias=Municipio::where('departamento_id',$residencia['departamento_id'])->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
+        } else{
+
+            $departamentoresidencias= ['0'=>'Seleccione una opción'];
+            $municipioresidencias= ['0'=>'Seleccione una opción'];
+            $residencia=['pais_id'=> '0','departamento_id'=> '0','municipio_id'=> '0'];
+
+
+        }   
        
       
         $empresas=Empresa::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A', 0);

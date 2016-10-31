@@ -15,6 +15,8 @@ class CreateLesionesTable extends Migration
     {
         Schema::create('lesiones', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('descripcion');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

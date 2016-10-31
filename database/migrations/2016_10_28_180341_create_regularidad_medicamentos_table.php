@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateExploracionsTable extends Migration
+class CreateRegularidadMedicamentosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class CreateExploracionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('exploraciones', function (Blueprint $table) {
+        Schema::create('regularidad_medicamentos', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('descripcion');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ class CreateExploracionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('exploraciones');
+        Schema::dropIfExists('regularidad_medicamentos');
     }
 }

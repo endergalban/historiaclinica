@@ -153,17 +153,17 @@
 	            <div class="col-md-12">
 	            	<div class="form-group col-md-4">
 	            	  {!! Form::label('paisresidencia_id','País Residencia') !!}
-	                   {!! Form::select('paisresidencia_id',$paises, $residencia->departamento->pais->id,['class' => 'form-control','style' => 'width: 100%','disabled'=>'disabled']) !!}
+	                   {!! Form::select('paisresidencia_id',$paises, $residencia['pais_id'],['class' => 'form-control','style' => 'width: 100%','disabled'=>'disabled']) !!}
 	                </div>
 
-	                <div class="form-group col-md-4">
+	               <div class="form-group col-md-4">
 	            	  {!! Form::label('departamentoresidencia_id','Departamento Residencia') !!}
-	                  {!! Form::select('departamentoresidencia_id',$departamentoresidencias, $residencia->departamento->id,['class' => 'form-control','style' => 'width: 100%','disabled'=>'disabled']) !!}
+	                  {!! Form::select('departamentoresidencia_id',$departamentoresidencias,$residencia['departamento_id'],['class' => 'form-control','style' => 'width: 100%','disabled'=>'disabled']) !!}
 	                </div>
 	            
 	            	<div class="form-group col-md-4">
 	            	  {!! Form::label('municipioresidencia_id','Municipio Residencia') !!}
-	                  {!! Form::select('municipioresidencia_id',$municipioresidencias, $residencia->id,['class' => 'form-control','style' => 'width: 100%','disabled'=>'disabled']) !!}
+	                  {!! Form::select('municipioresidencia_id',$municipioresidencias, $residencia['municipio_id'],['class' => 'form-control','style' => 'width: 100%','disabled'=>'disabled']) !!}
 	                </div>
 	              <!-- /.form-group -->
 	            </div>
