@@ -41,9 +41,9 @@ class HistoriasController extends Controller
         }elseif($asistente){
             
 
-            $querymedicos=User::findOrFail(Auth::user()->id);
-            $querymedicos->asistente();
-            dd($querymedicos->asistente);
+            $user=User::findOrFail(Auth::user()->id);
+            $user->asistente();
+            dd($user);
             foreach ($querymedicos as $asistente) {
                 $medicos[$asistente->medico->user->id]=$asistente->user->tipodocumento;
             }
