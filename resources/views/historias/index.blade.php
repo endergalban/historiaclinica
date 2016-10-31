@@ -18,6 +18,9 @@
          		 <div class="box-header">
 					{!! Form::open(['method' => 'GET','route' => ['historias.index'],'role' => 'form','class' => '']) !!}
 					<div class="box-tools ">
+						<div class="form-group col-md-4">
+							{!! Form::select('medico_id',$medicos,0,['class' => 'form-control select2','style' => 'width: 100%','data-placeholder' => 'Seleccione' ]) !!}
+						</div>
 						<div class="input-group input-group-sm pull-right" style="width: 250px;">
 						
 							<input type="text" name="search" name="search" class="form-control" placeholder="Buscar...">
