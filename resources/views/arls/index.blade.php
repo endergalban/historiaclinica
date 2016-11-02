@@ -44,7 +44,7 @@
 									<td>{{ $arl->descripcion }}</td>
 									<td class="text-center">
 										<a href="{{ route('arls.edit',$arl->id) }}" ><span class="label label-warning">Editar</span></a>
-										<a data-toggle="modal" data-url="{{ route('arls.destroy',$arl->id) }}" class=open-modal label label-danger" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
+										<a data-toggle="modal" data-url="{{ route('arls.destroy',$arl->id) }}" class="open-modal label label-danger" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
 									</td>
 								</tr>
 								@endforeach

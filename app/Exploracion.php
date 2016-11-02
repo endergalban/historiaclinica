@@ -18,10 +18,10 @@ class Exploracion extends Model
     protected $dates = ['deleted_at'];
 
 	public function historia_ocupacional(){
-		return $this->belongTo('App\Historia_ocupacional','historia_ocupacional_id');
+		return $this->belongsTo('App\Historia_ocupacional','historia_ocupacional_id');
 	}
 
 	public function organo(){
-		return $this->belongTo('App\Organo','organo_id');
+		return $this->belongsTo('App\Organo','organo_id');
 	}
 }

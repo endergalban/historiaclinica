@@ -18,10 +18,10 @@ class Factor_riesgo extends Model
     protected $dates = ['deleted_at'];
 
 	public function tipo_factor_riesgo(){
-		return $this->belongTo('App\tipo_factor_riesgo','tipo_factor_riesgo_id');
+		return $this->belongsTo('App\tipo_factor_riesgo','tipo_factor_riesgo_id');
 	}
 
 	public function historia_ocupacionales(){
-		return $this->belongToMany('App\historia_ocupacional','historia_ocupacional_factor_riesgo','factor_riesgo_id','historia_ocupacional_id');
+		return $this->belongsToMany('App\historia_ocupacional','historia_ocupacional_factor_riesgo','factor_riesgo_id','historia_ocupacional_id');
 	}
 }

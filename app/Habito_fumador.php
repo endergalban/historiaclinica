@@ -19,17 +19,17 @@ class Habito_fumador extends Model
 
     public function historia_ocupacional()
     {
-        return $this->belongTo('App\Historia_ocupacional','historia_ocupacional_id');
+        return $this->belongsTo('App\Historia_ocupacional','historia_ocupacional_id');
     }
 
     public function tiempo_fumador()
     {
-        return $this->belongTo('App\Tiempo_fumador','tiempo_fumador_id');
+        return $this->belongsTo('App\Tiempo_fumador','tiempo_fumador_id');
     }
 
     public function cantidad_fumador()
     {
-        return $this->belongTo('App\Cantidad_fumador','cantidad_fumador_id');
+        return $this->belongsTo('App\Cantidad_fumador','cantidad_fumador_id');
     }
 
   

@@ -19,12 +19,12 @@ class Habito_licor extends Model
 
     public function historia_ocupacional()
     {
-        return $this->belongTo('App\Historia_ocupacional','historia_ocupacional_id');
+        return $this->belongsTo('App\Historia_ocupacional','historia_ocupacional_id');
     }
 
     public function tiempo_licor()
     {
-        return $this->belongTo('App\Tiempo_licor','tiempo_licor_id');
+        return $this->belongsTo('App\Tiempo_licor','tiempo_licor_id');
     }
 
    

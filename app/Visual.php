@@ -19,12 +19,12 @@ class Visual extends Model
 
     public function historia_ocupacional()
     {
-        return $this->belongTo('App\Historia_ocupacional','historia_ocupacional_id');
+        return $this->belongsTo('App\Historia_ocupacional','historia_ocupacional_id');
     }
 
     public function tipo_examen_visuales()
     {
-        return $this->belongTo('App\Tipo_examen_visual','tipo_examen_visual_id');
+        return $this->belongsTo('App\Tipo_examen_visual','tipo_examen_visual_id');
     }
 
 

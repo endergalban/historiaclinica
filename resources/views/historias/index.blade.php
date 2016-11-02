@@ -19,7 +19,7 @@
 					{!! Form::open(['method' => 'GET','route' => ['historias.index'],'role' => 'form','class' => '']) !!}
 					<div class="box-tools ">
 						<div class="form-group col-md-4">
-							{!! Form::select('medico_id',$medicos,0,['class' => 'form-control select2','style' => 'width: 100%','data-placeholder' => 'Seleccione' ]) !!}
+							{!! Form::select('medico_id',$medicos,0,['class' => 'form-control select2','style' => 'width: 100%','data-placeholder' => 'Seleccione','id' => 'medico_id' ]) !!}
 						</div>
 						<div class="input-group input-group-sm pull-right" style="width: 250px;">
 						
@@ -47,15 +47,16 @@
 				   		</thead>
 						  	<tbody>
 								@foreach( $users as $user )
+
 								<tr>
 									<td>{{ $user->tipodocumento.' '.$user->numerodocumento }}</td>
 									<td>{{ $user->primerapellido.' '.$user->primernombre }}</td>
 									<td>{{ $user->fechanacimiento }}</td>
 						
 									<td class="text-center">
-									<a data-toggle="modal" data-url="{{ route('historias.historia',[$user->id,'ocupacional']) }}" class="open-modal" href="#myAlert"><span class="label label-default">Ocupacional</span></a>
-									<a data-toggle="modal" data-url="{{ route('historias.historia',[$user->id,'ginecologia']) }}" class="open-modal" href="#myAlert"><span class="label label-default">Ginecología</span></a>
-									<a data-toggle="modal" data-url="{{ route('historias.historia',[$user->id,'pediatria']) }}" class="open-modal" href="#myAlert"><span class="label label-default">Pediatría</span></a>
+									<a  data-url="{{ route('historias.historia',[$user->paciente->id,'ocupacional']) }}" class="open-modal2" href="#"><span class="label label-default">Ocupacional</span></a>
+									<a data-url="{{ route('historias.historia',[$user->paciente->id,'ginecologia']) }}" class="open-modal2" href="#"><span class="label label-default">Ginecología</span></a>
+									<a  data-url="{{ route('historias.historia',[$user->paciente->id,'pediatria']) }}" class="open-modal2" href="#"><span class="label label-default">Pediatría</span></a>
 									</td>
 								</tr>
 								@endforeach
@@ -69,27 +70,16 @@
 	</div>
 
 
-	
-	  <div class="modal fade"  id="myAlert" tabindex="-1">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Confirmación</h4>
-              </div>
-              <div class="modal-body">
-               	<p>Esta seguro que desea aperturar historia...? </p>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-              	<a  class="btnsi"><button type="button" class="btn btn-primary">Si</button></a>
-              </div>
-            </div>
-            <!-- /.modal-content -->
-          </div>
-          <!-- /.modal-dialog -->
-        </div>
-        <!-- /.modal -->
      
+@endsection
+
+
+@section('javascript')
+<script>
+
+$(document).on("click", ".open-modal2", function () {
+       window.location.href = $(this).data('url')+'/'+ $('#medico_id').val();
+});
+</script>
+
 @endsection

@@ -10,15 +10,11 @@ use Image;
 use App\User;
 use App\Medico;
 use App\Asistente;
-use App\Role;
-use App\Pais;
-use App\Departamento;
-use App\Municipio;
+use App\Historia_ocupacional;
 use Carbon\Carbon;
 use App\Paciente;
-use App\Empresa;
-use App\Arl;
-use App\Afp;
+use App\Medico_paciente;
+use App\Tipo_examen;
 use Auth;
 
 class HistoriasController extends Controller
@@ -40,14 +36,12 @@ class HistoriasController extends Controller
 
         }elseif($asistente){
             
-
-            $user=User::findOrFail(Auth::user()->id);
-            $user->asistente();
-            dd($user);
-            foreach ($querymedicos as $asistente) {
-                $medicos[$asistente->medico->user->id]=$asistente->user->tipodocumento;
+            $med=User::with('asistente.medicos.user')->where('id',Auth::user()->id)->first();
+            foreach ($med->asistente->medicos as $medico) {
+                $medicos[$medico->id]=$medico->user->tipodocumento.' '.$medico->user->numerodocumento
+                .' '.$medico->user->primerapellido.' '.$medico->user->primernombre;
             }
-
+         
         }else{
           
             $querymedicos=User::has('medico')->orderby('tipodocumento','ASC')->get();
@@ -64,10 +58,7 @@ class HistoriasController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
+   
 
     /**
      * Store a newly created resource in storage.
@@ -99,24 +90,71 @@ class HistoriasController extends Controller
      */
     public function edit($id)
     {
-         $user=User::with('municipio.departamento.pais')->with('paciente')->where('id',$id)->first();
-       
-
-      
-      
-      /*  $empresas=Empresa::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A', 0);
-        $arls=Arl::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A', 0);
-        $afps=Afp::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A', 0);
-
         $user=User::with('municipio.departamento.pais')->with('paciente')->where('id',$id)->first();
-*/
-
         return  view('historias.edit')->with(['user' => $user]);
     }
 
-    public function historia($id,$tipo)
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param1  paciente_id
+     * @param2  int  $id
+     * @param3 \Illuminate\Http\Response
+     */
+
+    public function historia($paciente_id,$especialidad_id,$medico_id)
     {
-        echo $tipo;
+        if($especialidad_id=='ocupacional'){
+             $especialidad_id=1;
+        }elseif($especialidad_id=='ginecologia'){
+            $especialidad_id=2;
+        }elseif($especialidad_id=='pediatria'){
+            $especialidad_id=3;
+        }
+
+       
+
+        $medico_paciente = Medico_paciente::where(['paciente_id' => $paciente_id,'especialidad_id' => $especialidad_id,'medico_id' => $medico_id] )->first();
+
+        $paciente = Paciente::where(['id'=>$paciente_id])->with('user')->first();
+        $medico = Medico::where(['id'=> $medico_id])->with('user')->first();
+
+        if(is_null($medico_paciente)){
+
+            $medico_paciente= new Medico_paciente;
+            $medico_paciente->paciente()->associate($paciente_id);
+            $medico_paciente->medico()->associate($medico_id);
+            $medico_paciente->especialidad_id=$especialidad_id;
+            $medico_paciente->save();
+        }
+
+         $historias=Historia_ocupacional::with('tipo_examen')->where('medico_paciente_id',$medico_paciente->id)->get();
+         
+
+        if($especialidad_id==1){
+
+            return view('historias.historia.ocupacional.index')->with(['medico' => $medico,'paciente' => $paciente,'medico_paciente' => $medico_paciente,'historias' => $historias]);
+            
+        }elseif($especialidad_id==2){
+            echo "Ginecologia";
+
+        }elseif($especialidad_id==3){
+
+            echo "Pediatria";
+        }
+
+    }
+
+
+    public function ocupacional_create($paciente_id,$medico_paciente_id)
+    {
+
+        $medico_paciente = Medico_paciente::where(['id' => $medico_paciente_id] )->first();
+        $paciente = Paciente::where(['id'=>$medico_paciente->paciente_id])->with('user')->first();
+        $medico = Medico::where(['id'=> $medico_paciente->medico_id])->with('user')->first();
+
+         return  view('historias.historia.ocupacional.create')->with(['paciente'=>$paciente,'medico'=>$medico,'medico_paciente'=>$medico_paciente ]);
     }
 
     /**
@@ -141,4 +179,5 @@ class HistoriasController extends Controller
     {
         //
     }
+        
 }

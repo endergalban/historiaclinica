@@ -19,32 +19,32 @@ class Historia_ocupacional extends Model
 
     public function medico_paciente()
     {
-        return $this->belongTo('App\Medico_paciente','medico_paciente_id');
+        return $this->belongsTo('App\Medico_paciente','medico_paciente_id');
     }
 
     public function escolaridad()
     {
-        return $this->belongTo('App\Escolaridad','escolaridad_id');
+        return $this->belongsTo('App\Escolaridad','escolaridad_id');
     }
 
     public function tipo_examen()
     {
-        return $this->belongTo('App\Tipo_examen','tipo_examen_id');
+        return $this->belongsTo('App\Tipo_examen','tipo_examen_id');
     }
 
     public function turno()
     {
-        return $this->belongTo('App\Turno','turno_id');
+        return $this->belongsTo('App\Turno','turno_id');
     }
 
     public function actividad()
     {
-        return $this->belongTo('App\Actividad','actividad_id');
+        return $this->belongsTo('App\Actividad','actividad_id');
     }
 
     public function lateralidad()
     {
-        return $this->belongTo('App\Lateralidad','lateralidad_id');
+        return $this->belongsTo('App\Lateralidad','lateralidad_id');
     }
 
 

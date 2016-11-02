@@ -19,7 +19,7 @@ class Examen_labortatorio extends Model
     protected $dates = ['deleted_at','fecha'];
 
 	public function historia_ocupacional(){
-		return $this->belonsTo('App\Historia_ocupacional','historia_ocupacional_id');
+		return $this->belongsTo('App\Historia_ocupacional','historia_ocupacional_id');
 	}
 
 }
