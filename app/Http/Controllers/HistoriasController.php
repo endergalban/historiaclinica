@@ -14,7 +14,12 @@ use App\Historia_ocupacional;
 use Carbon\Carbon;
 use App\Paciente;
 use App\Medico_paciente;
+use App\Escolaridad;
 use App\Tipo_examen;
+use App\Tipo_factor_riesgo;
+use App\Factor_riesgo;
+use App\Turno;
+use App\Actividad;
 use Auth;
 
 class HistoriasController extends Controller
@@ -154,7 +159,42 @@ class HistoriasController extends Controller
         $paciente = Paciente::where(['id'=>$medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $medico_paciente->medico_id])->with('user')->first();
 
-         return  view('historias.historia.ocupacional.create')->with(['paciente'=>$paciente,'medico'=>$medico,'medico_paciente'=>$medico_paciente ]);
+
+        /*Combos*/
+        $combos=array();
+        $tipo_examenes = Tipo_examen::all()->sortBy('descripcion')->pluck('descripcion','id');
+        $escolaridades = Escolaridad::all()->sortBy('descripcion')->pluck('descripcion','id');
+        $turnos = Turno::all()->sortBy('descripcion')->pluck('descripcion','id');
+        $actividades = Actividad::all()->sortBy('descripcion')->pluck('descripcion','id');
+        $combos=['tipo_examenes' => $tipo_examenes,'escolaridades' => $escolaridades,'turnos' => $turnos,'actividades' => $actividades];
+
+        /*Riegos*/
+        $factor_riegos = Factor_riesgo::with('tipo_factor_riesgo')->orderby('tipo_factor_riesgo_id')->get();
+        dd($factor_riegos);
+        foreach ($factor_riegos as $factor_riego) {
+            $combosfactores[]=array('id'=>$factor_riego->id,'descripcion'=>$factor_riego->descripcion.' > '.$factor_riego->descripcion);
+        }
+        
+/*
+        $ocupacional= new Historia_ocupacional;
+        $ocupacional->medico_paciente_id = $medico_paciente_id;
+        escolaridad_id
+        tipo_examen_id
+        turno_id
+        actividad_id
+        lateralidad_id
+        numerohijos
+        numeropersonascargo
+        cargoactual
+        talla
+        fr
+        $medico_paciente->paciente()->associate($paciente_id);
+        $medico_paciente->medico()->associate($medico_id);
+        $medico_paciente->especialidad_id=$especialidad_id;
+        $medico_paciente->save();*/
+       
+
+         return  view('historias.historia.ocupacional.create')->with(['paciente'=>$paciente,'medico'=>$medico,'medico_paciente'=>$medico_paciente,'combos'=>$combos,'tipo_factor_riegos'=>$tipo_factor_riegos ]);
     }
 
     /**

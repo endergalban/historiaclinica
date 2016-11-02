@@ -19,7 +19,7 @@ class Tipo_factor_riesgo extends Model
 
     public function factor_riesgos()
     {
-        return $this->hasMany('App\factor_riesgos','tipo_factor_riesgo_id');
+        return $this->hasMany('App\Factor_riesgo','tipo_factor_riesgo_id');
     }
 
     public function scopeOfType($query, $type){

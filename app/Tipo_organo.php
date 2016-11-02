@@ -19,7 +19,7 @@ class Tipo_organo extends Model
 
     public function organos()
     {
-        return $this->hasMany('App\Organos','tipo_organo_id');
+        return $this->hasMany('App\Organo','tipo_organo_id');
     }
 
     public function scopeOfType($query, $type){

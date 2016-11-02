@@ -20,5 +20,15 @@ class DatabaseSeeder extends Seeder
         $this->call(EmpresasTableSeeder::class);
         $this->call(AfpsTableSeeder::class);
         $this->call(ArlsTableSeeder::class);
+        $this->call(TipoFactorRiesgosSeeder::class);
+        $this->call(FactorRiesgosSeeder::class);
+        $this->call(EnfermedadTableSeeder::class);
+        $this->call(EscolaridadTableSeeder::class);
+        $this->call(LateralidadesTableSeeder::class);
+        $this->call(LesionesTableSeeder::class);
+        $this->call(TurnosTableSeeder::class);
+        $this->call(TipoExamenesTableSeeder::class);
+        $this->call(OjosTableSeeder::class);
+        $this->call(TipoExamenVisualesTableSeeder::class);
     }
 }

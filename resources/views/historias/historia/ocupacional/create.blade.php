@@ -34,20 +34,135 @@
 
 
 
-     <!-- SELECT2 EXAMPLE -->
-      <div class="box box-default">
+     <div class="box box-default">
         <div class="box-header with-border">
-          <h3 class="box-title">Historias Ocupacionales</h3>
-
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-      
-          </div>
+             <h3 class="box-title">Datos del Paciente</h3>
+            <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            </div>
         </div>
         <!-- /.box-header -->
-         
+        <div class="box-body">
+        @include('flash::message')
+          <div class="row">
+            {!! Form::open(['class' => '','method' => 'POST','route' => 'especialidades.store','role' => 'form']) !!}
+
+
+            <div class="col-md-12">
+                  <div class="form-group col-md-3">
+                    {!! Form::label('tipo_examen_id','Tipo de Examen.') !!}
+                    {!! Form::select('tipo_examen_id',$combos['tipo_examenes'], old('tipo_examen_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
+                  </div>
+
+                  <div class="form-group col-md-9">
+                    {!! Form::label('empresa','Empresa') !!}
+                    {!! Form::text('empresa',old('empresa'),['placeholder' => '','class'=>'form-control']) !!}
+                  </div>
+                <!-- /.form-group -->
+              </div>
+
+               <div class="col-md-12">
+                <div class="form-group col-md-4">
+                  {!! Form::label('escolaridad_id','Escolaridad.') !!}
+                    {!! Form::select('escolaridad_id',$combos['escolaridades'], old('escolaridad_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
+                  </div>
+
+                  <div class="form-group col-md-4">
+                    {!! Form::label('numerohijos','Nro. Hijos') !!}
+                    {!! Form::text('numerohijos',old('numerohijos'),['placeholder' => '','class'=>'form-control']) !!}
+                  </div>
+
+                  <div class="form-group col-md-4">
+                    {!! Form::label('numeropersonascargo','Nro. Personas') !!}
+                    {!! Form::text('numeropersonascargo',old('numeropersonascargo'),['placeholder' => '','class'=>'form-control']) !!}
+                  </div>
+                <!-- /.form-group -->
+              </div>
+
+             <div class="col-md-12">
+                <div class="box-footer">
+                      <button type="submit" class="btn btn-primary btn-sm">Guardar</button>
+                      <button type="reset" class="btn btn-default btn-sm">Reset</button>
+                  </div>
+              </div>
+
+            {!! Form::close() !!}
+           
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.box-body -->
+
+     <div class="box box-default">
+        <div class="box-header with-border">
+             <h3 class="box-title">Información Ocupacional Actual</h3>
+            <div class="box-tools pull-right">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+        @include('flash::message')
+          <div class="row">
+            {!! Form::open(['class' => '','method' => 'POST','route' => 'especialidades.store','role' => 'form']) !!}
+
+
         
-      </div>
+
+              <div class="col-md-12">
+                  <div class="form-group col-md-4">
+                    {!! Form::label('cargoactual','Cargo Actual') !!}
+                    {!! Form::text('cargoactual',old('cargoactual'),['placeholder' => '','class'=>'form-control']) !!}
+                  </div>
+
+                  <div class="form-group col-md-4">
+                    {!! Form::label('turno_id','Tipo de Examen') !!}
+                    {!! Form::select('turno_id',$combos['turnos'], old('turno_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
+                  </div>
+
+                  <div class="form-group col-md-4">
+                    {!! Form::label('actividad_id','Actividad') !!}
+                    {!! Form::select('actividad_id',$combos['actividades'], old('actividad_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
+                  </div>
+                     <!-- /.form-group -->
+              </div>
+
+            <div class="col-md-12">
+                <table id="example2" class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th>Tipo de Factor</th>
+                      <th>Descripción</th>
+                      <th>Tiempo de Exposición</th>
+                      <th>Medidas de Control</th>
+                      <th>Quitar</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    
+
+                  </tbody>
+
+                </table>
+            </div>
+             <div class="col-md-12">
+                <div class="box-footer">
+                      <button type="submit" class="btn btn-primary btn-sm">Guardar</button>
+                      <button type="reset" class="btn btn-default btn-sm">Reset</button>
+                  </div>
+              </div>
+
+            {!! Form::close() !!}
+           
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.box-body -->
+     
 
   <div class="modal fade"  id="myAlert" tabindex="-1">
           <div class="modal-dialog">

@@ -9,7 +9,7 @@ class Tipo_examen_visual extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'tipo_examenes';
+    protected $table = 'tipo_examen_visuales';
 
 	protected $fillable = [
         'ojo_id','descripcion',
@@ -17,7 +17,7 @@ class Tipo_examen_visual extends Model
 
     protected $dates = ['deleted_at'];
 
-    public function ojos()
+    public function ojo()
     {
         return $this->belongsTo('App\Ojo','ojo_id');
     }

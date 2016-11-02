@@ -9,7 +9,7 @@ class Lateralidad extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'literalidades';
+    protected $table = 'lateralidades';
 
 	protected $fillable = [
         'descripcion',

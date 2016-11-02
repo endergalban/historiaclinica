@@ -74,6 +74,17 @@ class ModulosTableSeeder extends Seeder
         $modulo->roles()->attach($role_medico);
         $modulo->roles()->attach($role_asistente);
 
+        $modulo= new Modulo;
+        $modulo->orden = 6;
+        $modulo->icono = 'fa-newspaper-o';
+        $modulo->descripcion = 'Historias';
+        $modulo->site = 'historias';
+        $modulo->save();
+        $modulo->roles()->attach($role_administrador);
+        $modulo->roles()->attach($role_medico);
+        $modulo->roles()->attach($role_asistente);
+
+
        
 
         $modulo= new Modulo;
