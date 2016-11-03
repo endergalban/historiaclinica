@@ -18,9 +18,9 @@ class Turno extends Model
 
     protected $dates = ['deleted_at'];
 
-    public function historia_ocupacionales()
+    public function ocupacional_actuales()
     {
-        return $this->hasMany('App\Historia_ocupacional','turno_id');
+        return $this->hasMany('App\Ocupacional_actual','turno_id');
     }
 
     public function scopeOfType($query, $type){

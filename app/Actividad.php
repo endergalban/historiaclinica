@@ -17,9 +17,9 @@ class Actividad extends Model
 
     protected $dates = ['deleted_at'];
 
-    public function historia_ocupacionales()
+    public function ocupacional_actuales()
     {
-        return $this->hasMany('App\Historia_ocupacional','actividad_id');
+        return $this->hasMany('App\Ocupacional_actual','actividad_id');
     }
 
     public function scopeOfType($query, $type){

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Actividad
+use App\Actividad;
 
 class ActividadesTableSeeder extends Seeder
 {

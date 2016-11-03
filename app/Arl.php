@@ -21,6 +21,12 @@ class Arl extends Model
     {
         return $this->hasMany('App\Paciente');
     }
+
+    public function historia_ocupacionales()
+    {
+        return $this->hasMany('App\Historia_ocupacional','arl_id');
+    }
+
     public function scopeOfType($query, $type){
 		
 		return $query->where('descripcion', 'like' , '%'.$type.'%');

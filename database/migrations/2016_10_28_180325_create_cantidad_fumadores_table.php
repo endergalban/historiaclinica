@@ -16,6 +16,7 @@ class CreateCantidadFumadoresTable extends Migration
         Schema::create('cantidad_fumadores', function (Blueprint $table) {
             $table->increments('id');
             $table->string('descripcion');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

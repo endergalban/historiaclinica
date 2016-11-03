@@ -16,6 +16,7 @@ class CreateTiempoFumadoresTable extends Migration
         Schema::create('tiempo_fumadores', function (Blueprint $table) {
             $table->increments('id');
             $table->string('descripcion');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

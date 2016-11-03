@@ -12,6 +12,10 @@ class AfpsTableSeeder extends Seeder
      */
     public function run()
     {
+        $afp= New Afp;
+        $afp->descripcion = 'N/A';
+        $afp->save();
+
     	$afp= New Afp;
     	$afp->descripcion = 'AFP';
 		$afp->save();

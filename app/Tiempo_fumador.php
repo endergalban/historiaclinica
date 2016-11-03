@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class Tiempo_fumador_ extends Model
+class Tiempo_fumador extends Model
 {
     use SoftDeletes;
        

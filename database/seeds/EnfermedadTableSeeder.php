@@ -118,9 +118,6 @@ class EnfermedadTableSeeder extends Seeder
     	$enfermedad->descripcion = 'Otitis';
 		$enfermedad->save();
 		$enfermedad= New Enfermedad;
-    	$enfermedad->descripcion = 'Rinitis';
-		$enfermedad->save();
-		$enfermedad= New Enfermedad;
     	$enfermedad->descripcion = 'Sinusitis';
 		$enfermedad->save();
 		$enfermedad= New Enfermedad;

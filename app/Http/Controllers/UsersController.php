@@ -135,8 +135,10 @@ class UsersController extends Controller
                         if(Paciente::where('user_id',$user->id)->count() == 0){
                             $paciente = new Paciente;
                             $paciente->user()->associate($user);
-                            $paciente->empresa_id=0;
-                            $paciente->municipio_id=0;
+                            $paciente->empresa_id=1;
+                            $paciente->arl_id=1;
+                            $paciente->afp_id=1;
+                            $paciente->municipio_id=1;
                             $paciente->save();
                         }
                     }
@@ -293,9 +295,9 @@ class UsersController extends Controller
                             $paciente = new Paciente;
                             $paciente->user()->associate($user);
                             $paciente->municipio_id=0;
-                            $paciente->empresa_id=0;
-                            $paciente->afp_id=0;
-                            $paciente->arl_id=0;
+                            $paciente->empresa_id=1;
+                            $paciente->afp_id=1;
+                            $paciente->arl_id=1;
                             $paciente->save();
                         }
                     }
@@ -385,9 +387,9 @@ class UsersController extends Controller
                 $residencia['paisresidencia_id']='0';
             }
 
-            $empresas=Empresa::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A',0);
-            $arls=Arl::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A',0);
-            $afps=Afp::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A',0);
+            $empresas=Empresa::all()->sortBy('descripcion')->pluck('descripcion', 'id');
+            $arls=Arl::all()->sortBy('descripcion')->pluck('descripcion', 'id');
+            $afps=Afp::all()->sortBy('descripcion')->pluck('descripcion', 'id');
 
             return  view('users.paciente')->with(['paciente' => $paciente,'empresas' => $empresas,'paises' => $paises,'departamentos' => $departamentos,'municipios' => $municipios,'arls' => $arls,'afps' => $afps,'residencia' => $residencia]);
         }

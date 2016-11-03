@@ -13,6 +13,10 @@ class ArlsTableSeeder extends Seeder
     public function run()
     {
         $arl= New Arl;
+        $arl->descripcion = 'N/A';
+        $arl->save();
+
+        $arl= New Arl;
     	$arl->descripcion = 'ARL';
 		$arl->save();
     }

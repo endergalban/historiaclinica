@@ -28,6 +28,8 @@
     <!-- fullCalendar 2.2.5-->
   <link rel="stylesheet" href="{{ asset('plugins/fullcalendar/fullcalendar.min.css') }}">
   <link rel="stylesheet" href="{{ asset('plugins/fullcalendar/fullcalendar.print.css') }}" media="print">
+    <!-- iCheck for checkboxes and radio inputs -->
+  <link rel="stylesheet" href="{{ asset('plugins/iCheck/all.css') }}">
 
    <!-- Scripts -->
     <script>

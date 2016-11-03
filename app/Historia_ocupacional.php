@@ -12,10 +12,20 @@ class Historia_ocupacional extends Model
     protected $table='historia_ocupacionales';
 
     protected $fillable = [
-        'medico_paciente_id','escolaridad_id','tipo_examen_id','turno_id','actividad_id','lateralidad_id','numerohijos','numeropersonascargo','cargoactual','peso','talla','imc','ta','fc','fr',
+        'medico_paciente_id','escolaridad_id','tipo_examen_id','numerohijos','numeropersonascargo','arl_id','afp_id','empresa_id',
     ];
 
     protected $dates = ['deleted_at'];
+
+    public function examen_fisico()
+    {
+        return $this->hasOne('App\Examen_fisico','historia_ocupacional_id');
+    }
+
+    public function ocupacional_actual()
+    {
+        return $this->hasOne('App\Ocupacional_actual','historia_ocupacional_id');
+    }
 
     public function medico_paciente()
     {
@@ -32,21 +42,20 @@ class Historia_ocupacional extends Model
         return $this->belongsTo('App\Tipo_examen','tipo_examen_id');
     }
 
-    public function turno()
+    public function empresa()
     {
-        return $this->belongsTo('App\Turno','turno_id');
+        return $this->belongsTo('App\Empresa','empresa_id');
     }
 
-    public function actividad()
+    public function arl()
     {
-        return $this->belongsTo('App\Actividad','actividad_id');
+        return $this->belongsTo('App\Arl','arl_id');
     }
 
-    public function lateralidad()
+    public function afp()
     {
-        return $this->belongsTo('App\Lateralidad','lateralidad_id');
+        return $this->belongsTo('App\Afp','afp_id');
     }
-
 
     public function antecedente_ocupacionales()
     {
@@ -96,11 +105,6 @@ class Historia_ocupacional extends Model
     public function examen_laboratorios()
     {
         return $this->hasMany('App\Examen_laboratorio','historia_ocupacional_id');
-    }
-
-    public function factor_riesgos()
-    {
-        return $this->belongsToMany('App\Factor_riesgo','historia_ocupacional_factor_riesgo','historia_ocupacional_id','factor_riesgo_id');
     }
 
     public function diagnosticos()

@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call(AfpsTableSeeder::class);
         $this->call(ArlsTableSeeder::class);
         $this->call(TipoFactorRiesgosSeeder::class);
+        $this->call(ActividadesTableSeeder::class);
         $this->call(FactorRiesgosSeeder::class);
         $this->call(EnfermedadTableSeeder::class);
         $this->call(EscolaridadTableSeeder::class);
@@ -30,5 +31,9 @@ class DatabaseSeeder extends Seeder
         $this->call(TipoExamenesTableSeeder::class);
         $this->call(OjosTableSeeder::class);
         $this->call(TipoExamenVisualesTableSeeder::class);
+        $this->call(CantidadFumadoresTableSeeder::class);
+        $this->call(TiempoFumadoresTableSeeder::class);
+        $this->call(TiempoLicoresTableSeeder::class);
+        $this->call(RegularidadMedicamentosTableSeeder::class);
     }
 }

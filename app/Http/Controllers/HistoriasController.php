@@ -18,8 +18,16 @@ use App\Escolaridad;
 use App\Tipo_examen;
 use App\Tipo_factor_riesgo;
 use App\Factor_riesgo;
+use App\Enfermedad;
 use App\Turno;
 use App\Actividad;
+use App\Tiempo_fumador;
+use App\Cantidad_fumador;
+use App\Tiempo_licor;
+use App\Regularidad_medicamento;
+use App\Empresa;
+use App\Arl;
+use App\Afp;
 use Auth;
 
 class HistoriasController extends Controller
@@ -159,43 +167,78 @@ class HistoriasController extends Controller
         $paciente = Paciente::where(['id'=>$medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $medico_paciente->medico_id])->with('user')->first();
 
-
+        $historia_ocupacional= new Historia_ocupacional;
+        $historia_ocupacional->medico_paciente()->associate($medico_paciente);
+        $historia_ocupacional->escolaridad()->associate(1);
+        $historia_ocupacional->tipo_examen()->associate(1);
+        $historia_ocupacional->empresa()->associate($paciente->empresa_id);
+        $historia_ocupacional->arl()->associate($paciente->arl_id);
+        $historia_ocupacional->afp()->associate($paciente->afp_id);
+        $historia_ocupacional->numerohijos=0;
+        $historia_ocupacional->numeropersonascargo=0;
+        $historia_ocupacional->empresa='';
+        $historia_ocupacional->save();
+      
         /*Combos*/
         $combos=array();
+        $empresas=Empresa::all()->sortBy('descripcion')->pluck('descripcion', 'id');
+        $arls=Arl::all()->sortBy('descripcion')->pluck('descripcion', 'id');
+        $afps=Afp::all()->sortBy('descripcion')->pluck('descripcion', 'id');
         $tipo_examenes = Tipo_examen::all()->sortBy('descripcion')->pluck('descripcion','id');
         $escolaridades = Escolaridad::all()->sortBy('descripcion')->pluck('descripcion','id');
-        $turnos = Turno::all()->sortBy('descripcion')->pluck('descripcion','id');
+       /* $turnos = Turno::all()->sortBy('descripcion')->pluck('descripcion','id');
         $actividades = Actividad::all()->sortBy('descripcion')->pluck('descripcion','id');
-        $combos=['tipo_examenes' => $tipo_examenes,'escolaridades' => $escolaridades,'turnos' => $turnos,'actividades' => $actividades];
-
-        /*Riegos*/
-        $factor_riegos = Factor_riesgo::with('tipo_factor_riesgo')->orderby('tipo_factor_riesgo_id')->get();
-        dd($factor_riegos);
-        foreach ($factor_riegos as $factor_riego) {
-            $combosfactores[]=array('id'=>$factor_riego->id,'descripcion'=>$factor_riego->descripcion.' > '.$factor_riego->descripcion);
-        }
-        
-/*
-        $ocupacional= new Historia_ocupacional;
-        $ocupacional->medico_paciente_id = $medico_paciente_id;
-        escolaridad_id
-        tipo_examen_id
-        turno_id
-        actividad_id
-        lateralidad_id
-        numerohijos
-        numeropersonascargo
-        cargoactual
-        talla
-        fr
-        $medico_paciente->paciente()->associate($paciente_id);
-        $medico_paciente->medico()->associate($medico_id);
-        $medico_paciente->especialidad_id=$especialidad_id;
-        $medico_paciente->save();*/
+        $enfermedades = Enfermedad::all()->sortBy('descripcion')->pluck('descripcion','id');
+        $tiempo_fumadores = Tiempo_fumador::all()->sortBy('id')->pluck('descripcion','id');
+        $cantidad_fumadores = Cantidad_fumador::all()->sortBy('id')->pluck('descripcion','id');
+        $tiempo_licores = Tiempo_licor::all()->sortBy('id')->pluck('descripcion','id');
+        $regularidad_medicamentos = Regularidad_medicamento::all()->sortBy('id')->pluck('descripcion','id');*/
        
+        /*Riegos
+        $factor_riegos_query = Factor_riesgo::with('tipo_factor_riesgo')->orderby('tipo_factor_riesgo_id')->get();
+        foreach ($factor_riegos_query as $factor_riego) {
+            $factor_riesgos[$factor_riego->id]=$factor_riego->tipo_factor_riesgo->descripcion.' > '.$factor_riego->descripcion;
+        }*/
 
-         return  view('historias.historia.ocupacional.create')->with(['paciente'=>$paciente,'medico'=>$medico,'medico_paciente'=>$medico_paciente,'combos'=>$combos,'tipo_factor_riegos'=>$tipo_factor_riegos ]);
+        $combos=['tipo_examenes' => $tipo_examenes,'escolaridades' => $escolaridades,'empresas' => $empresas,'arls' => $arls,'afps' => $afps];
+
+        return  view('historias.historia.ocupacional.ocupacional')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional,'combos'=>$combos ]);
     }
+
+
+    public function ocupacional_edit($paciente_id,$historia_ocupacional_id)
+    {
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+        $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();
+        $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();
+
+        $combos=array();
+        $empresas=Empresa::all()->sortBy('descripcion')->pluck('descripcion', 'id');
+        $arls=Arl::all()->sortBy('descripcion')->pluck('descripcion', 'id');
+        $afps=Afp::all()->sortBy('descripcion')->pluck('descripcion', 'id');
+        $tipo_examenes = Tipo_examen::all()->sortBy('descripcion')->pluck('descripcion','id');
+        $escolaridades = Escolaridad::all()->sortBy('descripcion')->pluck('descripcion','id');
+        $combos=['tipo_examenes' => $tipo_examenes,'escolaridades' => $escolaridades,'empresas' => $empresas,'arls' => $arls,'afps' => $afps];
+        return  view('historias.historia.ocupacional.ocupacional')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional,'combos'=>$combos ]);
+    }
+
+    public function ocupacional_patologias($paciente_id,$historia_ocupacional_id)
+    {
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+        $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();
+        $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();
+
+        $combos=array();
+        $tiempo_fumadores = Tiempo_fumador::all()->sortBy('id')->pluck('descripcion','id');
+        $cantidad_fumadores = Cantidad_fumador::all()->sortBy('id')->pluck('descripcion','id');
+        $tiempo_licores = Tiempo_licor::all()->sortBy('id')->pluck('descripcion','id');
+        $regularidad_medicamentos = Regularidad_medicamento::all()->sortBy('id')->pluck('descripcion','id');
+        $enfermedades = Enfermedad::all()->sortBy('descripcion')->pluck('descripcion','id');
+        $combos=['enfermedades' => $enfermedades,'tiempo_fumadores' => $tiempo_fumadores,'cantidad_fumadores' => $cantidad_fumadores,'tiempo_licores' => $tiempo_licores,'regularidad_medicamentos' => $regularidad_medicamentos];
+        return  view('historias.historia.ocupacional.patologias')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional,'combos'=>$combos ]);
+    }
+
+  
 
     /**
      * Update the specified resource in storage.

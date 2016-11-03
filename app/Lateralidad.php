@@ -17,9 +17,9 @@ class Lateralidad extends Model
 
     protected $dates = ['deleted_at'];
 
-    public function historia_ocupacionales()
+    public function examen_fisicos()
     {
-        return $this->hasMany('App\Historia_ocupacional','lateralidad_id');
+        return $this->hasMany('App\Examen_fisico','lateralidad_id');
     }
 
     public function scopeOfType($query, $type){

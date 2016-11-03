@@ -13,7 +13,7 @@ class EmpresasTableSeeder extends Seeder
     public function run()
     {
         $empresa= New Empresa;
-        $empresa->descripcion = 'Empresa';
+        $empresa->descripcion = 'N/A';
         $empresa->save();
 
         $empresa= New Empresa;

@@ -456,6 +456,8 @@
     <script src="{{ asset('plugins/select2/select2.full.min.js') }}"></script>
     <!-- bootstrap datepicker -->
     <script src="{{ asset('plugins/datepicker/bootstrap-datepicker.js') }}"></script>
+    <!-- iCheck 1.0.1 -->
+    <script src="{{ asset('plugins/iCheck/icheck.min.js') }}"></script>
 
     <!-- date-range-picker -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
@@ -476,6 +478,10 @@
        /* $('.datepicker').datepicker({
           autoclose: true
         });*/
+         $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+            checkboxClass: 'icheckbox_flat-green',
+            radioClass: 'iradio_flat-green'
+          });
       });
 
     </script>

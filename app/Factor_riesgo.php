@@ -21,7 +21,7 @@ class Factor_riesgo extends Model
 		return $this->belongsTo('App\Tipo_factor_riesgo','tipo_factor_riesgo_id');
 	}
 
-	public function historia_ocupacionales(){
-		return $this->belongsToMany('App\Historia_ocupacional','historia_ocupacional_factor_riesgo','factor_riesgo_id','historia_ocupacional_id');
+	public function ocupacional_actuales(){
+		return $this->belongsToMany('App\Ocupacional_actual','ocupacional_actual_factor_riesgo','factor_riesgo_id','ocupacional_actual_id');
 	}
 }

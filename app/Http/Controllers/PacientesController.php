@@ -39,9 +39,9 @@ class PacientesController extends Controller
      */
     public function create()
     {
-        $empresas=Empresa::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A', 0);
-        $arls=Arl::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A', 0);
-        $afps=Afp::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A', 0);
+        $empresas=Empresa::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A', 1);
+        $arls=Arl::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A', 1);
+        $afps=Afp::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A', 1);
         
 
         $paises=Pais::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('Seleccione una opción', 0);
@@ -111,9 +111,9 @@ class PacientesController extends Controller
             'telefono' => 'required|string|max:13',   
             'direccion' => 'string|max:255',
             'foto' => 'image', 
-            'empresa_id' => 'integer', 
-            'arl_id' => 'integer', 
-            'afp_id' => 'integer', 
+            'empresa_id' => 'exists:empresas,id', 
+            'arl_id' => 'exists:arls,id', 
+            'afp_id' => 'exists:afps,id', 
         ]);
         if ($validator->fails()) {
             flash(implode('<br>',$validator->errors()->all()), 'danger');
@@ -303,9 +303,9 @@ class PacientesController extends Controller
             'telefono' => 'required|string|max:13',   
             'direccion' => 'string|max:255',   
             'firma' => 'image',
-            'empresa_id' => 'integer', 
-            'arl_id' => 'integer', 
-            'afp_id' => 'integer',               
+            'empresa_id' => 'exists:empresas,id', 
+            'arl_id' => 'exists:arls,id', 
+            'afp_id' => 'exists:afps,id',               
 
 
         ]);

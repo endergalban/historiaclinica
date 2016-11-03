@@ -17,6 +17,7 @@ class CreateHabitoMedicamentosTable extends Migration
             $table->increments('id');
             $table->integer('historia_ocupacional_id')->unsigned();$table->foreign('historia_ocupacional_id')->references('id')->on('historia_ocupacionales')->onDelete('restrict');
             $table->integer('regularidad_medicamento_id')->unsigned();$table->foreign('regularidad_medicamento_id')->references('id')->on('regularidad_medicamentos')->onDelete('restrict');
+            $table->string('descripcion');
             $table->string('nombremedicamento');
             $table->softDeletes();
             $table->timestamps();

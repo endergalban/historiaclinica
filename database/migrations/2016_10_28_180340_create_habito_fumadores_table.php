@@ -18,6 +18,7 @@ class CreateHabitoFumadoresTable extends Migration
             $table->integer('historia_ocupacional_id')->unsigned();$table->foreign('historia_ocupacional_id')->references('id')->on('historia_ocupacionales')->onDelete('restrict');
             $table->integer('tiempo_fumador_id')->unsigned(); $table->foreign('tiempo_fumador_id')->references('id')->on('tiempo_fumadores')->onDelete('restrict');
             $table->integer('cantidad_fumador_id')->unsigned();$table->foreign('cantidad_fumador_id')->references('id')->on('cantidad_fumadores')->onDelete('restrict');
+            $table->string('descripcion',10);
             $table->softDeletes();
             $table->timestamps();
         });
