@@ -62,12 +62,16 @@
               <div class="input-group">
                 <input id="new-event" type="text" class="form-control" placeholder="Nombre del Evento">
 
+                {!! Form::label('paciente_id','Paciente') !!}
+                {!! Form::select('pacientes[]',$pacientes,null,['class' => 'form-control select2','style' => 'width: 100%','data-placeholder' => 'Seleccione' ]) !!}
                 <div class="input-group-btn">
                   <button id="add-new-event" type="button" class="btn btn-primary btn-flat">Añadir</button>
                 </div>
                 <!-- /btn-group -->
               </div>
               <!-- /input-group -->
+              {!! Form::open(['route' => ['guardarcita'], 'method'=> 'POST', 'id' => 'form-calendario']) !!}
+              {!! Form::close() !!}
             </div>
           </div>
         </div>
@@ -141,8 +145,9 @@
         week: 'week',
         day: 'day'
       },
-      //Random default events
+      //CARGA DE EVENTOS POR BD
       events: [ ],
+
       editable: true,
       droppable: true, // this allows things to be dropped onto the calendar !!!
       drop: function (date, allDay) { // this function is called when something is dropped
@@ -168,7 +173,27 @@
           // if so, remove the element from the "Draggable Events" list
           $(this).remove();
         }
-
+        var title = copiedEventObject.title;
+        var start= copiedEventObject.start.format("YYYY-MM-DD HH:mm");
+        
+        crsfToken = document.getElementsByName("_token")[0].value;
+        $.ajax({
+          url:'guardarcita',
+          data:'title='+ title+'&start='+start,
+          type: "POST",
+          headers:{
+            "X-CSRF-TOKEN":crsfToken
+          },
+          success: function(events){
+            console.log("Evento creado");
+            $('#calendar').fullcalendar('refetchEvents');
+          },
+          error: function(json){
+            console.log("Error");
+          }
+        
+        });
+        
       }
     });
 
