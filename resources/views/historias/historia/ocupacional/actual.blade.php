@@ -164,7 +164,7 @@
                     <div class="form-group col-md-12">
                         <div class="form-group col-md-12">
                             {!! Form::label('medidacontrol','Medidas de Control') !!}
-                            {!! Form::text('medidacontrol',old('medidacontrol'),['placeholder' => '','class'=>'form-control']) !!}
+                            {!! Form::textarea('medidacontrol',old('medidacontrol'),['placeholder' => '','class'=>'form-control','rows'=>'3']) !!}
                         </div>
                     </div>
                 </div>

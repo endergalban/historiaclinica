@@ -208,33 +208,7 @@
 
 @section('javascript')
  <script>
- 	$('.datepicker').daterangepicker({
-        singleDatePicker: true,
-        format: 'DD-MM-YYYY',
-        calender_style: "picker_2",
-        showDropdowns: true,
-         "singleDatePicker": true,
-          "showDropdowns": true,
-          "showWeekNumbers": true,
-          "locale": {
-            "format": 'DD/MM/YYYY',
-            "separator": " - ",
-            "applyLabel": "Apply",
-            "cancelLabel": "Cancel",
-            "fromLabel": "Desde",
-            "toLabel": "hasta",
-            "customRangeLabel": "Custom",
-            "weekLabel": "S",
-            "daysOfWeek": ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa' ],
-            "monthNames": ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-            "firstDay": 1
-          },
-          "showCustomRangeLabel": false
-
-      }, function(start, end, label) {
-        console.log(start.toISOString(), end.toISOString(), label);
-      });
-
+ 	
    $('#pais_id').change(function(e) {
         console.log(e);
         var pais_id = e.target.value;

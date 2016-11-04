@@ -164,11 +164,11 @@
                     	</table>
                     <div>
               	</div>
-              	<div class="col-md-12">
-                	<div class="box-footer">
-                      	<button type="button" data-toggle="modal" href="#myAlert3" class="btn btn-primary btn-sm open-modal">Agregar Patología</button>
-                  	</div>
+              	
+            	<div class="box-footer">
+                  	<button type="button" data-toggle="modal" href="#myAlert3" class="btn btn-primary btn-sm open-modal">Agregar Patología</button>
               	</div>
+              	
             	{!! Form::close() !!}
             </div>
             <!-- /.col -->
@@ -212,7 +212,7 @@
                     <div class="col-md-12">
                         <div class="form-group col-md-12">
                             {!! Form::label('observacion','Observación') !!}
-                            {!! Form::text('observacion',old('observacion'),['placeholder' => '','class'=>'form-control']) !!}
+                            {!! Form::textarea('observacion',old('observacion'),['placeholder' => '','class'=>'form-control','rows'=>'3']) !!}
                         </div>
                     </div>
                 </div>
@@ -377,37 +377,4 @@
           <!-- /.row -->
     </div>
     <!-- /.box-body -->
- @endsection   
-
- @section('javascript')
- <script>
- 
-    $('.datepicker').daterangepicker({
-        singleDatePicker: true,
-        format: 'DD-MM-YYYY',
-        calender_style: "picker_2",
-        showDropdowns: true,
-         "singleDatePicker": true,
-          "showDropdowns": true,
-          "showWeekNumbers": true,
-          "locale": {
-            "format": 'DD/MM/YYYY',
-            "separator": " - ",
-            "applyLabel": "Apply",
-            "cancelLabel": "Cancel",
-            "fromLabel": "Desde",
-            "toLabel": "hasta",
-            "customRangeLabel": "Custom",
-            "weekLabel": "S",
-            "daysOfWeek": ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa' ],
-            "monthNames": ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-            "firstDay": 1
-          },
-          "showCustomRangeLabel": false
-
-      }, function(start, end, label) {
-        console.log(start.toISOString(), end.toISOString(), label);
-      });
-
- </script>
- @endsection
+@endsection   

@@ -94,24 +94,24 @@
                     <h4 class="modal-title">Agregando Examen de Laboratorio</h4>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group col-md-12">
+                    <div class="col-md-12">
                         <div class="form-group col-md-12">
                             {!! Form::label('examen','Examen') !!}
                             {!! Form::text('examen',old('examen'),['placeholder' => '','class'=>'form-control']) !!}
                         </div>
                     </div>
 
-                    <div class="form-group col-md-12">
+                    <div class="col-md-12">
                         <div class="form-group col-md-4">
                             {!! Form::label('fecha','Fecha') !!}
-                            {!! Form::text('fecha',old('fecha'),['placeholder' => '','class'=>'form-control datepicker']) !!}
+                            {!! Form::text('fecha',old('fecha'),['placeholder' => '','class'=>'form-control datepicker','style'=>'position: relative; z-index: 100000']) !!}
                         </div>
                     </div>
                     
-                    <div class="form-group col-md-12">
+                    <div class="col-md-12">
                         <div class="form-group col-md-12">
                             {!! Form::label('resultado','Resultado') !!}
-                            {!! Form::text('resultado',old('resultado'),['placeholder' => '','class'=>'form-control']) !!}
+                            {!! Form::textarea('resultado',old('resultado'),['placeholder' => '','class'=>'form-control','rows'=>'3']) !!}
                         </div>
                     </div>
                 </div>
@@ -123,37 +123,4 @@
         </div>
     </div>
 
-  @endsection
-  
-  @section('javascript')
- <script>
- 
-    $('.datepicker').daterangepicker({
-        singleDatePicker: true,
-        format: 'DD-MM-YYYY',
-        calender_style: "picker_2",
-        showDropdowns: true,
-         "singleDatePicker": true,
-          "showDropdowns": true,
-          "showWeekNumbers": true,
-          "locale": {
-            "format": 'DD/MM/YYYY',
-            "separator": " - ",
-            "applyLabel": "Apply",
-            "cancelLabel": "Cancel",
-            "fromLabel": "Desde",
-            "toLabel": "hasta",
-            "customRangeLabel": "Custom",
-            "weekLabel": "S",
-            "daysOfWeek": ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa' ],
-            "monthNames": ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-            "firstDay": 1
-          },
-          "showCustomRangeLabel": false
-
-      }, function(start, end, label) {
-        console.log(start.toISOString(), end.toISOString(), label);
-      });
-
- </script>
- @endsection
+@endsection

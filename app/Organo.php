@@ -12,7 +12,7 @@ class Organo extends Model
 	protected $table = 'organos';
 
 	protected $fillable = [
-        'descripcion',
+        'descripcion','tipo_organo_id'
     ];
     
     protected $dates = ['deleted_at'];
@@ -21,5 +21,10 @@ class Organo extends Model
     public function exploraciones()
     {
         return $this->hasMany('App\Exploracion','organo_id');
+    }
+
+     public function tipo_organo()
+    {
+        return $this->belongsTo('App\Tipo_organo','tipo_organo_id');
     }
 }

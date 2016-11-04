@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Antecedente_ocupacional extends Model
 {
@@ -20,7 +21,7 @@ class Antecedente_ocupacional extends Model
 
     public function historia_ocupacional()
     {
-        return $this->belongsTo('App\Historia_ocupacional');
+        return $this->belongsTo('App\Historia_ocupacional','historia_ocupacional_id');
     }
 
     public function traumatologicos()
@@ -29,7 +30,7 @@ class Antecedente_ocupacional extends Model
     }
 
     public function factor_riesgos(){
-    	return $this->belongsToMany('App\Factor_riesgo','antecedente_ocupacional_factor_riesgo','antecedente_ocupacional_id','factor_riesgo_id')
+    	return $this->belongsToMany('App\Factor_riesgo','antecedente_ocupacional_factor_riesgo','antecedente_ocupacional_id','factor_riesgo_id');
     }
 
   

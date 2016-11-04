@@ -104,7 +104,7 @@
                     <div class="form-group col-md-12">
                         <div class="form-group col-md-12">
                             {!! Form::label('concepto','Concepto') !!}
-                            {!! Form::text('concepto',old('concepto'),['placeholder' => '','class'=>'form-control']) !!}
+                            {!! Form::textarea('concepto',old('concepto'),['placeholder' => '','class'=>'form-control','rows'=>'3']) !!}
                         </div>
                     </div>
                 </div>

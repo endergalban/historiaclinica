@@ -63,30 +63,40 @@
         <div class="box-body">
        		@include('flash::message')
           	<div class="row">
-            	{!! Form::open(['class' => '','method' => 'POST','route' => 'especialidades.store','role' => 'form']) !!}
-              	<div class="col-md-12">
+                   	<div class="col-md-12">
                 	<div class="box-body table-responsive">
                         <table id="example2" class="table table-bordered table-hover">
                       		<thead>
                         		<tr>
-    								<th>Enfermadad</th>
-    								<th>Observación</th>
-    								<th>Familiar</th>
-    								<th>Personal</th>
-    								<th>Quitar</th>
+    								<th>Empresa</th>
+    								<th>Tiempo de Servicio</th>
+    								<th>Ocupacion</th>
+    								<th class="text-center">Acción</th>
                         		</tr>
                       		</thead>
                       		<tbody>
+                                 @foreach($combos['antecedente_ocupacionales'] as $antecedente_ocupacional)
+                                 <tr>
+                                    <td>{{ $antecedente_ocupacional->empresa }}</td>
+                                    <td>{{ $antecedente_ocupacional->tiemposervicio }}</td>
+                                    <td>{{ $antecedente_ocupacional->ocupacion }}</td>
+                                    <td class="text-center">
+                                        <a href="#" ><span class="label label-info">Factores de Riesgos</span></a>
+                                        <a href="#" ><span class="label label-info">Lesiones</span></a>
+                                        <a data-toggle="modal" data-url="{{ route('historias.ocupacional.antecedentes.destroy',[$paciente->id,$historia_ocupacional->id,$antecedente_ocupacional->id]) }}" class=open-modal label label-danger" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
+                                    </td>
+                                </tr>
+                                @endforeach
                       		</tbody>
                 	   </table>
                     </div>
               	</div>
               	<div class="col-md-12">
                 	<div class="box-footer">
-                      	<button type="button" data-toggle="modal" href="#myAlert2" class="btn btn-primary btn-sm open-modal">Agregar Patología</button>
+                      	<button type="button" data-toggle="modal" href="#myAlert2" class="btn btn-primary btn-sm open-modal">Agregar Empresa</button>
                   	</div>
               	</div>
-            	{!! Form::close() !!}
+       
              </div>
             <!-- /.col -->
       	</div>
@@ -102,39 +112,62 @@
                     <span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">Agregando Factores de Riesgos</h4>
                 </div>
+                 {!! Form::open(['class' => '','method' => 'POST','route' => ['historias.ocupacional.antecedentes.store',$paciente->id,$historia_ocupacional->id],'role' => 'form']) !!}
+                 {!! Form::hidden('historia_ocupacional_id', $historia_ocupacional->id) !!}
                 <div class="modal-body">
                     <div class="col-md-12">
                         <div class="form-group col-md-12">
-                            {!! Form::label('factor_riesgo_id','Tipo de Riesgo') !!}
-                            {!! Form::select('factor_riesgo_id',$combos['factor_riesgos'], old('factor_riesgo_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
+                            {!! Form::label('empresa','Empresa') !!}
+                            {!! Form::text('empresa',old('empresa'),['placeholder' =>    '','class'=>'form-control']) !!}
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <div class="form-group col-md-12">
-                            {!! Form::label('otro','Otro tipo de Riesgo') !!}
-                            {!! Form::text('otro',old('otro'),['placeholder' => '','class'=>'form-control','disabled'=>'form-disabled']) !!}
-                        </div>
-                    </div>
-                    <div class="form-group col-md-12">
+
                         <div class="form-group col-md-6">
-                            {!! Form::label('tiempoexposicion','Tiempo de Exposición') !!}
-                            {!! Form::text('tiempoexposicion',old('tiempoexposicion'),['placeholder' => '','class'=>'form-control']) !!}
+                            {!! Form::label('tiemposervicio','Tiempo de Servicio') !!}
+                            {!! Form::text('tiemposervicio',old('tiemposervicio'),['placeholder' => '','class'=>'form-control']) !!}
                         </div>
-                    </div>
-                    <div class="form-group col-md-12">
+
                         <div class="form-group col-md-12">
-                            {!! Form::label('medidacontrol','Medidas de Control') !!}
-                            {!! Form::text('medidacontrol',old('medidacontrol'),['placeholder' => '','class'=>'form-control']) !!}
+                            {!! Form::label('ocupacion','Oupación') !!}
+                            {!! Form::text('ocupacion',old('ocupacion'),['placeholder' => '','class'=>'form-control']) !!}
                         </div>
+                    
+                        
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Agregar</button>
+                    <button type="submit" class="btn btn-default">Agregar</button>
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
                 </div>
+               {!! Form::close() !!}
+
+                
             </div>
         </div>
     </div>
+
+    <div class="modal fade"  id="myAlert" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Confirmación</h4>
+              </div>
+              <div class="modal-body">
+                <p>Esta seguro que desea continuar con la operación...? </p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <a  class="btnsi"><button type="button" class="btn btn-primary">Si</button></a>
+              </div>
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
 
 	
  @endsection   

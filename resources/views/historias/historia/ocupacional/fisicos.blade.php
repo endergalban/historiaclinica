@@ -110,9 +110,11 @@
             </div>
         </div>
     </div>
+
+    <!--****************Exámenes Ocupacionales****************-->
     <div class="box box-default">
         <div class="box-header with-border">
-            <h3 class="box-title">Factores de Riesgos</h3>
+            <h3 class="box-title">Exámenes Ocupacionales</h3>
             <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
             </div>
@@ -126,11 +128,56 @@
                         <table id="example2" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>Tipo de Factor</th>
+                                    <th>Tipo de Examen</th>
+                                    <th class="text-center">Chequeo</th>
+                                    <th class="text-center col-md-7">Observación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($combos['examenes_ocupacionales'] as $tipo_organo)
+                                @foreach($tipo_organo['organos'] as $organo)
+                                <tr>
+                                    <td><strong>{{ $tipo_organo['descripcion'] }}</strong> > {{ $organo['descripcion'] }}</td>
+                                    <td class="text-center">
+                                         {!! Form::checkbox('id_organo()',$organo['id'],false,['class'=>'form-control flat-red']) !!}
+                                    </td>
+                                    <td>
+                                        {!! Form::text('resultado()',old('resultado()'),['placeholder' => '','class'=>'form-control','style' => 'width: 100%']) !!}
+                                    </td>
+                                   
+
+                                </tr>
+                                @endforeach
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--****************Prediagnóstico Visual****************-->
+    <div class="box box-default">
+        <div class="box-header with-border">
+            <h3 class="box-title">Prediagnóstico Visual</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            @include('flash::message')
+            <div class="row">
+               <div class="col-md-12">
+                    <div class="box-body table-responsive">
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Tipo de Examen</th>
+                                    <th>Ojo</th>
                                     <th>Descripción</th>
-                                    <th>Tiempo de Exposición</th>
-                                    <th>Medidas de Control</th>
-                                    <th>Quitar</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>
@@ -140,7 +187,7 @@
                 </div>
                 <div class="col-md-12">
                     <div class="box-footer">
-                        <button type="button" data-toggle="modal" href="#myAlert2" class="btn btn-primary btn-sm open-modal">Agregar Factor de Riesgo</button>
+                        <button type="button" data-toggle="modal" href="#myAlert2" class="btn btn-primary btn-sm open-modal">Agregar Diagnóstico</button>
                     </div>
                 </div>
             </div>
@@ -156,28 +203,18 @@
                     <h4 class="modal-title">Agregando Factor de Riesgo</h4>
                 </div>
                 <div class="modal-body">
+                  
                     <div class="col-md-12">
                         <div class="form-group col-md-12">
-                            {!! Form::label('factor_riesgo_id','Tipo de Riesgo') !!}
-                            
+                            {!! Form::label('examen_visual_id','Tipo de Examen') !!}
+                            {!! Form::select('examen_visual_id',$combos['examen_visuales'],old('examen_visual_id'),['placeholder' => '','class'=>'form-control']) !!}
                         </div>
                     </div>
-                    <div class="col-md-12">
-                        <div class="form-group col-md-12">
-                            {!! Form::label('otro','Otro tipo de Riesgo') !!}
-                            {!! Form::text('otro',old('otro'),['placeholder' => '','class'=>'form-control','disabled'=>'form-disabled']) !!}
-                        </div>
-                    </div>
-                    <div class="form-group col-md-12">
-                        <div class="form-group col-md-6">
-                            {!! Form::label('tiempoexposicion','Tiempo de Exposición') !!}
-                            {!! Form::text('tiempoexposicion',old('tiempoexposicion'),['placeholder' => '','class'=>'form-control']) !!}
-                        </div>
-                    </div>
+                   
                     <div class="form-group col-md-12">
                         <div class="form-group col-md-12">
-                            {!! Form::label('medidacontrol','Medidas de Control') !!}
-                            {!! Form::text('medidacontrol',old('medidacontrol'),['placeholder' => '','class'=>'form-control']) !!}
+                            {!! Form::label('descripcion','Observación') !!}
+                            {!! Form::textarea('descripcion',old('descripcion'),['placeholder' => '','class'=>'form-control','rows'=>'3']) !!}
                         </div>
                     </div>
                 </div>
