@@ -1,20 +1,20 @@
 @extends('layouts.main')
 
 @section('content-header')
-     <h1>
+    <h1>
         Historias
-        <small>Información Ocupacional Actual</small>
+        <small>Antecedentes Ocupacionales</small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('home') }}"><i class="fa fa-home"></i> Escritorio</a></li>
         <li><a href="{{ route('historias.index') }}">Historias</a></li>
         <li><a href="{{ route('historias.historia',[$paciente->id,'ocupacional',$medico->id]) }}">Historia Ocupacional</a></li>
-        <li class="active">Información Ocupacional Actual</li>
+        <li class="active">Antecedentes Ocupacionales</li>
     </ol>
 @endsection
 
 @section('content')
-   <div class="box box-default">
+	<div class="box box-default">
         <div class="box-header with-border">
             <div class="box-header">
                 <a href="{{ route('historias.index') }}" class="btn btn-default btn-sm">Ver Historias de pacientes</a>
@@ -43,104 +43,64 @@
 
             <a href="{{ route('historias.ocupacional.fisicos',[$paciente->id,$historia_ocupacional->id]) }}" class="btn btn-default btn-sm ">Examen Físico</a>
 
-            <a href="{{ route('historias.ocupacional.examenes',[$paciente->id,$historia_ocupacional->id]) }}" class="btn btn-default btn-sm ">Exámenes de laboratorio</a>
+            <a href="{{ route('historias.ocupacional.examenes',[$paciente->id,$historia_ocupacional->id]) }}" class="btn btn-default btn-sm ">Examenes de laboratorio</a>
 
-            <a href="{{ route('historias.ocupacional.diagnosticos',[$paciente->id,$historia_ocupacional->id]) }}" class="btn btn-default btn-sm ">Diagnóstico médico</a>
+            <a href="{{ route('historias.ocupacional.diagnosticos',[$paciente->id,$historia_ocupacional->id]) }}" class="btn btn-default btn-sm ">Diagnostico médico</a>
         </div>
     </div>
 
-<!--****************Información Ocupacional Actual****************-->
+  
+
+<!--****************Antecedentes Ocupacionales****************-->
     <div class="box box-default">
         <div class="box-header with-border">
-            <h3 class="box-title">Información Ocupacional Actual</h3>
+            <h3 class="box-title">Antecedentes Ocupacionales</h3>
             <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            	<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
             </div>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-            @include('flash::message')
-            <div class="row">
-                {!! Form::open(['class' => '','method' => 'POST','route' => 'especialidades.store','role' => 'form']) !!}
-
-                <div class="col-md-12">
-                    <div class="form-group col-md-8">
-                        {!! Form::label('empresa','Empresa') !!}
-                        {!! Form::text('empresa',$historia_ocupacional->empresa,['placeholder' => '','class'=>'form-control']) !!}
-                    </div>
-                </div>
-
-                <div class="col-md-12">
-                    <div class="form-group col-md-4">
-                        {!! Form::label('cargoactual','Cargo Actual') !!}
-                        {!! Form::text('cargoactual',old('cargoactual'),['placeholder' => '','class'=>'form-control']) !!}
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        {!! Form::label('turno_id','Turno') !!}
-                        {!! Form::select('turno_id',$combos['turnos'], old('turno_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
-                    </div>
-
-                    <div class="form-group col-md-4">
-                        {!! Form::label('actividad_id','Actividad') !!}
-                        {!! Form::select('actividad_id',$combos['actividades'], old('actividad_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
-                    </div>
-                     <!-- /.form-group -->
-                </div>
-
-                <div class="col-md-12">
-                    <div class="box-footer">
-                        <button type="button" class="btn btn-primary btn-sm">Actualizar</button>
-                    </div>
-                </div>
-                {!! Form::close() !!}
-            </div>
-        </div>
-    </div>
-    <div class="box box-default">
-        <div class="box-header with-border">
-            <h3 class="box-title">Factores de Riesgos</h3>
-            <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-            </div>
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            @include('flash::message')
-            <div class="row">
-               <div class="col-md-12">
-                    <div class="box-body table-responsive">
+       		@include('flash::message')
+          	<div class="row">
+            	{!! Form::open(['class' => '','method' => 'POST','route' => 'especialidades.store','role' => 'form']) !!}
+              	<div class="col-md-12">
+                	<div class="box-body table-responsive">
                         <table id="example2" class="table table-bordered table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Tipo de Factor</th>
-                                    <th>Descripción</th>
-                                    <th>Tiempo de Exposición</th>
-                                    <th>Medidas de Control</th>
-                                    <th>Quitar</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+                      		<thead>
+                        		<tr>
+    								<th>Enfermadad</th>
+    								<th>Observación</th>
+    								<th>Familiar</th>
+    								<th>Personal</th>
+    								<th>Quitar</th>
+                        		</tr>
+                      		</thead>
+                      		<tbody>
+                      		</tbody>
+                	   </table>
                     </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="box-footer">
-                        <button type="button" data-toggle="modal" href="#myAlert2" class="btn btn-primary btn-sm open-modal">Agregar Factor de Riesgo</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+              	</div>
+              	<div class="col-md-12">
+                	<div class="box-footer">
+                      	<button type="button" data-toggle="modal" href="#myAlert2" class="btn btn-primary btn-sm open-modal">Agregar Patología</button>
+                  	</div>
+              	</div>
+            	{!! Form::close() !!}
+             </div>
+            <!-- /.col -->
+      	</div>
+          <!-- /.row -->
     </div>
+        <!-- /.box-body -->
 
-    <div class="modal fade"  id="myAlert2" tabindex="-1">
+	<div class="modal fade"  id="myAlert2" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Agregando Factor de Riesgo</h4>
+                    <h4 class="modal-title">Agregando Factores de Riesgos</h4>
                 </div>
                 <div class="modal-body">
                     <div class="col-md-12">
@@ -176,4 +136,5 @@
         </div>
     </div>
 
-  @endsection
+	
+ @endsection   

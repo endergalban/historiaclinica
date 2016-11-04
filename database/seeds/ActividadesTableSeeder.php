@@ -13,6 +13,9 @@ class ActividadesTableSeeder extends Seeder
     public function run()
     {
         $actividad= New Actividad;
+        $actividad->descripcion = 'N/A';
+        $actividad->save();
+        $actividad= New Actividad;
     	$actividad->descripcion = 'Sentado';
 		$actividad->save();
 		$actividad= New Actividad;

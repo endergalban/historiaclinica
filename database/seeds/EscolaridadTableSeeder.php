@@ -13,6 +13,8 @@ class EscolaridadTableSeeder extends Seeder
     public function run()
     {
         $escolaridad= New Escolaridad;
+        $escolaridad->descripcion = 'N/A';
+        $escolaridad->save();$escolaridad= New Escolaridad;
     	$escolaridad->descripcion = 'Analfabeta';
 		$escolaridad->save();$escolaridad= New Escolaridad;
     	$escolaridad->descripcion = 'Primaria';

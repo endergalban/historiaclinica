@@ -12,14 +12,14 @@ class Tipo_examen_visual extends Model
     protected $table = 'tipo_examen_visuales';
 
 	protected $fillable = [
-        'ojo_id','descripcion',
+        'descripcion',
     ];
 
     protected $dates = ['deleted_at'];
 
-    public function ojo()
+    public function examen_visuales()
     {
-        return $this->belongsTo('App\Ojo','ojo_id');
+        return $this->hasMany('App\Examen_visual','tipo_examen_visual_id');
     }
 
     

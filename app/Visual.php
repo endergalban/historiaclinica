@@ -12,7 +12,7 @@ class Visual extends Model
     protected $table = 'visuales';
 
 	protected $fillable = [
-        'historia_ocupacional_id','descripcion','tipo_examen_visual_id'
+        'historia_ocupacional_id','descripcion','examen_visual_id'
     ];
 
     protected $dates = ['deleted_at'];
@@ -22,9 +22,9 @@ class Visual extends Model
         return $this->belongsTo('App\Historia_ocupacional','historia_ocupacional_id');
     }
 
-    public function tipo_examen_visuales()
+    public function examen_visual()
     {
-        return $this->belongsTo('App\Tipo_examen_visual','tipo_examen_visual_id');
+        return $this->belongsTo('App\Examen_visual','examen_visual_id');
     }
 
 

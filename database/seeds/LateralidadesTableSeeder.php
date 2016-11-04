@@ -13,6 +13,8 @@ class LateralidadesTableSeeder extends Seeder
     public function run()
     {
         $lateralidad= New Lateralidad;
+        $lateralidad->descripcion = 'N/A';
+        $lateralidad->save();$lateralidad= New Lateralidad;
     	$lateralidad->descripcion = 'Diestro';
 		$lateralidad->save(); $lateralidad= New Lateralidad;
     	$lateralidad->descripcion = 'Zurdo';

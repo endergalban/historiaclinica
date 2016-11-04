@@ -15,7 +15,7 @@ class Ginecobstetrica extends Model
         'historia_ocupacional_id','fum','fuc','citologia','gravidez','partos','abortos','cesarias',
     ];
 
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at','fum','fuc'];
 
 	public function historia_ocupacional(){
 		return $this->belongsTo('App\Historia_ocupacional','historia_ocupacional_id');

@@ -18,6 +18,7 @@ class CreateGinecobstetricasTable extends Migration
             $table->integer('historia_ocupacional_id')->unsigned();$table->foreign('historia_ocupacional_id')->references('id')->on('historia_ocupacionales')->onDelete('restrict');
             $table->date('fum');
             $table->date('fuc');
+            $table->boolean('dismenorrea');
             $table->string('citologia');
             $table->integer('gravidez');
             $table->integer('partos');

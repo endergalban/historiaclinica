@@ -13,6 +13,8 @@ class TipoExamenesTableSeeder extends Seeder
     public function run()
     {
         $tipo_examen= New Tipo_examen;
+        $tipo_examen->descripcion = 'N/A';
+        $tipo_examen->save();$tipo_examen= New Tipo_examen;
     	$tipo_examen->descripcion = 'Ingreso';
 		$tipo_examen->save();$tipo_examen= New Tipo_examen;
     	$tipo_examen->descripcion = 'Periódico';

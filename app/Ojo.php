@@ -18,8 +18,8 @@ class Ojo extends Model
     protected $dates = ['deleted_at'];
 
 
-    public function tipo_examen_visuales()
+    public function examen_visuales()
     {
-        return $this->hasMany('App\Tipo_examen_visual','ojo_id');
+        return $this->hasMany('App\Examen_visual','ojo_id');
     }
 }

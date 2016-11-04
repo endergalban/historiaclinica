@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateVisualesTable extends Migration
+class CreateTipoDiagnosticosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreateVisualesTable extends Migration
      */
     public function up()
     {
-        Schema::create('visuales', function (Blueprint $table) {
+        Schema::create('tipo_diagnosticos', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('historia_ocupacional_id')->unsigned();$table->foreign('historia_ocupacional_id')->references('id')->on('historia_ocupacionales')->onDelete('restrict');
-            $table->integer('examen_visual_id')->unsigned();$table->foreign('examen_visual_id')->references('id')->on('examen_visuales')->onDelete('restrict');
+            $table->string('codigo',4);
             $table->string('descripcion');
             $table->softDeletes();
             $table->timestamps();
@@ -30,6 +29,6 @@ class CreateVisualesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('visuales');
+        Schema::dropIfExists('tipo_diagnosticos');
     }
 }

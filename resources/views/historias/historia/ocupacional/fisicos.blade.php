@@ -3,13 +3,13 @@
 @section('content-header')
      <h1>
         Historias
-        <small>Información Ocupacional Actual</small>
+        <small>Examen Físico</small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('home') }}"><i class="fa fa-home"></i> Escritorio</a></li>
         <li><a href="{{ route('historias.index') }}">Historias</a></li>
-        <li><a href="{{ route('historias.historia',[$paciente->id,'ocupacional',$medico->id]) }}">Historia Ocupacional</a></li>
-        <li class="active">Información Ocupacional Actual</li>
+        <li><a href="{{ route('historias.historia',[$paciente->id,'ocupacional',$medico->id]) }}">Examen Físico</a></li>
+        <li class="active">Examen Físico</li>
     </ol>
 @endsection
 
@@ -52,7 +52,7 @@
 <!--****************Información Ocupacional Actual****************-->
     <div class="box box-default">
         <div class="box-header with-border">
-            <h3 class="box-title">Información Ocupacional Actual</h3>
+            <h3 class="box-title">Examen Físico</h3>
             <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
             </div>
@@ -64,26 +64,39 @@
                 {!! Form::open(['class' => '','method' => 'POST','route' => 'especialidades.store','role' => 'form']) !!}
 
                 <div class="col-md-12">
-                    <div class="form-group col-md-8">
-                        {!! Form::label('empresa','Empresa') !!}
-                        {!! Form::text('empresa',$historia_ocupacional->empresa,['placeholder' => '','class'=>'form-control']) !!}
-                    </div>
-                </div>
-
-                <div class="col-md-12">
-                    <div class="form-group col-md-4">
-                        {!! Form::label('cargoactual','Cargo Actual') !!}
-                        {!! Form::text('cargoactual',old('cargoactual'),['placeholder' => '','class'=>'form-control']) !!}
+                    <div class="form-group col-md-1">
+                        {!! Form::label('peso','Peso') !!}
+                        {!! Form::text('peso',old('peso'),['placeholder' => '','class'=>'form-control']) !!}
                     </div>
 
-                    <div class="form-group col-md-4">
-                        {!! Form::label('turno_id','Turno') !!}
-                        {!! Form::select('turno_id',$combos['turnos'], old('turno_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
+                    <div class="form-group col-md-1">
+                        {!! Form::label('talla','Talla') !!}
+                        {!! Form::text('talla',old('talla'),['placeholder' => '','class'=>'form-control']) !!}
                     </div>
 
-                    <div class="form-group col-md-4">
-                        {!! Form::label('actividad_id','Actividad') !!}
-                        {!! Form::select('actividad_id',$combos['actividades'], old('actividad_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
+                    <div class="form-group col-md-1">
+                        {!! Form::label('imc','IMC') !!}
+                        {!! Form::text('imc',old('imc'),['placeholder' => '','class'=>'form-control']) !!}
+                    </div>
+
+                    <div class="form-group col-md-1">
+                        {!! Form::label('ta','TA') !!}
+                        {!! Form::text('ta',old('ta'),['placeholder' => '','class'=>'form-control']) !!}
+                    </div>
+
+                     <div class="form-group col-md-1">
+                        {!! Form::label('fc','FC') !!}
+                        {!! Form::text('fc',old('fc'),['placeholder' => '','class'=>'form-control']) !!}
+                    </div>
+
+                     <div class="form-group col-md-1">
+                        {!! Form::label('fr','FR') !!}
+                        {!! Form::text('fr',old('fr'),['placeholder' => '','class'=>'form-control']) !!}
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        {!! Form::label('lateralidad_id','Lateralidad') !!}
+                        {!! Form::select('lateralidad_id',$combos['lateralidades'], old('lateralidad_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
                     </div>
                      <!-- /.form-group -->
                 </div>
@@ -146,7 +159,7 @@
                     <div class="col-md-12">
                         <div class="form-group col-md-12">
                             {!! Form::label('factor_riesgo_id','Tipo de Riesgo') !!}
-                            {!! Form::select('factor_riesgo_id',$combos['factor_riesgos'], old('factor_riesgo_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
+                            
                         </div>
                     </div>
                     <div class="col-md-12">

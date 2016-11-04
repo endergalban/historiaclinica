@@ -13,6 +13,8 @@ class TurnosTableSeeder extends Seeder
     public function run()
     {
         $turno= New Turno;
+        $turno->descripcion = 'N/A';
+        $turno->save();$turno= New Turno;
     	$turno->descripcion = 'Diurno';
 		$turno->save();$turno= New Turno;
     	$turno->descripcion = 'Nocturno';

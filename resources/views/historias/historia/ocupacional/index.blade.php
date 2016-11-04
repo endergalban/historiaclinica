@@ -44,25 +44,23 @@
                 <thead>
                     <tr class="text-center">
                         <th>Fecha</th>
-                       <th>Tipo de Examen</th>
-                       <th>Peso</th>
-                       <th>Talla</th>
-                       <th>Cargo</th>
-                       <th>Acción</th>
+                        <th>Empresa</th>
+                        <th>Tipo de Examen</th>
+                        
+                        <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach( $historias as $historia )
                     <tr>
                         <td>{{ $historia->created_at }}</td>
+                        <td>{{ $historia->empresa }}</td>
                         <td>{{ $historia->tipo_examen->descripcion }}</td>
-                        <td>{{ $historia->peso }}</td>
-                        <td>{{ $historia->talla }}</td>
-                        <td>{{ $historia->cargoactual }}</td>
+                        
                         <td class="text-center">
                             <a href="{{ route('historias.show',$historia->id) }}"><span class="label label-primary">Mostrar</span></a>
-                            <a href="{{ route('historias.edit',$historia->id) }}" ><span class="label label-warning">Editar</span></a>
-                            <a data-toggle="modal" data-url="{{ route('historias.destroy',$historia->id) }}" class="open-modal label label-danger" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
+                            <a href="{{ route('historias.ocupacional.edit',[$paciente->id,$historia->id]) }}" ><span class="label label-warning">Editar</span></a>
+                            <a data-toggle="modal" data-url="{{ route('historias.destroy',$historia->id) }}" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
                         </td>
                     </tr>
                     @endforeach

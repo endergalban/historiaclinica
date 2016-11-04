@@ -12,11 +12,15 @@ class Diagnostico extends Model
 	protected $table = 'diagnosticos';
 
 	protected $fillable = [
-        'nombre','codigo','concepto',
+        'concepto','id_tipo_diagnostico'
     ];
     
     protected $dates = ['deleted_at'];
 
+    public function tipo_diagnostico()
+    {
+        return $this->belongs('App\Tipo_diagnostico','id_tipo_diagnostico');
+    }
 
     public function historia_ocupacionales()
     {

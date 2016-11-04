@@ -15,8 +15,8 @@ class CreateDiagnosticosTable extends Migration
     {
         Schema::create('diagnosticos', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('nombre');
-            $table->integer('codigo');
+            $table->integer('id_tipo_diagnostico')->unsigned();
+            $table->foreign('id_tipo_diagnostico')->references('id')->on('tipo_diagnosticos')->onDelete('restrict');
             $table->integer('concepto');
             $table->softDeletes();
             $table->timestamps();
