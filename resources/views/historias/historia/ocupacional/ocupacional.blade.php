@@ -27,7 +27,12 @@
                         <img class='profile-user-img img-responsive' src="{{ asset('images/users/'.$paciente->user->imagen) }}" />
                     </div>
                 </div>
-                <h3 class="box-title">{{ $paciente->user->primernombre.' '.$paciente->user->segundonombre.' '.$paciente->user->primerapellido.' '.$paciente->user->segundoapellido.' : '.$paciente->user->tipodocumento.' '.$paciente->user->numerodocumento }}</h3>
+                <div class="form-group col-md-12">
+                    <h3 class="box-title"><b>Paciente:</b> {{ $paciente->user->primernombre.' '.$paciente->user->segundonombre.' '.$paciente->user->primerapellido.' '.$paciente->user->segundoapellido.' : '.$paciente->user->tipodocumento.' '.$paciente->user->numerodocumento }}</h3>
+                </div>    
+                <div class="form-group col-md-12">
+                    <h3 class="box-title"><b>Médico:</b> {{ $medico->user->primernombre.' '.$medico->user->segundonombre.' '.$medico->user->primerapellido.' '.$medico->user->segundoapellido.' : '.$medico->user->tipodocumento.' '.$medico->user->numerodocumento }}</h3>
+                </div>
             </div>  
             <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
@@ -62,70 +67,61 @@
         <div class="box-body">
             @include('flash::message')
             <div class="row">
-                {!! Form::open(['class' => '','method' => 'POST','route' => 'especialidades.store','role' => 'form']) !!}
+                 {!! Form::open(['class' => '','method' => 'POST','route' => ['historias.ocupacional.edit.store',$paciente->id,$historia_ocupacional->id],'role' => 'form']) !!}
+                 {!! Form::hidden('historia_ocupacional_id', $historia_ocupacional->id) !!}
                 <div class="col-md-12">
                     <div class="form-group col-md-3">
                         {!! Form::label('tipo_examen_id','Tipo de Examen') !!}
-                        {!! Form::select('tipo_examen_id',$combos['tipo_examenes'], old('tipo_examen_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
+                        {!! Form::select('tipo_examen_id',$combos['tipo_examenes'], $resultados['tipo_examen_id'],['class' => 'form-control','style' => 'width: 100%']) !!}
                     </div>
 
                     <div class="form-group col-md-9">
                         {!! Form::label('empresa','Empresa') !!}
-                        {!! Form::text('empresa',old('empresa'),['placeholder' => '','class'=>'form-control']) !!}
+                        {!! Form::text('empresa',$resultados['empresa'],['placeholder' => '','class'=>'form-control']) !!}
                     </div>
+                </div>
+
+                 <div class="col-md-12">
+                    <div class="form-group col-md-4">
+                        {!! Form::label('empresa_id','EPS') !!}
+                         {!! Form::select('empresa_id',$combos['empresas'], $resultados['empresa_id'],['class' => 'form-control select2','style' => 'width: 100%','data-placeholder' => 'Seleccione' ]) !!}
+                        </div>
+                
+                    <div class="form-group col-md-4">
+                        {!! Form::label('arl_id','ARL') !!}
+                         {!! Form::select('arl_id',$combos['arls'], $resultados['arl_id'],['class' => 'form-control select2','style' => 'width: 100%','data-placeholder' => 'Seleccione' ]) !!}
+                        </div>
+                
+                    <div class="form-group col-md-4">
+                        {!! Form::label('afp_id','AFP') !!}
+                         {!! Form::select('afp_id',$combos['afps'], $resultados['afp_id'],['class' => 'form-control select2','style' => 'width: 100%','data-placeholder' => 'Seleccione' ]) !!}
+                        </div>
                 </div>
 
                 <div class="col-md-12">
                     <div class="form-group col-md-4">
                         {!! Form::label('escolaridad_id','Escolaridad') !!}
-                        {!! Form::select('escolaridad_id',$combos['escolaridades'], old('escolaridad_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
+                        {!! Form::select('escolaridad_id',$combos['escolaridades'],$resultados['escolaridad_id'],['class' => 'form-control','style' => 'width: 100%']) !!}
                     </div>
 
                     <div class="form-group col-md-4">
                         {!! Form::label('numerohijos','Nro. Hijos') !!}
-                        {!! Form::text('numerohijos',old('numerohijos'),['placeholder' => '','class'=>'form-control']) !!}
+                        {!! Form::text('numerohijos',$resultados['numerohijos'],['placeholder' => '','class'=>'form-control']) !!}
                     </div>
 
                     <div class="form-group col-md-4">
                         {!! Form::label('numeropersonascargo','Nro. Personas') !!}
-                        {!! Form::text('numeropersonascargo',old('numeropersonascargo'),['placeholder' => '','class'=>'form-control']) !!}
+                        {!! Form::text('numeropersonascargo',$resultados['numeropersonascargo'],['placeholder' => '','class'=>'form-control']) !!}
                     </div>
                 </div>
 
 
                <div class="col-md-12">
                     <div class="box-footer">
-                        <button type="button" data-toggle="modal" href="#myAlert3" class="btn btn-primary btn-sm open-modal">Actualizar</button>
+                        <button type="submit" class="btn btn-primary btn-sm open-modal">Actualizar</button>
                     </div>
                 </div>
-
                 {!! Form::close() !!}
-
-               
-
-            </div>
-        </div>
-    </div>
-
-
-
-
-  
-    <div class="modal fade"  id="myAlert" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Confirmación</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Esta seguro que desea continuar con la apertura de la historia ocupacional...? </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                    <a  class="btnsi"><button type="button" class="btn btn-primary">Si</button></a>
-                </div>
             </div>
         </div>
     </div>

@@ -13,7 +13,7 @@ class CreateExamenLabortatoriosTable extends Migration
      */
     public function up()
     {
-        Schema::create('examen_labortatorios', function (Blueprint $table) {
+        Schema::create('examen_laboratorios', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('historia_ocupacional_id')->unsigned();$table->foreign('historia_ocupacional_id')->references('id')->on('historia_ocupacionales')->onDelete('restrict');
             $table->string('examen');

@@ -25,9 +25,14 @@
                 <div class="col-md-12 no-padding">
                     <div class="form-group col-md-1">
                         <img class='profile-user-img img-responsive' src="{{ asset('images/users/'.$paciente->user->imagen) }}" />
-                    </div>
+                    </div> 
                 </div>
-                <h3 class="box-title">{{ $paciente->user->primernombre.' '.$paciente->user->segundonombre.' '.$paciente->user->primerapellido.' '.$paciente->user->segundoapellido.' : '.$paciente->user->tipodocumento.' '.$paciente->user->numerodocumento }}</h3>
+                <div class="form-group col-md-12">
+                    <h3 class="box-title"><b>Paciente:</b> {{ $paciente->user->primernombre.' '.$paciente->user->segundonombre.' '.$paciente->user->primerapellido.' '.$paciente->user->segundoapellido.' : '.$paciente->user->tipodocumento.' '.$paciente->user->numerodocumento }}</h3>
+                </div>    
+                <div class="form-group col-md-12">
+                    <h3 class="box-title"><b>Médico:</b> {{ $medico->user->primernombre.' '.$medico->user->segundonombre.' '.$medico->user->primerapellido.' '.$medico->user->segundoapellido.' : '.$medico->user->tipodocumento.' '.$medico->user->numerodocumento }}</h3>
+                </div>
             </div>  
             <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
@@ -65,13 +70,23 @@
                         <table id="example2" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>Código</th>
+                                    <th class="text-center">Código</th>
                                     <th>Nombre</th>
                                     <th>Concepto</th>
-                                    <th>Quitar</th>
+                                    <th class="text-center">Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
+                            @foreach($combos['diagnosticos'] as $diagnostico)
+                                 <tr>
+                                    <td class="text-center">{{ $diagnostico->tipo_diagnostico->codigo }}</td>
+                                    <td>{{ $diagnostico->tipo_diagnostico->descripcion }}</td>
+                                    <td>{{ $diagnostico->concepto }}</td>
+                                    <td class="text-center">
+                                        <a data-toggle="modal" data-url="{{ route('historias.ocupacional.diagnosticos.destroy',[$paciente->id,$historia_ocupacional->id,$diagnostico->id]) }}" class="open-modal" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
+                                    </td>
+                                </tr>
+                            @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -83,7 +98,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> 
 
     <div class="modal fade"  id="myAlert2" tabindex="-1">
         <div class="modal-dialog">
@@ -93,11 +108,13 @@
                     <span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">Agregando Diagnóstico Médico</h4>
                 </div>
+                 {!! Form::open(['class' => '','method' => 'POST','route' => ['historias.ocupacional.diagnosticos.store',$paciente->id,$historia_ocupacional->id],'role' => 'form']) !!}
+                 {!! Form::hidden('historia_ocupacional_id', $historia_ocupacional->id) !!}
                 <div class="modal-body">
                     <div class="col-md-12">
                         <div class="form-group col-md-12">
-                            {!! Form::label('id_tipo_diagnostico','Diagnóstico') !!}
-                            {!! Form::select('id_tipo_diagnostico',$combos['tipo_diagnosticos'], old('id_tipo_diagnostico'),['class' => 'form-control','style' => 'width: 100%']) !!}
+                            {!! Form::label('tipo_diagnostico_id','Diagnóstico') !!}
+                            {!! Form::select('tipo_diagnostico_id',$combos['tipo_diagnosticos'], old('tipo_diagnostico_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
                         </div>
                     </div>
                     
@@ -109,11 +126,30 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Agregar</button>
+                    <button type="submit" class="btn btn-default">Agregar</button>
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
                 </div>
+                {!! Form::close() !!}
             </div>
         </div>
     </div>
 
+    <div class="modal fade"  id="myAlert" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Confirmación</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Esta seguro que desea continuar con la operación...? </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <a  class="btnsi"><button type="button" class="btn btn-primary">Si</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
   @endsection

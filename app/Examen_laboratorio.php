@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 
-class Examen_labortatorio extends Model
+class Examen_laboratorio extends Model
 {
     use SoftDeletes;
 

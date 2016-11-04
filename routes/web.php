@@ -74,11 +74,18 @@ Route::group(['middleware' => 'roles','site'=>'especialidades'], function () {
 /*Historias*/
 Route::group(['middleware' => 'roles','site'=>'pacientes'], function () {
 	Route::resource('historias','HistoriasController',['except' => ['delete']]);
-	Route::get('historias/{id}/destroy',['uses'=>'HistoriasController@destroy','as'=>'historias.destroy']);
-	Route::get('historias/{id}/{tipo}/{medico_id?}',['uses'=>'HistoriasController@historia','as'=>'historias.historia']);
-	Route::get('historias/{id}/ocupacional/{medico_paciente}/create',['uses'=>'HistoriasController@ocupacional_create','as'=>'historias.ocupacional.create']);
-	Route::get('historias/{id}/ocupacional/{medico_paciente}/edit',['uses'=>'HistoriasController@ocupacional_edit','as'=>'historias.ocupacional.edit']);
+	Route::get('historias/{id}/ocupacional/{medico_id}/{historia_ocupacional_id}/destroy',['uses'=>'HistoriasController@destroy_ocupacional','as'=>'historias.destroy_ocupacional']);
 
+
+	Route::get('historias/{id}/{tipo}/{medico_id?}',['uses'=>'HistoriasController@historia','as'=>'historias.historia']);
+
+	Route::get('historias/{id}/ocupacional/{medico_paciente}/create',['uses'=>'HistoriasController@ocupacional_create','as'=>'historias.ocupacional.create']);
+
+	//DATOS DEL PACIENTE
+	Route::get('historias/{id}/ocupacional/{medico_paciente}/edit',['uses'=>'HistoriasController@ocupacional_edit','as'=>'historias.ocupacional.edit']);
+	Route::post('historias/{id}/ocupacional/{medico_paciente}/edit/store',['uses'=>'HistoriasController@ocupacional_edit_store','as'=>'historias.ocupacional.edit.store']);
+	
+	//ANTECEDENTES
 	Route::get('historias/{id}/ocupacional/{medico_paciente}/antecedentes',['uses'=>'HistoriasController@ocupacional_antecedentes','as'=>'historias.ocupacional.antecedentes']);
 	Route::post('historias/{id}/ocupacional/{medico_paciente}/antecedentes/store',['uses'=>'HistoriasController@ocupacional_antecedentes_store','as'=>'historias.ocupacional.antecedentes.store']);
 	Route::get('historias/{id}/ocupacional/{medico_paciente}/antecedentes/{antecedente_ocupacional_id}/destroy',['uses'=>'HistoriasController@ocupacional_antecedentes_destroy','as'=>'historias.ocupacional.antecedentes.destroy']);
@@ -87,8 +94,16 @@ Route::group(['middleware' => 'roles','site'=>'pacientes'], function () {
 	Route::get('historias/{id}/ocupacional/{medico_paciente}/patologias',['uses'=>'HistoriasController@ocupacional_patologias','as'=>'historias.ocupacional.patologias']);
 	Route::get('historias/{id}/ocupacional/{medico_paciente}/actual',['uses'=>'HistoriasController@ocupacional_actual','as'=>'historias.ocupacional.actual']);
 	Route::get('historias/{id}/ocupacional/{medico_paciente}/fisicos',['uses'=>'HistoriasController@ocupacional_fisicos','as'=>'historias.ocupacional.fisicos']);
+
+	//EXAMENES DE LABORATORIO
 	Route::get('historias/{id}/ocupacional/{medico_paciente}/examenes',['uses'=>'HistoriasController@ocupacional_examenes','as'=>'historias.ocupacional.examenes']);
+	Route::post('historias/{id}/ocupacional/{medico_paciente}/examenes/store',['uses'=>'HistoriasController@ocupacional_examenes_store','as'=>'historias.ocupacional.examenes.store']);
+	Route::get('historias/{id}/ocupacional/{medico_paciente}/examenes/{antecedente_ocupacional_id}/destroy',['uses'=>'HistoriasController@ocupacional_examenes_destroy','as'=>'historias.ocupacional.examenes.destroy']);
+
+	//DIAGNOSTICOS
 	Route::get('historias/{id}/ocupacional/{medico_paciente}/diagnosticos',['uses'=>'HistoriasController@ocupacional_diagnosticos','as'=>'historias.ocupacional.diagnosticos']);
+	Route::post('historias/{id}/ocupacional/{medico_paciente}/diagnosticos/store',['uses'=>'HistoriasController@ocupacional_diagnosticos_store','as'=>'historias.ocupacional.diagnosticos.store']);
+	Route::get('historias/{id}/ocupacional/{medico_paciente}/diagnosticos/{antecedente_ocupacional_id}/destroy',['uses'=>'HistoriasController@ocupacional_diagnosticos_destroy','as'=>'historias.ocupacional.diagnosticos.destroy']);
 });
 
  						

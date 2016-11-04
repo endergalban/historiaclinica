@@ -27,7 +27,12 @@
                         <img class='profile-user-img img-responsive' src="{{ asset('images/users/'.$paciente->user->imagen) }}" />
                     </div>
                 </div>
-                <h3 class="box-title">{{ $paciente->user->primernombre.' '.$paciente->user->segundonombre.' '.$paciente->user->primerapellido.' '.$paciente->user->segundoapellido.' : '.$paciente->user->tipodocumento.' '.$paciente->user->numerodocumento }}</h3>
+                <div class="form-group col-md-12">
+                    <h3 class="box-title"><b>Paciente:</b> {{ $paciente->user->primernombre.' '.$paciente->user->segundonombre.' '.$paciente->user->primerapellido.' '.$paciente->user->segundoapellido.' : '.$paciente->user->tipodocumento.' '.$paciente->user->numerodocumento }}</h3>
+                </div>    
+                <div class="form-group col-md-12">
+                    <h3 class="box-title"><b>Médico:</b> {{ $medico->user->primernombre.' '.$medico->user->segundonombre.' '.$medico->user->primerapellido.' '.$medico->user->segundoapellido.' : '.$medico->user->tipodocumento.' '.$medico->user->numerodocumento }}</h3>
+                </div>
             </div>  
             <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
@@ -156,7 +161,7 @@
     								<th>Observación</th>
     								<th>Familiar</th>
     								<th>Personal</th>
-    								<th>Quitar</th>
+    								<th class="text-center">Acción</th>
                         		</tr>
                       		</thead>
                       		<tbody>
@@ -245,7 +250,7 @@
                                     <th>Vacuna</th>
                                     <th>Fecha</th>
                                     <th>Dosis</th>
-                                    <th>Quitar</th>
+                                    <th class="text-center">Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
