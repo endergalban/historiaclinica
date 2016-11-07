@@ -1,15 +1,15 @@
-<?php
+	<?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| This file is where you may define all of the routes that are handled
-| by your application. Just tell Laravel the URIs it should respond
-| to using a Closure or controller method. Build something great!
-|
-*/
+	/*
+	|--------------------------------------------------------------------------
+	| Web Routes
+	|--------------------------------------------------------------------------
+	|
+	| This file is where you may define all of the routes that are handled
+	| by your application. Just tell Laravel the URIs it should respond
+	| to using a Closure or controller method. Build something great!
+	|
+	*/
 
 
 Route::group(['middleware' => 'roles','site'=>'home'], function () {
@@ -46,8 +46,8 @@ Route::group(['middleware' => 'roles','site'=>'citas'], function () {
 
 	Route::resource('citas','CitasController',['except' => ['delete','show']]);
 	Route::get('citas/{id}/destroy',['uses'=>'CitasController@destroy','as'=>'citas.destroy']);
-  Route::get('CargarCitas(id?)','CitasController@index');
-  Route::post('guardarcita', array('as'=> 'guardarcita', 'uses'=> 'CitasController@create'));
+  	Route::get('CargarCitas(id?)','CitasController@index');
+  	Route::post('guardarcita', array('as'=> 'guardarcita', 'uses'=> 'CitasController@create'));
 
 
 });
@@ -75,7 +75,7 @@ Route::group(['middleware' => 'roles','site'=>'especialidades'], function () {
 });
 
 /*Historias*/
-Route::group(['middleware' => 'roles','site'=>'pacientes'], function () {
+Route::group(['middleware' => 'roles','site'=>'historias'], function () {
 	Route::resource('historias','HistoriasController',['except' => ['delete']]);
 	Route::get('historias/{id}/ocupacional/{medico_id}/{historia_ocupacional_id}/destroy',['uses'=>'HistoriasController@destroy_ocupacional','as'=>'historias.destroy_ocupacional']);
 
@@ -93,10 +93,30 @@ Route::group(['middleware' => 'roles','site'=>'pacientes'], function () {
 	Route::post('historias/{id}/ocupacional/{medico_paciente}/antecedentes/store',['uses'=>'HistoriasController@ocupacional_antecedentes_store','as'=>'historias.ocupacional.antecedentes.store']);
 	Route::get('historias/{id}/ocupacional/{medico_paciente}/antecedentes/{antecedente_ocupacional_id}/destroy',['uses'=>'HistoriasController@ocupacional_antecedentes_destroy','as'=>'historias.ocupacional.antecedentes.destroy']);
 
-
+	//PATOLOGIAS
 	Route::get('historias/{id}/ocupacional/{medico_paciente}/patologias',['uses'=>'HistoriasController@ocupacional_patologias','as'=>'historias.ocupacional.patologias']);
+	Route::post('historias/{id}/ocupacional/{medico_paciente}/patologias/store_vacuna',['uses'=>'HistoriasController@ocupacional_patologias_store_vacuna','as'=>'historias.ocupacional.patologias.store_vacuna']);
+	Route::post('historias/{id}/ocupacional/{medico_paciente}/patologias/store_enfermedad',['uses'=>'HistoriasController@ocupacional_patologias_store_enfermedad','as'=>'historias.ocupacional.patologias.store_enfermedad']);
+	Route::post('historias/{id}/ocupacional/{medico_paciente}/patologias/store_ginecobstetrica',['uses'=>'HistoriasController@ocupacional_patologias_store_ginecobstetrica','as'=>'historias.ocupacional.patologias.store_ginecobstetrica']);
+	Route::post('historias/{id}/ocupacional/{medico_paciente}/patologias/store_habitos',['uses'=>'HistoriasController@ocupacional_patologias_store_habitos','as'=>'historias.ocupacional.patologias.store_habitos']);
+
+	Route::get('historias/{id}/ocupacional/{medico_paciente}/patologias/{inmunizaciones_id}/destroy_enfermedad',['uses'=>'HistoriasController@ocupacional_patologias_destroy_enfermedad','as'=>'historias.ocupacional.patologias.destroy_enfermedad']);
+	Route::get('historias/{id}/ocupacional/{medico_paciente}/patologias/{patologico_id}/destroy_vacuna',['uses'=>'HistoriasController@ocupacional_patologias_destroy_vacuna','as'=>'historias.ocupacional.patologias.destroy_vacuna']);
+
+	//OCUPACION ACTUAL
 	Route::get('historias/{id}/ocupacional/{medico_paciente}/actual',['uses'=>'HistoriasController@ocupacional_actual','as'=>'historias.ocupacional.actual']);
+	Route::post('historias/{id}/ocupacional/{medico_paciente}/actual/store',['uses'=>'HistoriasController@ocupacional_actual_store','as'=>'historias.ocupacional.actual.store']);
+	Route::post('historias/{id}/ocupacional/{medico_paciente}/actual/store_factor',['uses'=>'HistoriasController@ocupacional_actual_store_factor','as'=>'historias.ocupacional.actual.store_factor']);
+	Route::get('historias/{id}/ocupacional/{medico_paciente}/actual/{antecedente_ocupacional_id}/destroy_factor',['uses'=>'HistoriasController@ocupacional_actual_destroy_factor','as'=>'historias.ocupacional.actual.destroy_factor']);
+
+
+	//EXAMENES DE FISICOS
 	Route::get('historias/{id}/ocupacional/{medico_paciente}/fisicos',['uses'=>'HistoriasController@ocupacional_fisicos','as'=>'historias.ocupacional.fisicos']);
+	Route::post('historias/{id}/ocupacional/{medico_paciente}/fisicos/store',['uses'=>'HistoriasController@ocupacional_fisicos_store','as'=>'historias.ocupacional.fisicos.store']);
+	Route::post('historias/{id}/ocupacional/{medico_paciente}/fisicos/store_exploracion',['uses'=>'HistoriasController@ocupacional_fisicos_store_exploracion','as'=>'historias.ocupacional.fisicos.store_exploracion']);
+	Route::post('historias/{id}/ocupacional/{medico_paciente}/fisicos/store_visual',['uses'=>'HistoriasController@ocupacional_fisicos_store_visual','as'=>'historias.ocupacional.fisicos.store_visual']);
+
+	
 
 	//EXAMENES DE LABORATORIO
 	Route::get('historias/{id}/ocupacional/{medico_paciente}/examenes',['uses'=>'HistoriasController@ocupacional_examenes','as'=>'historias.ocupacional.examenes']);

@@ -4,8 +4,36 @@
 		"selected_items":
 		[
 			[
+				"enfermedad",
+				"enfermedad_id"
+			],
+			[
+				"req",
+				"request"
+			],
+			[
+				"Tipo_Examen",
+				"Tipo_examen_visual"
+			],
+			[
+				"tipo",
+				"tipo_examen_visual"
+			],
+			[
+				"Exame",
+				"Examen_fisico"
+			],
+			[
+				"numero",
+				"numerohijos"
+			],
+			[
+				"num",
+				"numerohijos"
+			],
+			[
 				"historia",
-				"historia_ocupacional"
+				"historia_ocupacional_id"
 			],
 			[
 				"Histo",
@@ -22,10 +50,6 @@
 			[
 				"medico",
 				"medico_paciente"
-			],
-			[
-				"tipo",
-				"tipo_examen"
 			],
 			[
 				"is_n",
@@ -72,28 +96,22 @@
 	"buffers":
 	[
 		{
+			"contents": "<?php\n\nnamespace App\\Http\\Controllers;\n\nuse Illuminate\\Http\\Request;\nuse Validator;\nuse Illuminate\\Validation\\Rule;\nuse App\\Http\\Requests;\nuse Image;\nuse App\\User;\nuse App\\Medico;\nuse App\\Asistente;\nuse App\\Historia_ocupacional;\nuse Carbon\\Carbon;\nuse App\\Paciente;\nuse App\\Medico_paciente;\nuse App\\Escolaridad;\nuse App\\Tipo_examen;\nuse App\\Tipo_factor_riesgo;\nuse App\\Factor_riesgo;\nuse App\\Enfermedad;\nuse App\\Turno;\nuse App\\Actividad;\nuse App\\Tiempo_fumador;\nuse App\\Cantidad_fumador;\nuse App\\Tiempo_licor;\nuse App\\Regularidad_medicamento;\nuse App\\Empresa;\nuse App\\Arl;\nuse App\\Afp;\nuse App\\Diagnostico;\nuse App\\Tipo_diagnostico;\nuse App\\Lateralidad;\nuse App\\Examen_visual;\nuse App\\Tipo_examen_visual;\nuse App\\Ojo;\nuse App\\Tipo_organo;\nuse App\\Organo;\nuse App\\Antecedente_ocupacional;\nuse App\\Examen_laboratorio;\nuse App\\Examen_fisico;\nuse App\\Exploracion;\nuse App\\Visual;\nuse App\\Ocupacional_actual;\nuse App\\Ocupacional_actual_factor_riesgo;\nuse App\\Inmunizacion;\nuse App\\Patologico;\nuse Auth;\n\nclass HistoriasController extends Controller\n{\n    /**\n     * Display a listing of the resource.\n     *\n     * @return \\Illuminate\\Http\\Response\n     */\n    public function index(Request $request)\n    {\n        $users=User::ofType($request->search)->has('paciente')->orderby('numerodocumento','ASC')->paginate(15);\n        $role = User::find(Auth::user()->id)->roles()->pluck('descripcion');\n\n        if($role->contains('medico')){\n            $medico=Medico::has('user')->where('user_id',Auth::user()->id)->first();\n            $medicos=$medico->id;\n\n        }elseif($role->contains('asistente')){\n\n            $Asistente=Asistente::where(['user_id'=>Auth::user()->id])->first();\n            $querymedicos = Asistente::find($Asistente->id)->medicos();\n            if($querymedicos->count()==0){\n                flash('No estas asignado(a) a ningún médico dentro del sistema!', 'danger');\n                return redirect()->route('home');\n\n            }elseif($querymedicos->count()==1){\n                $medicos=$querymedicos->first()->id;\n              \n            }else{\n                foreach ($querymedicos->with('user')->get() as $medico) {\n                    $medicos[$medico->id]=$medico->user->tipodocumento.' '.$medico->user->numerodocumento\n                    .' '.$medico->user->primerapellido.' '.$medico->user->primernombre;\n                }\n            }\n         \n        }elseif($role->contains('administrador')){\n          \n            $querymedicos=Medico::with('user.roles');\n            if($querymedicos->count()==0){\n\n                flash('No existen médicos registrados en el sistema!', 'danger');\n                return redirect()->route('home');\n               \n            }elseif($querymedicos->count()==1){\n\n                $medicos=$querymedicos->first()->id;\n\n            }else{\n                \n                foreach ($querymedicos->get() as $medico) {\n                    $medicos[$medico->id]=$medico->user->tipodocumento.' '.$medico->user->numerodocumento.' '.$medico->user->primerapellido.' '.$medico->user->primernombre;\n                }\n            }\n        }else{\n            flash('No tiene permiso de entrar a esta área, por favor contacte al administrador!', 'danger');\n            return redirect()->route('home');\n        }\n         \n        return  view('historias.index')->with(['users'=>$users,'medicos'=>$medicos ]);\n    }\n\n    /**\n     * Show the form for creating a new resource.\n     *\n     * @return \\Illuminate\\Http\\Response\n     */\n   \n\n    /**\n     * Store a newly created resource in storage.\n     *\n     * @param  \\Illuminate\\Http\\Request  $request\n     * @return \\Illuminate\\Http\\Response\n     */\n    public function store(Request $request)\n    {\n        //\n    }\n\n    /**\n     * Display the specified resource.\n     *\n     * @param  int  $id\n     * @return \\Illuminate\\Http\\Response\n     */\n    public function show($id)\n    {\n        //\n    }\n\n    /**\n     * Show the form for editing the specified resource.\n     *\n     * @param  int  $id\n     * @return \\Illuminate\\Http\\Response\n     */\n    public function edit($id)\n    {\n        $user=User::with('municipio.departamento.pais')->with('paciente')->where('id',$id)->first();\n        return  view('historias.edit')->with(['user' => $user]);\n    }\n\n\n    /**\n     * Update the specified resource in storage.\n     *\n     * @param1  paciente_id\n     * @param2  int  $id\n     * @param3 \\Illuminate\\Http\\Response\n     */\n\n    public function historia($paciente_id,$especialidad_id,$medico_id)\n    {\n        if($especialidad_id=='ocupacional'){\n             $especialidad_id=1;\n        }elseif($especialidad_id=='ginecologia'){\n            $especialidad_id=2;\n        }elseif($especialidad_id=='pediatria'){\n            $especialidad_id=3;\n        }\n\n       \n\n        $medico_paciente = Medico_paciente::where(['paciente_id' => $paciente_id,'especialidad_id' => $especialidad_id,'medico_id' => $medico_id] )->first();\n\n        $paciente = Paciente::where(['id'=>$paciente_id])->with('user')->first();\n        $medico = Medico::where(['id'=> $medico_id])->with('user')->first();\n\n        if(is_null($medico_paciente)){\n\n            $medico_paciente= new Medico_paciente;\n            $medico_paciente->paciente()->associate($paciente_id);\n            $medico_paciente->medico()->associate($medico_id);\n            $medico_paciente->especialidad_id=$especialidad_id;\n            $medico_paciente->save();\n        }\n\n         $historias=Historia_ocupacional::with('tipo_examen')->where('medico_paciente_id',$medico_paciente->id)->get();\n         \n\n        if($especialidad_id==1){\n\n            return view('historias.historia.ocupacional.index')->with(['medico' => $medico,'paciente' => $paciente,'medico_paciente' => $medico_paciente,'historias' => $historias]);\n\n            \n        }elseif($especialidad_id==2){\n            echo \"Ginecologia\";\n\n        }elseif($especialidad_id==3){\n\n            echo \"Pediatria\";\n        }\n\n    }\n\n     /**\n     * Remove the specified resource from storage.\n     *\n     * @param  int  $id\n     * @return \\Illuminate\\Http\\Response\n     */\n    public function destroy_ocupacional($paciente_id,$medico_id,$historia_ocupacional_id)\n    {\n        $historia_ocupacional = Historia_ocupacional::findOrFail($historia_ocupacional_id);\n        $historia_ocupacional->delete();\n       \n        flash('La historia ocupacional se ha eliminado de forma exitosa!', 'danger');\n        return redirect()->route('historias.historia',[$paciente_id,'ocupacional',$medico_id]);\n    }\n\n\n    public function ocupacional_create($paciente_id,$medico_paciente_id)\n    {\n\n        $medico_paciente = Medico_paciente::where(['id' => $medico_paciente_id] )->with('paciente')->first();\n       \n        $historia_ocupacional= new Historia_ocupacional;\n        $historia_ocupacional->medico_paciente()->associate($medico_paciente);\n        $historia_ocupacional->escolaridad()->associate(1);\n        $historia_ocupacional->tipo_examen()->associate(1);\n        $historia_ocupacional->empresa()->associate($medico_paciente->paciente->empresa_id);\n        $historia_ocupacional->arl()->associate($medico_paciente->paciente->arl_id);\n        $historia_ocupacional->afp()->associate($medico_paciente->paciente->afp_id);\n        $historia_ocupacional->numerohijos=0;\n        $historia_ocupacional->numeropersonascargo=0;\n        $historia_ocupacional->empresa='';\n        $historia_ocupacional->save();\n      \n       return redirect()->route('historias.ocupacional.edit',[$medico_paciente->paciente_id,$historia_ocupacional->id]);\n    }\n\n\n    public function ocupacional_edit($paciente_id,$historia_ocupacional_id)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();\n        $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();\n        $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();\n\n        $combos=array();\n        $empresas=Empresa::all()->sortBy('descripcion')->pluck('descripcion', 'id');\n        $arls=Arl::all()->sortBy('descripcion')->pluck('descripcion', 'id');\n        $afps=Afp::all()->sortBy('descripcion')->pluck('descripcion', 'id');\n        $tipo_examenes = Tipo_examen::all()->sortBy('descripcion')->pluck('descripcion','id')->prepend('N/A', 1);\n        $escolaridades = Escolaridad::all()->sortBy('descripcion')->pluck('descripcion','id')->prepend('N/A', 1);\n        $combos=['tipo_examenes' => $tipo_examenes,'escolaridades' => $escolaridades,'empresas' => $empresas,'arls' => $arls,'afps' => $afps];\n\n        $resultados=[\n            'tipo_examen_id' =>  $historia_ocupacional->tipo_examen_id,\n            'empresa' => $historia_ocupacional->empresa,\n            'empresa_id' => $historia_ocupacional->empresa_id,\n            'arl_id' => $historia_ocupacional->arl_id,\n            'afp_id' => $historia_ocupacional->afp_id,\n            'escolaridad_id' => $historia_ocupacional->escolaridad_id,\n            'numerohijos' => $historia_ocupacional->numerohijos,\n            'numeropersonascargo' => $historia_ocupacional->numeropersonascargo\n        ];\n\n        return  view('historias.historia.ocupacional.ocupacional')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional,'combos'=>$combos,'resultados'=> $resultados ]);\n    }\n    public function ocupacional_edit_store(Request $request)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();\n        \n         $validator = Validator::make($request->all(), [\n            'tipo_examen_id' => 'required|exists:tipo_examenes,id',\n            'empresa' => 'required|string|max:100', \n            'empresa_id' => 'required|exists:empresas,id',\n            'arl_id' => 'required|exists:arls,id',\n            'afp_id' => 'required|exists:afps,id',\n            'escolaridad_id' => 'required|exists:escolaridades,id',  \n            'numerohijos' => 'required|integer|max:20',\n            'numeropersonascargo' => 'required|integer|max:100',\n        ]);\n        if ($validator->fails()) {\n            flash(implode('<br>',$validator->errors()->all()), 'danger');\n            return redirect()->route('historias.ocupacional.edit',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id]);\n        }else{\n            \n            $historia_ocupacional->empresa=$request->empresa;\n            $historia_ocupacional->numeropersonascargo=$request->numeropersonascargo;\n            $historia_ocupacional->numerohijos=$request->numerohijos;\n          \n            $historia_ocupacional->tipo_examen()->associate($request->tipo_examen_id);\n            $historia_ocupacional->escolaridad()->associate($request->escolaridad_id);\n            $historia_ocupacional->empresa()->associate($request->empresa_id);\n            $historia_ocupacional->arl()->associate($request->arl_id);\n            $historia_ocupacional->afp()->associate($request->afp_id);\n            $historia_ocupacional->save();\n\n\n            flash('La actualización se realizó de forma exitosa!', 'success');\n            return redirect()->route('historias.ocupacional.edit',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id]);\n        }\n    }\n\n  \n    //PATOLOGIAS\n    public function ocupacional_patologias($paciente_id,$historia_ocupacional_id)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();\n        $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();\n        $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();\n\n        $combos=array();\n        $tiempo_fumadores = Tiempo_fumador::all()->sortBy('id')->pluck('descripcion','id');\n        $cantidad_fumadores = Cantidad_fumador::all()->sortBy('id')->pluck('descripcion','id');\n        $tiempo_licores = Tiempo_licor::all()->sortBy('id')->pluck('descripcion','id');\n        $regularidad_medicamentos = Regularidad_medicamento::all()->sortBy('id')->pluck('descripcion','id');\n        $enfermedades = Enfermedad::all()->sortBy('descripcion')->pluck('descripcion','id');\n        $combos=['enfermedades' => $enfermedades,'tiempo_fumadores' => $tiempo_fumadores,'cantidad_fumadores' => $cantidad_fumadores,'tiempo_licores' => $tiempo_licores,'regularidad_medicamentos' => $regularidad_medicamentos];\n\n        \n        $enfermedades = Patologico::where(['historia_ocupacional_id'=> $historia_ocupacional->id])->with('enfermedad')->get();\n        $inmunizaciones = Inmunizacion::where(['historia_ocupacional_id'=> $historia_ocupacional->id])->get();\n        $datos=['enfermedades'=>$enfermedades,'inmunizaciones'=>$inmunizaciones];\n\n        return  view('historias.historia.ocupacional.patologias')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional,'combos'=>$combos,'datos'=>$datos ]);\n    }\n\n     public function Ocupacional_patologias_store_enfermedad(Request $request)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();\n\n\n        $validator = Validator::make($request->all(), [\n            'enfermedad_id' => 'required|exists:enfermedades,id', \n            'familiar' => 'required',    \n            'personal' => 'required',   \n            'observacion' => 'required|string|max:500',   \n            \n        ]);\n        if ($validator->fails()) {\n            flash(implode('<br>',$validator->errors()->all()), 'danger');\n            return redirect()->route('historias.ocupacional.patologias',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id])->withInput();\n        }else{\n\n            if($request->familiar=='on'){$familiar=true;}else{$familiar=false;}\n            if($request->personal=='on'){$personal=true;}else{$personal=false;}\n            $Patologico=new Patologico;\n            $Patologico->familiar=$familiar;\n            $Patologico->personal=$personal;\n            $Patologico->observacion=$request->observacion;\n            $Patologico->enfermedad()->associate($request->enfermedad_id);\n            $Patologico->historia_ocupacional()->associate($historia_ocupacional);\n            $Patologico->save();\n            flash('Se ha registrado la información de forma exitosa!', 'success');\n            return redirect()->route('historias.ocupacional.patologias',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id]);\n        }\n    }\n\n    public function Ocupacional_patologias_store_vacuna(Request $request)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();\n\n\n        $validator = Validator::make($request->all(), [\n            'vacuna' => 'required|string|max:250', \n            'fecha' => 'required|date_format:d/m/Y',    \n            'dosis' => 'required|string|max:250',   \n            \n        ]);\n        if ($validator->fails()) {\n            flash(implode('<br>',$validator->errors()->all()), 'danger');\n            return redirect()->route('historias.ocupacional.patologias',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id])->withInput();\n        }else{\n\n           \n            $Inmunizacion=new Inmunizacion;\n            $Inmunizacion->vacuna=$request->vacuna;\n            $Inmunizacion->dosis=$request->dosis;\n            $Inmunizacion->fecha=Carbon::createFromFormat('d/m/Y',$request->fecha);\n            $Inmunizacion->historia_ocupacional()->associate($historia_ocupacional);\n            $Inmunizacion->save();\n            flash('Se ha registrado la información de forma exitosa!', 'success');\n            return redirect()->route('historias.ocupacional.patologias',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id]);\n        }\n    }\n\n    public function Ocupacional_patologias_store_enfermedad(Request $request)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();\n\n\n        $validator = Validator::make($request->all(), [\n            'enfermedad_id' => 'required|exists:enfermedades,id', \n            'familiar' => 'required',    \n            'personal' => 'required',   \n            'observacion' => 'required|string|max:500',   \n            \n        ]);\n        if ($validator->fails()) {\n            flash(implode('<br>',$validator->errors()->all()), 'danger');\n            return redirect()->route('historias.ocupacional.patologias',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id])->withInput();\n        }else{\n\n            if($request->familiar=='on'){$familiar=true;}else{$familiar=false;}\n            if($request->personal=='on'){$personal=true;}else{$personal=false;}\n            $Patologico=new Patologico;\n            $Patologico->familiar=$familiar;\n            $Patologico->personal=$personal;\n            $Patologico->observacion=$request->observacion;\n            $Patologico->enfermedad()->associate($request->enfermedad_id);\n            $Patologico->historia_ocupacional()->associate($historia_ocupacional);\n            $Patologico->save();\n            flash('Se ha registrado la información de forma exitosa!', 'success');\n            return redirect()->route('historias.ocupacional.patologias',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id]);\n        }\n    }\n\n    public function Ocupacional_patologias_destroy_enfermedad($paciente_id,$historia_ocupacional_id,$patologico_id)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();\n        $Patologico = Patologico::findOrFail($patologico_id);\n        $Patologico->delete();\n        flash('El registro se ha eliminado de forma exitosa!', 'danger');\n        return redirect()->route('historias.ocupacional.patologias',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id]);\n    }\n\n    public function Ocupacional_patologias_destroy_vacuna($paciente_id,$historia_ocupacional_id,$inmunizacion_id)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();\n        $Inmunizacion = Inmunizacion::findOrFail($inmunizacion_id);\n        $Inmunizacion->delete();\n        flash('El registro se ha eliminado de forma exitosa!', 'danger');\n         return redirect()->route('historias.ocupacional.patologias',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id]);\n    }\n\n\n    //OCUPACION ACTUAL\n    public function ocupacional_actual($paciente_id,$historia_ocupacional_id)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();\n        $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();\n        $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();\n\n        $combos=array();\n        $actividades = Actividad::all()->sortBy('descripcion')->pluck('descripcion','id')->prepend('N/A', 1);\n        $turnos = Turno::all()->sortBy('descripcion')->pluck('descripcion','id')->prepend('N/A', 1);\n        $factor_riesgos_query = Factor_riesgo::with('tipo_factor_riesgo')->orderby('tipo_factor_riesgo_id')->get();\n        foreach ($factor_riesgos_query as $factor_riesgo) {\n            $factor_riesgos[$factor_riesgo->id]=$factor_riesgo->tipo_factor_riesgo->descripcion.' > '.$factor_riesgo->descripcion;\n        }\n\n        $Ocupacional_actual = Ocupacional_actual::where(['historia_ocupacional_id'=> $historia_ocupacional->id])->first();\n        $factores=array();\n        if($Ocupacional_actual)\n        {\n            $actividad_id=$Ocupacional_actual->actividad_id;\n            $cargoactual=$Ocupacional_actual->cargoactual;\n            $turno_id=$Ocupacional_actual->turno_id;\n            $factores = Ocupacional_actual_factor_riesgo::with('factor_riesgo.tipo_factor_riesgo')->where(['ocupacional_actual_id'=> $Ocupacional_actual->id])->orderby('id')->get();\n            $mostrar_fatores=true;\n        }else{\n            $mostrar_fatores=false;\n            $ocupacional_actual_factores=array();\n            $actividad_id=1;\n            $cargoactual='';\n            $turno_id=1;\n        }\n\n\n        \n        $datos=['factores'=>$factores,'actividad_id'=>$actividad_id,'cargoactual'=>$cargoactual,'turno_id'=>$turno_id,'mostrar_fatores'=>$mostrar_fatores];\n\n        $combos=[ 'turnos' => $turnos,'actividades' => $actividades,'factor_riesgos' => $factor_riesgos];\n\n        return  view('historias.historia.ocupacional.actual')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional,'combos'=>$combos,'datos'=>$datos ]);\n    }\n\n    public function Ocupacional_actual_store(Request $request)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();\n\n\n        $validator = Validator::make($request->all(), [\n            'cargoactual' => 'required|string|max:250', \n            'turno_id' => 'required|exists:turnos,id',   \n            'actividad_id' => 'required|exists:actividades,id',   \n            \n        ]);\n        if ($validator->fails()) {\n            flash(implode('<br>',$validator->errors()->all()), 'danger');\n            return redirect()->route('historias.ocupacional.actual',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id])->withInput();\n        }else{\n\n            $Ocupacional_actual = Ocupacional_actual::where(['historia_ocupacional_id' => $historia_ocupacional->id])->first();\n\n            if(is_null($Ocupacional_actual))\n            {\n                $Ocupacional_actual=new Ocupacional_actual;\n            }\n            $Ocupacional_actual->cargoactual=$request->cargoactual;\n            $Ocupacional_actual->turno()->associate($request->turno_id);\n            $Ocupacional_actual->actividad()->associate($request->actividad_id);\n            $Ocupacional_actual->historia_ocupacional()->associate($historia_ocupacional);\n            $Ocupacional_actual->save();\n            flash('Se ha registrado la información de forma exitosa!', 'success');\n            return redirect()->route('historias.ocupacional.actual',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id]);\n        }\n    }\n\n\n    public function Ocupacional_actual_store_factor(Request $request)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();\n\n\n        $validator = Validator::make($request->all(), [\n            'factor_riesgo_id' => 'required|exists:factor_riesgos,id',   \n            'otro' => 'string|max:250',   \n            'tiempoexposicion' => 'string|max:250',\n            'medidacontrol' => 'string|max:250',\n            \n        ]);\n        if ($validator->fails()) {\n            flash(implode('<br>',$validator->errors()->all()), 'danger');\n            return redirect()->route('historias.ocupacional.actual',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id])->withInput();\n        }else{\n\n            $Ocupacional_actual = Ocupacional_actual::where(['historia_ocupacional_id' => $historia_ocupacional->id])->first();\n            if(!is_null($Ocupacional_actual))\n            {\n                if(is_null($request->otro)){\n                    $otro='';\n                }else{\n                    $otro=$request->otro;\n                }\n                $Ocupacional_actual_factor_riesgo=new Ocupacional_actual_factor_riesgo;\n                $Ocupacional_actual_factor_riesgo->tiempoexposicion=$request->tiempoexposicion;\n                $Ocupacional_actual_factor_riesgo->medidacontrol=$request->medidacontrol;\n                $Ocupacional_actual_factor_riesgo->otro=$otro;\n                $Ocupacional_actual_factor_riesgo->factor_riesgo()->associate($request->factor_riesgo_id);\n                $Ocupacional_actual_factor_riesgo->ocupacional_actual()->associate($Ocupacional_actual);\n                $Ocupacional_actual_factor_riesgo->save();\n                flash('Se ha registrado la información de forma exitosa!', 'success');\n            }\n            return redirect()->route('historias.ocupacional.actual',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id]);\n        }\n    }\n\n    public function Ocupacional_actual_destroy_factor($paciente_id,$historia_ocupacional_id,$ocupacional_actual_factor_riesgo_id)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();\n        $Ocupacional_actual_factor_riesgo_id = Ocupacional_actual_factor_riesgo::findOrFail($ocupacional_actual_factor_riesgo_id);\n        $Ocupacional_actual_factor_riesgo_id->delete();\n        flash('El registro se ha eliminado de forma exitosa!', 'danger');\n        return redirect()->route('historias.ocupacional.actual',[$historia_ocupacional->medico_paciente->paciente->id,$historia_ocupacional->id]);\n\n    }\n\n\n    //DIAGNOSTICOS\n    public function ocupacional_diagnosticos($paciente_id,$historia_ocupacional_id)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();\n        $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();\n        $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();\n\n        $combos=array();\n        $tipo_diagnosticos=array();\n        $tipo_diagnosticos_query = Tipo_diagnostico::orderby('codigo')->get();\n        foreach ($tipo_diagnosticos_query as $tipo_diagnostico) {\n            $tipo_diagnosticos[$tipo_diagnostico->id]=$tipo_diagnostico->codigo.' > '.$tipo_diagnostico->descripcion;\n        }\n        $diagnosticos= Diagnostico::where(['historia_ocupacional_id' => $historia_ocupacional->id])->with('tipo_diagnostico')->orderBy('id')->get();\n\n        $combos=[ 'tipo_diagnosticos' => $tipo_diagnosticos,'diagnosticos'=>$diagnosticos];\n\n        return  view('historias.historia.ocupacional.diagnosticos')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional,'combos'=>$combos ]);\n    }\n\n    public function ocupacional_diagnosticos_store(Request $request)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();\n\n\n        $validator = Validator::make($request->all(), [\n            'concepto' => 'required|string|max:250', \n            'tipo_diagnostico_id' => 'required|exists:tipo_diagnosticos,id',   \n            \n        ]);\n        if ($validator->fails()) {\n            flash(implode('<br>',$validator->errors()->all()), 'danger');\n            return redirect()->route('historias.ocupacional.diagnosticos',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id])->withInput();\n        }else{\n            \n            $Diagnostico=new Diagnostico;\n            $Diagnostico->tipo_diagnostico()->associate($request->tipo_diagnostico_id);\n            $Diagnostico->historia_ocupacional()->associate($historia_ocupacional);\n            $Diagnostico->concepto=$request->concepto;\n            $Diagnostico->save();\n            flash('Se ha registrado el diagnóstico de forma exitosa!', 'success');\n            return redirect()->route('historias.ocupacional.diagnosticos',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id]);\n        }\n    }\n\n    public function ocupacional_diagnosticos_destroy($paciente_id,$historia_ocupacional_id,$diagnostico_id)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();\n        $Diagnostico = Diagnostico::findOrFail($diagnostico_id);\n        $Diagnostico->delete();\n        flash('El registro se ha eliminado de forma exitosa!', 'danger');\n        return redirect()->route('historias.ocupacional.diagnosticos',[$historia_ocupacional->medico_paciente->paciente->id,$historia_ocupacional->id]);\n\n    }\n\n    //EXAMENES\n    public function ocupacional_examenes($paciente_id,$historia_ocupacional_id)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();\n        $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();\n        $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();\n        $examen_laboratorios= Examen_laboratorio::where(['historia_ocupacional_id' => $historia_ocupacional->id])->orderBy('id')->get();\n        $combos=['examen_laboratorios'=>$examen_laboratorios];\n        return  view('historias.historia.ocupacional.examenes')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional,'combos' => $combos]);\n    }\n     public function ocupacional_examenes_store(Request $request)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();\n\n\n        $validator = Validator::make($request->all(), [\n            'examen' => 'required|string|max:250', \n            'fecha' => 'required|date_format:d/m/Y',   \n            'resultado' => 'required|string|max:250', \n        ]);\n        if ($validator->fails()) {\n            flash(implode('<br>',$validator->errors()->all()), 'danger');\n            return redirect()->route('historias.ocupacional.examenes',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id])->withInput();\n        }else{\n            \n            $Examen_laboratorio=new Examen_laboratorio;\n            $Examen_laboratorio->fecha = Carbon::createFromFormat('d/m/Y',$request->fecha);\n            $Examen_laboratorio->examen=$request->examen;\n            $Examen_laboratorio->resultado=$request->resultado;\n            $Examen_laboratorio->historia_ocupacional()->associate($historia_ocupacional);\n            $Examen_laboratorio->save();\n            flash('Se ha registrado el examen de forma exitosa!', 'success');\n            return redirect()->route('historias.ocupacional.examenes',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id]);\n        }\n    }\n\n    public function ocupacional_examenes_destroy($paciente_id,$historia_ocupacional_id,$examen_laboratorio_id)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();\n        $Examen_laboratorio = Examen_laboratorio::findOrFail($examen_laboratorio_id);\n        $Examen_laboratorio->delete();\n        flash('El registro se ha eliminado de forma exitosa!', 'danger');\n        return redirect()->route('historias.ocupacional.examenes',[$historia_ocupacional->medico_paciente->paciente->id,$historia_ocupacional->id]);\n\n    }\n\n    //EXAMENES FISICOS\n    public function ocupacional_fisicos($paciente_id,$historia_ocupacional_id)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();\n        $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();\n        $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();\n\n        $datos=array();\n        $Examen_fisico = Examen_fisico::where(['historia_ocupacional_id'=> $historia_ocupacional->id])->first();\n       \n        if($Examen_fisico)\n        {\n            $lateralidad_id=$Examen_fisico->lateralidad_id;\n            $peso=$Examen_fisico->peso;\n            $talla=$Examen_fisico->talla;\n            $imc=$Examen_fisico->imc;\n            $ta=$Examen_fisico->ta;\n            $fc=$Examen_fisico->fc;\n            $fr=$Examen_fisico->fr;\n\n        }else{\n\n            $lateralidad_id=1;\n            $peso='0.00';\n            $talla='0.00';\n            $imc='0.00';\n            $ta='';\n            $fc='';\n            $fr='';\n        }\n        $datos=['lateralidad_id'=>$lateralidad_id, 'peso'=>$peso, 'talla'=>$talla, 'imc'=>$imc, 'ta'=>$ta, 'fc'=>$fc, 'fr'=>$fr];\n\n        $combos=array();\n        $lateralidades = Lateralidad::all()->sortBy('descripcion')->pluck('descripcion','id')->prepend('N/A', 1);\n      \n\n        $examenes_ocupacionales=array();\n        $tipo_organos_query = Tipo_organo::orderby('id')->get();\n        foreach ($tipo_organos_query as $tipo_organo) {\n            $organos_query = Organo::where('tipo_organo_id',$tipo_organo->id)->orderby('descripcion')->get();\n            $organos= array();\n            foreach ($organos_query as $organo) {\n              $exploracion = Exploracion::where(['historia_ocupacional_id'=> $historia_ocupacional->id,'organo_id' =>  $organo->id ])->first();\n              if(is_null($exploracion))\n              {\n                $resultado='';\n                $check=false;\n                $disabled='disabled';\n              }else{\n                $resultado=$exploracion->resultado;\n                $check=true;\n                $disabled='';\n              }  \n              $organos[]=['id' => $organo->id,'descripcion' => $organo->descripcion,'resultado' =>$resultado,'check' => $check,'disabled'=>$disabled];\n            }\n\n            $examenes_ocupacionales[]=[ 'id' => $tipo_organo->id,'descripcion' => $tipo_organo->descripcion, 'organos' => $organos];\n        }\n\n        $examenes_visuales=array();\n        $Tipo_examen_visual_query = Tipo_examen_visual::orderby('id')->get();\n        foreach ($Tipo_examen_visual_query as $tipo_examen_visual) {\n\n            $Examen_visual_query = Examen_visual::where('tipo_examen_visual_id',$tipo_examen_visual->id)->with('ojo')->orderby('id')->get();\n            $examen_visuales= array();\n            foreach ($Examen_visual_query as $examen_visual) {\n                if($examen_visual->ojo_id == 3){\n                    $ambos='Ojos';\n                    $ojo='';\n                }else{\n                    $ambos='';\n                    $ojo='Ojo';\n                }\n                $visual = Visual::where(['historia_ocupacional_id'=> $historia_ocupacional->id,'examen_visual_id' =>  $examen_visual->id ])->first();\n                if(is_null($visual))\n                {\n                    $observacion='';\n                    $check=false;\n                    $disabled='disabled';\n                }else{\n                    $observacion=$visual->descripcion;\n                    $check=true;\n                    $disabled='';\n                }  \n                $examen_visuales[]=['id' => $examen_visual->id,'descripcion' => $ojo.' '.$examen_visual->ojo->descripcion.' '.$ambos,'observacion' =>$observacion,'check' => $check,'disabled'=>$disabled];\n\n            }\n\n            $examenes_visuales[]=[ 'id' => $tipo_examen_visual->id,'descripcion' => $tipo_examen_visual->descripcion, 'examen_visuales' => $examen_visuales];\n        }\n  //dd($examenes_visuales);\n\n\n\n\n        $combos=[ 'lateralidades' => $lateralidades,'examenes_ocupacionales' => $examenes_ocupacionales,'examenes_visuales'=>$examenes_visuales];\n     \n        return  view('historias.historia.ocupacional.fisicos')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional,'combos'=> $combos, 'datos' =>  $datos]);\n    }\n\n    public function ocupacional_fisicos_store(Request $request)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();\n       \n        $validator = Validator::make($request->all(), [\n      \n            'peso' => 'required|numeric', \n            'talla' => 'required|numeric', \n            'imc' => 'required|numeric', \n            'ta' => 'required|string|max:10', \n            'fc' => 'required|string|max:10', \n            'fr' => 'required|string|max:10', \n            'lateralidad_id' => 'required|exists:lateralidades,id', \n            \n        ]);\n        if ($validator->fails()) {\n            flash(implode('<br>',$validator->errors()->all()), 'danger');\n            return redirect()->route('historias.ocupacional.fisicos',[$historia_ocupacional->medico_paciente->id,$historia_ocupacional->id])->withInput();\n        }else{\n\n            $Examen_fisico = Examen_fisico::where(['historia_ocupacional_id' => $historia_ocupacional->id])->first();\n          \n            if(is_null($Examen_fisico))\n            {\n                $Examen_fisico=new Examen_fisico;\n            }\n           \n            $Examen_fisico->peso= $request->peso;\n            $Examen_fisico->talla= $request->talla;\n            if($request->peso>0 && $request->talla>0){\n                $imc=$request->peso/($request->talla*$request->talla);\n            }else{\n                $imc=0;\n            }\n            $Examen_fisico->imc= $imc;\n            $Examen_fisico->ta= $request->ta;\n            $Examen_fisico->fc= $request->fc;\n            $Examen_fisico->fr= $request->fr;\n            $Examen_fisico->historia_ocupacional()->associate($historia_ocupacional);\n            $Examen_fisico->lateralidad()->associate($request->lateralidad_id);\n            $Examen_fisico->save();\n\n            flash('Se ha registrado la información de forma exitosa!', 'success');\n            return redirect()->route('historias.ocupacional.fisicos',[$historia_ocupacional->medico_paciente->id,$historia_ocupacional->id]);\n        }\n    }\n\n    public function ocupacional_fisicos_store_exploracion(Request $request)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();\n        \n        $organos_query = Organo::orderby('descripcion')->get();\n        $organos= array();\n        foreach ($organos_query as $organo) {\n\n           $Exploracion = Exploracion::where(['organo_id' => $organo->id,'historia_ocupacional_id'=>$historia_ocupacional->id])->first();   \n           if($request[$organo->id]) {\n                \n                if(is_null($Exploracion))\n                {\n                    $Exploracion= new Exploracion;\n                    $Exploracion->resultado=$request[$organo->id];\n                    $Exploracion->historia_ocupacional()->associate($historia_ocupacional);\n                    $Exploracion->organo()->associate($organo->id);\n                    $Exploracion->save();\n                }else{\n                    $Exploracion->resultado=$request[$organo->id];\n                    $Exploracion->save();\n                }\n           }else{\n                if(!is_null($Exploracion))\n                {\n                    $Exploracion->delete();\n                }\n           }\n        }\n\n        flash('Se ha registrado la información de forma exitosa!', 'success');\n            return redirect()->route('historias.ocupacional.fisicos',[$historia_ocupacional->medico_paciente->id,$historia_ocupacional->id]);\n    }\n\n     public function ocupacional_fisicos_store_visual(Request $request)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();\n        \n        $examen_visuales_query = Examen_visual::orderby('id')->get();\n        $examen_visuales= array();\n        foreach ($examen_visuales_query as $examen_visual) {\n\n           $Visual = Visual::where(['examen_visual_id' => $examen_visual->id,'historia_ocupacional_id'=>$historia_ocupacional->id])->first();   \n           if($request[$examen_visual->id]) {\n                \n                if(is_null($Visual))\n                {\n                    $Visual= new Visual;\n                    $Visual->descripcion=$request[$examen_visual->id];\n                    $Visual->historia_ocupacional()->associate($historia_ocupacional);\n                    $Visual->examen_visual()->associate($examen_visual->id);\n                    $Visual->save();\n                }else{\n                    $Visual->descripcion=$request[$examen_visual->id];\n                    $Visual->save();\n                }\n           }else{\n                if(!is_null($Visual))\n                {\n                    $Visual->delete();\n                }\n           }\n        }\n\n        flash('Se ha registrado la información de forma exitosa!', 'success');\n        return redirect()->route('historias.ocupacional.fisicos',[$historia_ocupacional->medico_paciente->id,$historia_ocupacional->id]);\n    }\n\n    \n       \n\n\n\n    //ANTECEDENTES\n    public function ocupacional_antecedentes($paciente_id,$historia_ocupacional_id)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();\n        $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();\n        $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();\n        $antecedente_ocupacionales = Antecedente_ocupacional::where(['historia_ocupacional_id' => $historia_ocupacional->id])->get();\n        $combos=array();\n        $combos=['antecedente_ocupacionales'=>$antecedente_ocupacionales];\n       \n         return  view('historias.historia.ocupacional.antecedentes')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional,'combos'=> $combos]);\n    }\n\n    public function ocupacional_antecedentes_store(Request $request)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();\n        $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();\n        $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();\n        $antecedente_ocupacionales = Antecedente_ocupacional::where(['historia_ocupacional_id' => $historia_ocupacional->id])->get();\n        $combos=array();\n        $combos=['antecedente_ocupacionales'=>$antecedente_ocupacionales];\n\n         $validator = Validator::make($request->all(), [\n            'empresa' => 'required|string|max:100', \n            'tiemposervicio' => 'required|string|max:50',   \n            'ocupacion' => 'required|string|max:100',\n        ]);\n        if ($validator->fails()) {\n            flash(implode('<br>',$validator->errors()->all()), 'danger');\n            return redirect()->route('historias.ocupacional.antecedentes',[$paciente->id,$historia_ocupacional->id])->withInput();\n        }else{\n\n            $Antecedente_ocupacional=new Antecedente_ocupacional;\n            $Antecedente_ocupacional->empresa=$request->empresa;\n            $Antecedente_ocupacional->tiemposervicio=$request->tiemposervicio;\n            $Antecedente_ocupacional->ocupacion=$request->ocupacion;\n            $Antecedente_ocupacional->historia_ocupacional()->associate($historia_ocupacional);\n            $Antecedente_ocupacional->save();\n            flash('Se ha registrado la empresa '.$request->empresa.' de forma exitosa!', 'success');\n            return redirect()->route('historias.ocupacional.antecedentes',[$paciente->id,$historia_ocupacional->id]);\n        }\n    }\n\n    public function ocupacional_antecedentes_destroy($paciente_id,$historia_ocupacional_id,$antecedente_ocupacional_id)\n    {\n        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();\n        $Antecedente_ocupacional = Antecedente_ocupacional::findOrFail($antecedente_ocupacional_id);\n        $Antecedente_ocupacional->delete();\n        flash('La empresa '.$Antecedente_ocupacional->empresa.' se ha eliminado de forma exitosa!', 'danger');\n        return redirect()->route('historias.ocupacional.antecedentes',[$historia_ocupacional->medico_paciente->paciente->id,$historia_ocupacional->id]);\n\n    }\n\n  \n\n    /**\n     * Update the specified resource in storage.\n     *\n     * @param  \\Illuminate\\Http\\Request  $request\n     * @param  int  $id\n     * @return \\Illuminate\\Http\\Response\n     */\n    public function update(Request $request, $id)\n    {\n        //\n    }\n\n   \n        \n}\n",
 			"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/HistoriasController.php",
+			"file_size": 43109,
+			"file_write_time": 131228905875376095,
 			"settings":
 			{
-				"buffer_size": 18802,
+				"buffer_size": 44699,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/UsersController.php",
+			"file": "/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/patologias.blade.php",
 			"settings":
 			{
-				"buffer_size": 21498,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/AsistentesController.php",
-			"settings":
-			{
-				"buffer_size": 13574,
+				"buffer_size": 22975,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -102,7 +120,7 @@
 			"file": "/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/antecedentes.blade.php",
 			"settings":
 			{
-				"buffer_size": 8925,
+				"buffer_size": 9374,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -111,7 +129,7 @@
 			"file": "/opt/lampp/htdocs/historiaclinica/routes/web.php",
 			"settings":
 			{
-				"buffer_size": 6935,
+				"buffer_size": 10405,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -156,31 +174,67 @@
 	[
 		"/opt/lampp/htdocs/historiaclinica",
 		"/opt/lampp/htdocs/historiaclinica/app",
+		"/opt/lampp/htdocs/historiaclinica/app/Console",
 		"/opt/lampp/htdocs/historiaclinica/app/Http",
-		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers",
+		"/opt/lampp/htdocs/historiaclinica/bootstrap",
 		"/opt/lampp/htdocs/historiaclinica/database",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations",
 		"/opt/lampp/htdocs/historiaclinica/database/seeds",
 		"/opt/lampp/htdocs/historiaclinica/resources",
 		"/opt/lampp/htdocs/historiaclinica/resources/views",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/afps",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/especialidades",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/asistentes",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/layouts",
-		"/opt/lampp/htdocs/historiaclinica/routes"
+		"/opt/lampp/htdocs/historiaclinica/resources/views/pacientes",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/users",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/vendor"
 	],
 	"file_history":
 	[
-		"/opt/lampp/htdocs/historiaclinica/app/Antecedente_ocupacional.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/antecedentes.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/patologias.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/fisicos.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_181409_create_inmunizaciones_table.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Patologico.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/actual.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Ocupacional_actual_factor_riesgo.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Ocupacional_actual.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/HistoriasController.php",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_29_032707_create_habito_licores_table.php",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_02_222906_create_ocupacional_actuales_table.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/antecedentes.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_181139_create_antecedente_ocupacional_factor_riesgo_table.php",
+		"/opt/lampp/htdocs/historiaclinica/database/seeds/ExamenVisualesTableSeeder.php",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_02_232557_create_ocupacional_actual_factor_riesgo_table.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/fisicos.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Exploracion.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Historia_ocupacional.php",
+		"/opt/lampp/htdocs/historiaclinica/database/seeds/DatabaseSeeder.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Examen_visual.php",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_181458_create_exploraciones_table.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Examen_fisico.php",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_02_221415_create_examen_fisicos_table.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/users/create.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/users/edit.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/index.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/examenes.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/home.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/diagnosticos.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/routes/web.php",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_29_010159_create_examen_labortatorios_table.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Examen_laboratorio.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/index.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/patologias.blade.php",
+		"/home/ender/Escritorio/cie10.sql",
+		"/opt/lampp/htdocs/historiaclinica/app/Diagnostico.php",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_181600_create_diagnosticos_table.php",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_181617_create_historia_ocupacional_diagnostico_table.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/ocupacional.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/habitos.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/AsistentesController.php",
+		"/opt/lampp/htdocs/historiaclinica/app/User.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Antecedente_ocupacional.php",
 		"/opt/lampp/htdocs/historiaclinica/database/seeds/OrganosTableSeeder.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Organo.php",
 		"/opt/lampp/htdocs/historiaclinica/database/seeds/TipoOrganosTableSeeder.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/examenes.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/medicos/create.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/medicos/edit.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/pacientes/create.blade.php",
@@ -191,13 +245,8 @@
 		"/opt/lampp/htdocs/historiaclinica/public/plugins/datepicker/bootstrap-datepicker.js",
 		"/opt/lampp/htdocs/historiaclinica/public/plugins/datepicker/locales/bootstrap-datepicker.es.js",
 		"/opt/lampp/htdocs/historiaclinica/public/plugins/daterangepicker/daterangepicker.css",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/actual.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/diagnosticos.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Visual.php",
-		"/opt/lampp/htdocs/historiaclinica/database/seeds/DatabaseSeeder.php",
-		"/opt/lampp/htdocs/historiaclinica/database/seeds/ExamenVisualesTableSeeder.php",
 		"/opt/lampp/htdocs/historiaclinica/.env.example",
-		"/opt/lampp/htdocs/historiaclinica/app/Examen_visual.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Tipo_examen_visual.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Ginecobstetrica.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Ojo.php",
@@ -207,22 +256,14 @@
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_180502_create_visuales_table.php",
 		"/opt/lampp/htdocs/historiaclinica/database/seeds/LateralidadesTableSeeder.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_181543_create_ginecobstetricas_table.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/ocupacional.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Diagnostico.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_181600_create_diagnosticos_table.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_181599_create_tipo_diagnosticos_table.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Tipo_diagnostico.php",
-		"/home/ender/Escritorio/cie10.sql",
 		"/home/ender/Descargas/sql(1)",
 		"/home/ender/Descargas/sql",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/habitos.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/database/seeds/TurnosTableSeeder.php",
 		"/opt/lampp/htdocs/historiaclinica/database/seeds/ActividadesTableSeeder.php",
 		"/opt/lampp/htdocs/historiaclinica/database/seeds/TipoExamenesTableSeeder.php",
 		"/opt/lampp/htdocs/historiaclinica/database/seeds/EscolaridadTableSeeder.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Historia_ocupacional.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/index.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/routes/web.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Arl.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Afp.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Empresa.php",
@@ -236,9 +277,6 @@
 		"/opt/lampp/htdocs/historiaclinica/database/seeds/ArlsTableSeeder.php",
 		"/opt/lampp/htdocs/historiaclinica/database/seeds/EmpresasTableSeeder.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Factor_riesgo.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_02_221415_create_examen_fisicos_table.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_02_222906_create_ocupacional_actuales_table.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_02_232557_create_ocupacional_actual_factor_riesgo_table.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Ocupacional_Actual.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_02_223759_create_ocupacional_actual_factor_riesgo_table1.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Turno.php",
@@ -255,10 +293,8 @@
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_180325_create_cantidad_fumadores_table.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_180324_create_tiempo_fumadores_table.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Tiempo_fumador.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_29_032707_create_habito_licores_table.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_180340_create_habito_fumadores_table.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Cantidad_fumador.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/index.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Tipo_organo.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Tipo_factor_riesgo.php",
 		"/opt/lampp/htdocs/historiaclinica/database/seeds/ModulosTableSeeder.php",
@@ -276,7 +312,6 @@
 		"/opt/lampp/htdocs/historiaclinica/app/Habito_medicamentos.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Inmunizacion.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Examen_labortatorio.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Exploracion.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Tipo_examen.php",
 		"/opt/lampp/htdocs/ejemplos/template4/pages/UI/general.html",
 		"/opt/lampp/htdocs/ejemplos/template4/pages/forms/editors.html",
@@ -284,26 +319,11 @@
 		"/opt/lampp/htdocs/historiaclinica/.env",
 		"/opt/lampp/htdocs/historiaclinica/database/seeds/DepartamentosTableSeeder.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/pediatria.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia.blade.php",
-		"/opt/lampp/htdocs/notascertificadas/app/controllers/User.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/pacientes/show.blade.php",
-		"/opt/lampp/htdocs/google7ec70f2ac8015635.html",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/users/create.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/MedicosController.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/AsistentesController.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_181617_create_historia_ocupacional_diagnostico_table.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_181016_create_historia_ocupacional_factor_riesgo_table.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_181139_create_antecedente_ocupacional_factor_riesgo_table.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_180632_create_antecedente_ocupacionales_table.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_180633_create_traumatologicos_table.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_180912_create_tipo_factor_riesgos_table.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_181258_create_patologicos_table.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_181409_create_inmunizacions_table.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_181443_create_organos_table.php"
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia.blade.php"
 	],
 	"find":
 	{
-		"height": 32.0
+		"height": 44.0
 	},
 	"find_in_files":
 	{
@@ -317,6 +337,43 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"                                   \n",
+			"th",
+			"request",
+			"familiar",
+			"ocupacional_patologias_store_vacuna",
+			"vacuna",
+			"ocupacional_actual_store_factor",
+			"actual",
+			"vacuna",
+			"historia_ocupacional",
+			"datos",
+			"if(is_null($Examen_fisico))",
+			"factores",
+			"actual",
+			"examenes",
+			"fisicos",
+			"Exploracion",
+			"Examen_fisico",
+			" =",
+			"Antecedente_ocupacional",
+			"examenes",
+			"ocupacional_examenes_store",
+			"examenes",
+			"datos",
+			"data",
+			"diagnosticos",
+			"antecedentes",
+			"ocupacional_antecedentes_store",
+			"antecedentes",
+			"ocupacional_antecedentes_store",
+			"antecedentes",
+			"resultado",
+			"          '",
+			"'tipo_examen_id' => 'required|exists:tipo_examenes,id',\n            'empresa' => 'required|string|max:100', \n            'empresa_id' => 'required|exists:empresas,id',\n            'arl_id' => 'required|exists:arls,id',\n            'afp_id' => 'required|exists:afps,id',\n            'escolaridad_id' => 'required|exists:escolaridades,id',  \n            'numerohijos' => 'required|integer|max:20',\n            'numerohijos' => 'required|integer|max:100',",
+			"antecedentes",
+			"edit",
+			"paciente",
 			"th",
 			"Tipo_organo",
 			"tipo_factor_riego",
@@ -407,7 +464,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -416,45 +473,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 18802,
+						"buffer_size": 44699,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								17983,
-								17983
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/PHP/PHP.sublime-syntax",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 5041.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/UsersController.php",
-					"semi_transient": true,
-					"settings":
-					{
-						"buffer_size": 21498,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
+								14705,
+								14705
 							]
 						],
 						"settings":
@@ -464,27 +491,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 4353.0,
+						"translation.y": 4352.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 2,
-					"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/AsistentesController.php",
+					"buffer": 1,
+					"file": "/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/patologias.blade.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 13574,
+						"buffer_size": 22975,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								13511,
-								13511
+								4271,
+								4278
 							]
 						],
 						"settings":
@@ -494,27 +521,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 4074.0,
+						"translation.y": 1134.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 3,
+					"buffer": 2,
 					"file": "/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/antecedentes.blade.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 8925,
+						"buffer_size": 9374,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								5075,
-								5075
+								9330,
+								9330
 							]
 						],
 						"settings":
@@ -524,27 +551,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1020.0,
+						"translation.y": 1987.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 3,
 					"file": "/opt/lampp/htdocs/historiaclinica/routes/web.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6935,
+						"buffer_size": 10405,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3262,
-								3262
+								4858,
+								4858
 							]
 						],
 						"settings":
@@ -553,10 +580,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 812.0,
+						"translation.y": 2603.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 2,
 					"type": "text"
 				}
 			]
@@ -639,7 +666,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 257.0,
+	"side_bar_width": 241.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

@@ -66,7 +66,8 @@
         <div class="box-body">
             @include('flash::message')
             <div class="row">
-                {!! Form::open(['class' => '','method' => 'POST','route' => 'especialidades.store','role' => 'form']) !!}
+                 {!! Form::open(['class' => '','method' => 'POST','route' => ['historias.ocupacional.patologias.store_habitos',$paciente->id,$historia_ocupacional->id],'role' => 'form']) !!}
+                 {!! Form::hidden('historia_ocupacional_id', $historia_ocupacional->id) !!}
                 <div class="col-md-12">
                     <div class="form-group col-md-2">
                         {!! Form::label('fumador','Fumador') !!}
@@ -74,17 +75,17 @@
                             'No' => 'No',
                             'Si' => 'Si',
                             'Exfumador' => 'Exfumador'
-                        ], old('fumador'),['class' => 'form-control','style' => 'width: 100%']) !!}
+                        ], $datos['fumador'],['class' => 'form-control','style' => 'width: 100%']) !!}
                     </div>
                   
                     <div class="form-group col-md-3">
                         {!! Form::label('tiempo_fumador_id','Tiempo') !!}
-                        {!! Form::select('tiempo_fumador_id',$combos['tiempo_fumadores'], old('tiempo_fumador_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
+                        {!! Form::select('tiempo_fumador_id',$combos['tiempo_fumadores'], $datos['tiempo_fumador_id'],['class' => 'form-control','style' => 'width: 100%']) !!}
                     </div>
                
                     <div class="form-group col-md-3">
                         {!! Form::label('cantidad_fumador_id','Cantidas/días') !!}
-                        {!! Form::select('cantidad_fumador_id',$combos['cantidad_fumadores'], old('cantidad_fumador_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
+                        {!! Form::select('cantidad_fumador_id',$combos['cantidad_fumadores'], $datos['cantidad_fumador_id'],['class' => 'form-control','style' => 'width: 100%']) !!}
                     </div>
                 </div>
 
@@ -95,17 +96,17 @@
                             'No' => 'No',
                             'Si' => 'Si',
                             'Exbebedor' => 'Exbebedor'
-                        ], old('bebedor'),['class' => 'form-control','style' => 'width: 100%']) !!}
+                        ], $datos['bebedor'],['class' => 'form-control','style' => 'width: 100%']) !!}
                     </div>
                  
                     <div class="form-group col-md-3">
                         {!! Form::label('tiempo_licor_id','Tiempo') !!}
-                        {!! Form::select('tiempo_licor_id',$combos['tiempo_licores'], old('tiempo_licor_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
+                        {!! Form::select('tiempo_licor_id',$combos['tiempo_licores'], $datos['tiempo_licor_id'],['class' => 'form-control','style' => 'width: 100%']) !!}
                     </div>
                   
                     <div class="form-group col-md-4">
                         {!! Form::label('tipolicor','Tipo de Licor') !!}
-                        {!! Form::text('tipolicor',old('tipolicor'),['placeholder' => '','class'=>'form-control']) !!}
+                        {!! Form::text('tipolicor',$datos['tipolicor'],['placeholder' => '','class'=>'form-control']) !!}
                     </div>
                 </div>
 
@@ -115,23 +116,23 @@
                         {!! Form::select('medicamento',[
                             'No' => 'No',
                             'Si' => 'Si',
-                        ], old('medicamento'),['class' => 'form-control','style' => 'width: 100%']) !!}
+                        ], $datos['medicamento'],['class' => 'form-control','style' => 'width: 100%']) !!}
                     </div>
 
                     <div class="form-group col-md-3">
-                        {!! Form::label('id_regularidad_medicamento','Regularidad') !!}
-                        {!! Form::select('id_regularidad_medicamento',$combos['regularidad_medicamentos'], old('id_regularidad_medicamento'),['class' => 'form-control','style' => 'width: 100%']) !!}
+                        {!! Form::label('regularidad_medicamento_id','Regularidad') !!}
+                        {!! Form::select('regularidad_medicamento_id',$combos['regularidad_medicamentos'], $datos['regularidad_medicamento_id'],['class' => 'form-control','style' => 'width: 100%']) !!}
                     </div>
 
                     <div class="form-group col-md-6">
                         {!! Form::label('nombremedicamento','Cual?') !!}
-                        {!! Form::text('nombremedicamento',old('nombremedicamento'),['placeholder' => '','class'=>'form-control']) !!}
+                        {!! Form::text('nombremedicamento',$datos['nombremedicamento'],['placeholder' => '','class'=>'form-control']) !!}
                     </div>
                 </div>
 
                 <div class="col-md-12">
                     <div class="box-footer">
-                        <button type="button" class="btn btn-primary btn-sm">Actualizar</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Actualizar</button>
                     </div>
                 </div>
             </div>
@@ -149,30 +150,51 @@
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-       		@include('flash::message')
+       	
           	<div class="row">
             	{!! Form::open(['class' => '','method' => 'POST','route' => 'especialidades.store','role' => 'form']) !!}
-              	<div class="col-md-12">
+              	<div class="box-body">
                 	<div class="box-body table-responsive">
                         <table id="example2" class="table table-bordered table-hover">
                       		<thead>
                         		<tr>
-    								<th>Enfermadad</th>
-    								<th>Observación</th>
-    								<th>Familiar</th>
-    								<th>Personal</th>
+    								<th>Enfermedad</th>
+    								<th class="text-center">Familiar</th>
+    								<th class="text-center">Personal</th>
+                                    <th>Observación</th>
     								<th class="text-center">Acción</th>
                         		</tr>
                       		</thead>
                       		<tbody>
+                                @foreach($datos['enfermedades'] as $enfermedad)
+                                 <tr>
+                                    <td>{{ $enfermedad->enfermedad->descripcion }}</td>
+                                    @if($enfermedad->familiar==1)
+                                        <td class="text-center">Si</td>
+                                    @else
+                                        <td class="text-center">No</td>
+                                    @endif 
+                                    @if($enfermedad->personal==1)
+                                        <td class="text-center">Si</td>
+                                    @else
+                                        <td class="text-center">No</td>
+                                    @endif
+                                    <td>{{ $enfermedad->observacion }}</td>
+                                    <td class="text-center">
+                                        <a data-toggle="modal" data-url="{{ route('historias.ocupacional.patologias.destroy_enfermedad',[$paciente->id,$historia_ocupacional->id,$enfermedad->id]) }}" class="open-modal" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
+                                    </td>
+                                </tr>
+                                @endforeach
                       		</tbody>
                     	</table>
-                    <div>
+
+                    </div>
+                    <div class="box-footer">
+                            <button type="button" data-toggle="modal" href="#myAlert3" class="btn btn-primary btn-sm open-modal">Agregar Patología</button>
+                        </div>
               	</div>
               	
-            	<div class="box-footer">
-                  	<button type="button" data-toggle="modal" href="#myAlert3" class="btn btn-primary btn-sm open-modal">Agregar Patología</button>
-              	</div>
+            	
               	
             	{!! Form::close() !!}
             </div>
@@ -189,7 +211,9 @@
                     <span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">Agregando Patología</h4>
                 </div>
-                <div class="modal-body">
+                {!! Form::open(['class' => '','method' => 'POST','route' => ['historias.ocupacional.patologias.store_enfermedad',$paciente->id,$historia_ocupacional->id],'role' => 'form']) !!}
+                 {!! Form::hidden('historia_ocupacional_id', $historia_ocupacional->id) !!}
+                <div class="box-body">
                     <div class="col-md-12">
                         <div class="form-group col-md-12">
                             {!! Form::label('enfermedad_id','Enfermedad') !!}
@@ -222,9 +246,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Agregar</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" >Agregar</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                 </div>
+                {!! Form::close() !!}
             </div>
         </div>
     </div>
@@ -239,21 +264,29 @@
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-            @include('flash::message')
             <div class="row">
-                {!! Form::open(['class' => '','method' => 'POST','route' => 'especialidades.store','role' => 'form']) !!}
                 <div class="col-md-12">
                     <div class="box-body table-responsive">
                         <table id="example2" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
                                     <th>Vacuna</th>
-                                    <th>Fecha</th>
+                                    <th class="text-center">Fecha</th>
                                     <th>Dosis</th>
                                     <th class="text-center">Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
+                             @foreach($datos['inmunizaciones'] as $inmunizacion)
+                                 <tr>
+                                    <td>{{ $inmunizacion->vacuna }}</td>
+                                    <td class="text-center">{{ date("d/m/Y", strtotime($inmunizacion->fecha)) }}</td>
+                                    <td>{{ $inmunizacion->dosis }}</td>
+                                    <td class="text-center">
+                                        <a data-toggle="modal" data-url="{{ route('historias.ocupacional.patologias.destroy_vacuna',[$paciente->id,$historia_ocupacional->id,$inmunizacion->id]) }}" class="open-modal" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
+                                    </td>
+                                </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -263,7 +296,6 @@
                         <button type="button" data-toggle="modal" href="#myAlert2" class="btn btn-primary btn-sm open-modal">Agregar Vacuna</button>
                     </div>
                 </div>
-                {!! Form::close() !!}
             </div>
             <!-- /.col -->
         </div>
@@ -278,37 +310,41 @@
                     <span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">Agregando Vacuna</h4>
                 </div>
+                 {!! Form::open(['class' => '','method' => 'POST','route' => ['historias.ocupacional.patologias.store_vacuna',$paciente->id,$historia_ocupacional->id],'role' => 'form']) !!}
+                 {!! Form::hidden('historia_ocupacional_id', $historia_ocupacional->id) !!}
                 <div class="modal-body">
                     <div class="form-group col-md-12">
                         <div class="form-group col-md-12">
                             {!! Form::label('vacuna','Vacuna') !!}
-                            {!! Form::text('vacuna',old('vacuna'),['placeholder' => '','class'=>'form-control']) !!}
+                            {!! Form::text('vacuna',old('vacuna'),['placeholder' => 'Nombre de la vacuna','class'=>'form-control']) !!}
                         </div>
                     </div>
 
                     <div class="form-group col-md-12">
                         <div class="form-group col-md-4">
                             {!! Form::label('fecha','Fecha') !!}
-                            {!! Form::text('fecha',old('fecha'),['placeholder' => '','class'=>'form-control datepicker']) !!}
+                            {!! Form::text('fecha',old('fecha'),['placeholder' => 'DD/MM/YYYY','class'=>'form-control datepicker']) !!}
                         </div>
                     </div>
                     
                     <div class="form-group col-md-12">
                         <div class="form-group col-md-12">
                             {!! Form::label('dosis','Dosis') !!}
-                            {!! Form::text('dosis',old('dosis'),['placeholder' => '','class'=>'form-control']) !!}
+                            {!! Form::text('dosis',old('dosis'),['placeholder' => 'Dosis suministrada','class'=>'form-control']) !!}
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Agregar</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" >Agregar</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                 </div>
+                {!! Form::close()!!}
             </div>
         </div>
     </div>
 
     <!--****************Ginecopstetrica****************-->
+@if($paciente->user->genero=='Femenino')    
     <div class="box box-default">
         <div class="box-header with-border">
             <h3 class="box-title">Ginecopstétrica</h3>
@@ -318,24 +354,24 @@
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-            @include('flash::message')
             <div class="row">
-                {!! Form::open(['class' => '','method' => 'POST','route' => 'especialidades.store','role' => 'form']) !!}
+                 {!! Form::open(['class' => '','method' => 'POST','route' => ['historias.ocupacional.patologias.store_ginecobstetrica',$paciente->id,$historia_ocupacional->id],'role' => 'form']) !!}
+                 {!! Form::hidden('historia_ocupacional_id', $historia_ocupacional->id) !!}
 
                 <div class="form-group col-md-12">
                     <div class="form-group col-md-2">
                         {!! Form::label('fum','FUM') !!}
-                        {!! Form::text('fum',old('fum'),['placeholder' => '','class'=>'form-control datepicker']) !!}
+                        {!! Form::text('fum',date("d/m/Y", strtotime($datos['fum'])),['placeholder' => 'DD/MM/YYYY','class'=>'form-control datepicker']) !!}
                     </div>
                 
                     <div class="form-group col-md-2">
                         {!! Form::label('fuc','FUC') !!}
-                        {!! Form::text('fuc',old('fuc'),['placeholder' => '','class'=>'form-control datepicker']) !!}
+                        {!! Form::text('fuc',date("d/m/Y", strtotime($datos['fuc'])),['placeholder' => 'DD/MM/YYYY','class'=>'form-control datepicker']) !!}
                     </div>
                      
                     <div class="form-group col-md-6">
                         {!! Form::label('citologia','Resultado Citología') !!}
-                        {!! Form::text('citologia',old('citologia'),['placeholder' => '','class'=>'form-control']) !!}
+                        {!! Form::text('citologia',$datos['citologia'],['placeholder' => '','class'=>'form-control']) !!}
                     </div>
 
                     <div class="form-group col-md-2">
@@ -343,7 +379,7 @@
                             {!! Form::select('dismenorrea',[
                             '0' => 'No',
                             '1' => 'Si'
-                            ], old('dismenorrea'),['class' => 'form-control','style' => 'width: 100%']) !!}
+                            ], $datos['dismenorrea'],['class' => 'form-control','style' => 'width: 100%']) !!}
                     </div>
                     
                 </div>
@@ -351,28 +387,28 @@
                  <div class="form-group col-md-12">
                     <div class="form-group col-md-2">
                         {!! Form::label('gravidez','Nro. Gravidez') !!}
-                        {!! Form::text('gravidez',old('gravidez'),['placeholder' => '','class'=>'form-control']) !!}
+                        {!! Form::text('gravidez',$datos['gravidez'],['placeholder' => '0','class'=>'form-control']) !!}
                     </div>
                 
                     <div class="form-group col-md-2">
                         {!! Form::label('partos','Nro. Partos') !!}
-                        {!! Form::text('partos',old('partos'),['placeholder' => '','class'=>'form-control']) !!}
+                        {!! Form::text('partos',$datos['partos'],['placeholder' => '0','class'=>'form-control']) !!}
                     </div>
                      
                     <div class="form-group col-md-2">
                         {!! Form::label('abortos','Nro. Abortos') !!}
-                        {!! Form::text('abortos',old('abortos'),['placeholder' => '','class'=>'form-control']) !!}
+                        {!! Form::text('abortos',$datos['abortos'],['placeholder' => '0','class'=>'form-control']) !!}
                     </div>
 
                    <div class="form-group col-md-2">
                         {!! Form::label('cesarias','Nro. Cesarias') !!}
-                        {!! Form::text('cesarias',old('cesarias'),['placeholder' => '','class'=>'form-control']) !!}
+                        {!! Form::text('cesarias',$datos['cesarias'],['placeholder' => '0','class'=>'form-control']) !!}
                     </div>
                 </div>
                    
                 <div class="col-md-12">
                     <div class="box-footer">
-                        <button type="button" class="btn btn-primary btn-sm">Actualizar</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Actualizar</button>
                     </div>
                 </div>
                 {!! Form::close() !!}
@@ -382,4 +418,25 @@
           <!-- /.row -->
     </div>
     <!-- /.box-body -->
-@endsection   
+@endif
+     <div class="modal fade"  id="myAlert" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Confirmación</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Esta seguro que desea continuar con la operación...? </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <a  class="btnsi"><button type="button" class="btn btn-primary">Si</button></a>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+          <!-- /.modal-dialog -->
+    </div>
+@endsection  

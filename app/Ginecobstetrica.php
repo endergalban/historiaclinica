@@ -12,7 +12,7 @@ class Ginecobstetrica extends Model
     protected $table = 'ginecobstetricas';
 
     protected $fillable = [
-        'historia_ocupacional_id','fum','fuc','citologia','gravidez','partos','abortos','cesarias',
+        'historia_ocupacional_id','fum','fuc','citologia','gravidez','partos','abortos','cesarias','dismenorrea'
     ];
 
     protected $dates = ['deleted_at','fum','fuc'];

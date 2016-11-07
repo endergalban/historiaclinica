@@ -77,7 +77,7 @@
 
                     <div class="form-group col-md-9">
                         {!! Form::label('empresa','Empresa') !!}
-                        {!! Form::text('empresa',$resultados['empresa'],['placeholder' => '','class'=>'form-control']) !!}
+                        {!! Form::text('empresa',$resultados['empresa'],['placeholder' => 'Nombre de la empresa donde labora','class'=>'form-control']) !!}
                     </div>
                 </div>
 
@@ -106,12 +106,12 @@
 
                     <div class="form-group col-md-4">
                         {!! Form::label('numerohijos','Nro. Hijos') !!}
-                        {!! Form::text('numerohijos',$resultados['numerohijos'],['placeholder' => '','class'=>'form-control']) !!}
+                        {!! Form::text('numerohijos',$resultados['numerohijos'],['placeholder' => '0','class'=>'form-control']) !!}
                     </div>
 
                     <div class="form-group col-md-4">
                         {!! Form::label('numeropersonascargo','Nro. Personas') !!}
-                        {!! Form::text('numeropersonascargo',$resultados['numeropersonascargo'],['placeholder' => '','class'=>'form-control']) !!}
+                        {!! Form::text('numeropersonascargo',$resultados['numeropersonascargo'],['placeholder' => '0','class'=>'form-control']) !!}
                     </div>
                 </div>
 

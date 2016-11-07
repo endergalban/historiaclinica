@@ -17,12 +17,12 @@ class Examen_visual extends Model
 
     protected $dates = ['deleted_at'];
 
-    public function tipo_examen_visuales()
+    public function tipo_examen_visual()
     {
         return $this->belongsTo('App\Tipo_examen_visual','tipo_examen_visual_id');
     }
 
-    public function ojos()
+    public function ojo()
     {
         return $this->belongsTo('App\Ojo','ojo_id');
     }

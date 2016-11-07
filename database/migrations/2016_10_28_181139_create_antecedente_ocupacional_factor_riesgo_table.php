@@ -19,6 +19,9 @@ class CreateAntecedenteOcupacionalFactorRiesgoTable extends Migration
             $table->foreign('antecedente_ocupacional_id','ant_ocu_fac_rie_01')->references('id')->on('antecedente_ocupacionales')->onDelete('restrict');
             $table->integer('factor_riesgo_id')->unsigned();
             $table->foreign('factor_riesgo_id','ant_ocu_fac_rie_02')->references('id')->on('factor_riesgos')->onDelete('restrict');
+            $table->string('medidacontrol');
+            $table->string('tiempoexposicion');
+            $table->string('otro');
             $table->timestamps();
         });
     }

@@ -22,4 +22,9 @@ class Patologico extends Model
     {
         return $this->belongsTo('App\Historia_ocupacional','historia_ocupacional_id');
     }
+
+    public function enfermedad()
+    {
+        return $this->belongsTo('App\Enfermedad','enfermedad_id');
+    }
 }

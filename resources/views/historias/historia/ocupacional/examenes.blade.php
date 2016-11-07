@@ -114,21 +114,21 @@
                     <div class="col-md-12">
                         <div class="form-group col-md-12">
                             {!! Form::label('examen','Examen') !!}
-                            {!! Form::text('examen',old('examen'),['placeholder' => '','class'=>'form-control']) !!}
+                            {!! Form::text('examen',old('examen'),['placeholder' => 'Descripción del examen','class'=>'form-control']) !!}
                         </div>
                     </div>
 
                     <div class="col-md-12">
                         <div class="form-group col-md-4">
                             {!! Form::label('fecha','Fecha') !!}
-                            {!! Form::text('fecha',old('fecha'),['placeholder' => '','class'=>'form-control datepicker','style'=>'position: relative; z-index: 100000']) !!}
+                            {!! Form::text('fecha',old('fecha'),['placeholder' => 'DD/MM/YYYY','class'=>'form-control datepicker','style'=>'position: relative; z-index: 100000']) !!}
                         </div>
                     </div>
                     
                     <div class="col-md-12">
                         <div class="form-group col-md-12">
                             {!! Form::label('resultado','Resultado') !!}
-                            {!! Form::textarea('resultado',old('resultado'),['placeholder' => '','class'=>'form-control','rows'=>'3']) !!}
+                            {!! Form::textarea('resultado',old('resultado'),['placeholder' => 'Resultado del examen realizado','class'=>'form-control','rows'=>'3']) !!}
                         </div>
                     </div>
                 </div>

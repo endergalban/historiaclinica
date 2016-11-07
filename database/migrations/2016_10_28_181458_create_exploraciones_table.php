@@ -15,8 +15,9 @@ class CreateExploracionesTable extends Migration
     {
         Schema::create('exploraciones', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('historia_ocupacional_id')->unsigned();$table->foreign('historia_ocupacional_id')->references('id')->on('historia_ocupacionales')->onDelete('restrict');
             $table->integer('organo_id')->unsigned();$table->foreign('organo_id')->references('id')->on('organos')->onDelete('restrict');
-            $table->boolean('resultado');
+            $table->string('resultado');
             $table->softDeletes();
             $table->timestamps();
         });

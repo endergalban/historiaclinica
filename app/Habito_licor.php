@@ -12,7 +12,7 @@ class Habito_licor extends Model
     protected $table='habito_licores';
 
     protected $fillable = [
-        'historia_ocupacional_id','tiempo_licor_id','tipolicor',
+        'historia_ocupacional_id','tiempo_licor_id','tipolicor','descripcion'
     ];
 
     protected $dates = ['deleted_at'];
