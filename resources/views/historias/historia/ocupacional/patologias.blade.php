@@ -66,7 +66,7 @@
         <div class="box-body">
             @include('flash::message')
             <div class="row">
-                 {!! Form::open(['class' => '','method' => 'POST','route' => ['historias.ocupacional.patologias.store_habitos',$paciente->id,$historia_ocupacional->id],'role' => 'form']) !!}
+                 {!! Form::open(['class' => '','method' => 'POST','route' => ['historias.ocupacional.patologias.store_habitos',$paciente->id,$historia_ocupacional->id],'role' => 'form','id'=>'myform']) !!}
                  {!! Form::hidden('historia_ocupacional_id', $historia_ocupacional->id) !!}
                 <div class="col-md-12">
                     <div class="form-group col-md-2">
@@ -75,17 +75,27 @@
                             'No' => 'No',
                             'Si' => 'Si',
                             'Exfumador' => 'Exfumador'
-                        ], $datos['fumador'],['class' => 'form-control','style' => 'width: 100%']) !!}
+                        ], $datos['fumador'],['class' => 'form-control fumador','style' => 'width: 100%']) !!}
                     </div>
                   
                     <div class="form-group col-md-3">
+
                         {!! Form::label('tiempo_fumador_id','Tiempo') !!}
-                        {!! Form::select('tiempo_fumador_id',$combos['tiempo_fumadores'], $datos['tiempo_fumador_id'],['class' => 'form-control','style' => 'width: 100%']) !!}
+                        @if($datos['fumador']=='No')
+                            {!! Form::select('tiempo_fumador_id',$combos['tiempo_fumadores'], $datos['tiempo_fumador_id'],['class' => 'form-control','style' => 'width: 100%','disabled'=>'disabled']) !!}
+                        @else
+                            {!! Form::select('tiempo_fumador_id',$combos['tiempo_fumadores'], $datos['tiempo_fumador_id'],['class' => 'form-control','style' => 'width: 100%']) !!}
+
+                        @endif
                     </div>
                
                     <div class="form-group col-md-3">
                         {!! Form::label('cantidad_fumador_id','Cantidas/días') !!}
-                        {!! Form::select('cantidad_fumador_id',$combos['cantidad_fumadores'], $datos['cantidad_fumador_id'],['class' => 'form-control','style' => 'width: 100%']) !!}
+                         @if($datos['fumador']=='No')
+                            {!! Form::select('cantidad_fumador_id',$combos['cantidad_fumadores'], $datos['cantidad_fumador_id'],['class' => 'form-control','style' => 'width: 100%','disabled'=>'disabled']) !!}
+                        @else
+                            {!! Form::select('cantidad_fumador_id',$combos['cantidad_fumadores'], $datos['cantidad_fumador_id'],['class' => 'form-control','style' => 'width: 100%']) !!}
+                        @endif
                     </div>
                 </div>
 
@@ -96,17 +106,26 @@
                             'No' => 'No',
                             'Si' => 'Si',
                             'Exbebedor' => 'Exbebedor'
-                        ], $datos['bebedor'],['class' => 'form-control','style' => 'width: 100%']) !!}
+                        ], $datos['bebedor'],['class' => 'form-control bebedor','style' => 'width: 100%']) !!}
                     </div>
                  
                     <div class="form-group col-md-3">
                         {!! Form::label('tiempo_licor_id','Tiempo') !!}
-                        {!! Form::select('tiempo_licor_id',$combos['tiempo_licores'], $datos['tiempo_licor_id'],['class' => 'form-control','style' => 'width: 100%']) !!}
+                        @if($datos['bebedor']=='No')
+                            {!! Form::select('tiempo_licor_id',$combos['tiempo_licores'], $datos['tiempo_licor_id'],['class' => 'form-control','style' => 'width: 100%','disabled'=>'disabled']) !!}
+                        @else
+                            {!! Form::select('tiempo_licor_id',$combos['tiempo_licores'], $datos['tiempo_licor_id'],['class' => 'form-control','style' => 'width: 100%']) !!}
+                        @endif
+
                     </div>
                   
                     <div class="form-group col-md-4">
                         {!! Form::label('tipolicor','Tipo de Licor') !!}
-                        {!! Form::text('tipolicor',$datos['tipolicor'],['placeholder' => '','class'=>'form-control']) !!}
+                        @if($datos['bebedor']=='No')
+                            {!! Form::text('tipolicor',$datos['tipolicor'],['placeholder' => '','class'=>'form-control','disabled'=>'disabled']) !!}
+                        @else
+                            {!! Form::text('tipolicor',$datos['tipolicor'],['placeholder' =>        '','class'=>'form-control']) !!}
+                        @endif
                     </div>
                 </div>
 
@@ -116,17 +135,26 @@
                         {!! Form::select('medicamento',[
                             'No' => 'No',
                             'Si' => 'Si',
-                        ], $datos['medicamento'],['class' => 'form-control','style' => 'width: 100%']) !!}
+                        ], $datos['medicamento'],['class' => 'form-control medicamento','style' => 'width: 100%']) !!}
                     </div>
 
                     <div class="form-group col-md-3">
                         {!! Form::label('regularidad_medicamento_id','Regularidad') !!}
-                        {!! Form::select('regularidad_medicamento_id',$combos['regularidad_medicamentos'], $datos['regularidad_medicamento_id'],['class' => 'form-control','style' => 'width: 100%']) !!}
+                        @if($datos['medicamento']=='No')
+                            {!! Form::select('regularidad_medicamento_id',$combos['regularidad_medicamentos'], $datos['regularidad_medicamento_id'],['class' => 'form-control','style' => 'width: 100%','disabled'=>'disabled']) !!}
+                        @else
+                            {!! Form::select('regularidad_medicamento_id',$combos['regularidad_medicamentos'], $datos['regularidad_medicamento_id'],['class' => 'form-control','style' => 'width: 100%']) !!}
+
+                        @endif
                     </div>
 
                     <div class="form-group col-md-6">
                         {!! Form::label('nombremedicamento','Cual?') !!}
-                        {!! Form::text('nombremedicamento',$datos['nombremedicamento'],['placeholder' => '','class'=>'form-control']) !!}
+                         @if($datos['medicamento']=='No')
+                            {!! Form::text('nombremedicamento',$datos['nombremedicamento'],['placeholder' => '','class'=>'form-control','disabled'=>'disabled']) !!}
+                        @else
+                            {!! Form::text('nombremedicamento',$datos['nombremedicamento'],['placeholder' => '','class'=>'form-control']) !!}
+                        @endif
                     </div>
                 </div>
 
@@ -439,4 +467,67 @@
         </div>
           <!-- /.modal-dialog -->
     </div>
+@endsection  
+@section('javascript')
+<script >
+
+$(document).on("change", ".fumador", function () {
+    texto=$("#fumador option:selected").html();
+    if(texto == 'No'){
+
+        $('#tiempo_fumador_id').val('1');
+        $('#cantidad_fumador_id').val('1');
+        $('#tiempo_fumador_id').prop('disabled', true);
+        $('#cantidad_fumador_id').prop('disabled', true);
+     
+    }else{
+        
+        $('#tiempo_fumador_id').prop('disabled', false);
+        $('#cantidad_fumador_id').prop('disabled', false);
+    }
+});
+
+$(document).on("change", ".bebedor", function () {
+    texto=$("#bebedor option:selected").html();
+    if(texto == 'No'){
+
+        $('#tiempo_licor_id').val('1');
+        $('#tipolicor').val('');
+        $('#tiempo_licor_id').prop('disabled', true);
+        $('#tipolicor').prop('disabled', true);
+     
+    }else{
+        
+        $('#tiempo_licor_id').prop('disabled', false);
+        $('#tipolicor').prop('disabled', false);
+    }
+});
+
+$(document).on("change", ".medicamento", function () {
+    texto=$("#medicamento option:selected").html();
+    if(texto == 'No'){
+
+        $('#regularidad_medicamento_id').val('1');
+        $('#nombremedicamento').val('');
+        $('#regularidad_medicamento_id').prop('disabled', true);
+        $('#nombremedicamento').prop('disabled', true);
+     
+    }else{
+        
+        $('#regularidad_medicamento_id').prop('disabled', false);
+        $('#nombremedicamento').prop('disabled', false);
+    }
+});
+
+
+$(document).on('submit', "#myform", function(e) { 
+    $('#tiempo_fumador_id').prop('disabled', false);
+    $('#cantidad_fumador_id').prop('disabled', false);
+    $('#tiempo_licor_id').prop('disabled', false);
+    $('#tipolicor').prop('disabled', false);
+    $('#regularidad_medicamento_id').prop('disabled', false);
+    $('#nombremedicamento').prop('disabled', false);
+});
+
+</script>  
 @endsection  

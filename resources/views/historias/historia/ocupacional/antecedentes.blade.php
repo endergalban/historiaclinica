@@ -86,8 +86,8 @@
                                     <td>{{ $antecedente_ocupacional->tiemposervicio }}</td>
                                     <td>{{ $antecedente_ocupacional->ocupacion }}</td>
                                     <td class="text-center">
-                                        <a href="#" ><span class="label label-info">Factores de Riesgos</span></a>
-                                        <a href="#" ><span class="label label-info">Lesiones</span></a>
+                                        <a href="{{ route('historias.ocupacional.antecedentes.riesgos',[$paciente->id,$historia_ocupacional->id,$antecedente_ocupacional->id]) }}" ><span class="label label-info">Factores de Riesgos</span></a>
+                                        <a href="{{ route('historias.ocupacional.antecedentes.lesiones',[$paciente->id,$historia_ocupacional->id,$antecedente_ocupacional->id]) }}" ><span class="label label-info">Lesiones</span></a>
                                         <a data-toggle="modal" data-url="{{ route('historias.ocupacional.antecedentes.destroy',[$paciente->id,$historia_ocupacional->id,$antecedente_ocupacional->id]) }}" class="open-modal" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
                                     </td>
                                 </tr>

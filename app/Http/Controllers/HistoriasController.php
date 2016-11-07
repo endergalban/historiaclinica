@@ -49,6 +49,9 @@ use App\Ginecobstetrica;
 use App\Habito_fumador;
 use App\Habito_licor;
 use App\Habito_medicamento;
+use App\Antecedente_ocupacional_factor_riesgo;
+use App\Lesion;
+use App\Traumatologico;
 use Auth;
 
 class HistoriasController extends Controller
@@ -947,13 +950,7 @@ class HistoriasController extends Controller
 
             $examenes_visuales[]=[ 'id' => $tipo_examen_visual->id,'descripcion' => $tipo_examen_visual->descripcion, 'examen_visuales' => $examen_visuales];
         }
-  //dd($examenes_visuales);
-
-
-
-
         $combos=[ 'lateralidades' => $lateralidades,'examenes_ocupacionales' => $examenes_ocupacionales,'examenes_visuales'=>$examenes_visuales];
-     
         return  view('historias.historia.ocupacional.fisicos')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional,'combos'=> $combos, 'datos' =>  $datos]);
     }
 
@@ -1073,9 +1070,6 @@ class HistoriasController extends Controller
     }
 
     
-       
-
-
 
     //ANTECEDENTES
     public function ocupacional_antecedentes($paciente_id,$historia_ocupacional_id)
@@ -1130,20 +1124,133 @@ class HistoriasController extends Controller
 
     }
 
-  
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function ocupacional_antecedentes_riesgos($paciente_id,$historia_ocupacional_id,$antecedente_ocupacional_id)
     {
-        //
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+        $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();
+        $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();
+
+        $antecedente_ocupacional = Antecedente_ocupacional::where(['id' => $antecedente_ocupacional_id] )->first();
+         $factor_riesgos=array();
+        $factor_riesgos_query = Factor_riesgo::with('tipo_factor_riesgo')->orderby('tipo_factor_riesgo_id')->get();
+        foreach ($factor_riesgos_query as $factor_riesgo) {
+            $factor_riesgos[$factor_riesgo->id]=$factor_riesgo->tipo_factor_riesgo->descripcion.' > '.$factor_riesgo->descripcion;
+        }
+        $factores = Antecedente_ocupacional_factor_riesgo::with('factor_riesgo.tipo_factor_riesgo')->where(['antecedente_ocupacional_id'=> $antecedente_ocupacional_id])->get();
+      
+        $combos=['factor_riesgos' => $factor_riesgos,'factores'=>$factores];
+        return  view('historias.historia.ocupacional.antecedente.riesgos')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional,'antecedente_ocupacional'=>$antecedente_ocupacional,'combos'=> $combos]);
     }
 
-   
+    public function ocupacional_antecedentes_riesgos_store(Request $request)
+    {
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();
+
+
+        $validator = Validator::make($request->all(), [
+            'factor_riesgo_id' => 'required|exists:factor_riesgos,id',   
+            'otro' => 'string|max:250',   
+            'tiempoexposicion' => 'string|max:250',
+            'medidacontrol' => 'string|max:250',
+            
+        ]);
+        if ($validator->fails()) {
+            flash(implode('<br>',$validator->errors()->all()), 'danger');
+            return redirect()->route('historias.ocupacional.antecedentes.riesgos',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id,$antecedente_ocupacional_id])->withInput();
+        }else{
+
+            $antecedente_ocupacional = Antecedente_ocupacional::where(['id' => $request->antecedente_ocupacional_id])->first();
+            if(!is_null($antecedente_ocupacional))
+            {
+                if(is_null($request->otro)){
+                    $otro='';
+                }else{
+                    $otro=$request->otro;
+                }
+                $Antecedente_ocupacional_factor_riesgo=new Antecedente_ocupacional_factor_riesgo;
+                $Antecedente_ocupacional_factor_riesgo->tiempoexposicion=$request->tiempoexposicion;
+                $Antecedente_ocupacional_factor_riesgo->medidacontrol=$request->medidacontrol;
+                $Antecedente_ocupacional_factor_riesgo->otro=$otro;
+                $Antecedente_ocupacional_factor_riesgo->factor_riesgo()->associate($request->factor_riesgo_id);
+                $Antecedente_ocupacional_factor_riesgo->antecedente_ocupacional()->associate($antecedente_ocupacional);
+                $Antecedente_ocupacional_factor_riesgo->save();
+                flash('Se ha registrado la información de forma exitosa!', 'success');
+            }
+            return redirect()->route('historias.ocupacional.antecedentes.riesgos',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id,$antecedente_ocupacional->id]);
+        }
+    }
+
+    public function ocupacional_antecedentes_destroy_riesgo($paciente_id,$historia_ocupacional_id,$antecedente_ocupacional_id,$antecedente_ocupacional_factor_riesgo_id)
+    {
+        $Antecedente_ocupacional_factor_riesgo = Antecedente_ocupacional_factor_riesgo::findOrFail($antecedente_ocupacional_factor_riesgo_id);
+        $Antecedente_ocupacional_factor_riesgo->delete();
+        flash('La información se ha eliminado de forma exitosa!', 'danger');
+        return redirect()->route('historias.ocupacional.antecedentes.riesgos',[$paciente_id,$historia_ocupacional_id,$antecedente_ocupacional_id]);
+    }
+
+    public function ocupacional_antecedentes_lesiones($paciente_id,$historia_ocupacional_id,$antecedente_ocupacional_id)
+    {
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+        $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();
+        $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();
+
+        $antecedente_ocupacional = Antecedente_ocupacional::where(['id' => $antecedente_ocupacional_id] )->first();
+        $lesiones=array();
+        $lesiones_query = Lesion::orderby('descripcion')->get();
+        foreach ($lesiones_query as $lesion) {
+            $lesiones[$lesion->id]=$lesion->descripcion;
+        }
+        $traumatologicos = Traumatologico::with('lesion')->where(['antecedente_ocupacional_id'=> $antecedente_ocupacional_id])->get();
+      
+        $combos=['lesiones' => $lesiones,'traumatologicos'=>$traumatologicos];
+        return  view('historias.historia.ocupacional.antecedente.traumatologicos')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional,'antecedente_ocupacional'=>$antecedente_ocupacional,'combos'=> $combos]);
+    }
+
+    public function ocupacional_antecedentes_lesiones_store(Request $request)
+    {
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();
+
+
+        $validator = Validator::make($request->all(), [
+            'lesion_id' => 'required|exists:lesiones,id',   
+            'otros' => 'string|max:250',   
+            'secuela' => 'string|max:250',
+            'arl' => 'string|max:250',
+            
+        ]);
+        if ($validator->fails()) {
+            flash(implode('<br>',$validator->errors()->all()), 'danger');
+            return redirect()->route('historias.ocupacional.antecedentes.lesiones',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id,$antecedente_ocupacional_id])->withInput();
+        }else{
+
+            $antecedente_ocupacional = Antecedente_ocupacional::where(['id' => $request->antecedente_ocupacional_id])->first();
+            if(!is_null($antecedente_ocupacional))
+            {
+                if(is_null($request->otro)){
+                    $otro='';
+                }else{
+                    $otro=$request->otro;
+                }
+                $Traumatologico=new Traumatologico;
+                $Traumatologico->secuela=$request->secuela;
+                $Traumatologico->arl=$request->arl;
+                $Traumatologico->otro=$otro;
+                $Traumatologico->lesion()->associate($request->lesion_id);
+                $Traumatologico->antecedente_ocupacional()->associate($antecedente_ocupacional);
+                $Traumatologico->save();
+                flash('Se ha registrado la información de forma exitosa!', 'success');
+            }
+            return redirect()->route('historias.ocupacional.antecedentes.lesiones',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id,$antecedente_ocupacional->id]);
+        }
+    }
+
+    public function ocupacional_antecedentes_destroy_lesion($paciente_id,$historia_ocupacional_id,$antecedente_ocupacional_id,$tramatologico_id)
+    {
+        $Traumatologico = Traumatologico::findOrFail($tramatologico_id);
+        $Traumatologico->delete();
+        flash('La información se ha eliminado de forma exitosa!', 'danger');
+        return redirect()->route('historias.ocupacional.antecedentes.lesiones',[$paciente_id,$historia_ocupacional_id,$antecedente_ocupacional_id]);
+    }
+  
         
 }

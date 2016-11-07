@@ -22,6 +22,7 @@ class CreateAntecedenteOcupacionalFactorRiesgoTable extends Migration
             $table->string('medidacontrol');
             $table->string('tiempoexposicion');
             $table->string('otro');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

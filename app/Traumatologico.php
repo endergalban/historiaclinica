@@ -12,7 +12,7 @@ class Traumatologico extends Model
     protected $table = 'traumatologicos';
 
 	protected $fillable = [
-        'antecedente_ocupacional_id','lesion_id','secuelas','otros','arl',
+        'antecedente_ocupacional_id','lesion_id','secuela','otros','arl',
     ];
 
     protected $dates = ['deleted_at'];
@@ -22,7 +22,7 @@ class Traumatologico extends Model
         return $this->belongsTo('App\Antecedente_ocupacional','antecedente_ocupacional_id');
     }
 
-    public function lesiones()
+    public function lesion()
     {
         return $this->belongsTo('App\Lesion','lesion_id');
     }

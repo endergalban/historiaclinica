@@ -59,7 +59,9 @@
 						
 									<td class="text-center">
 									<a  data-url="{{ route('historias.historia',[$user->paciente->id,'ocupacional']) }}" class="open-modal2" href="#"><span class="label label-default">Ocupacional</span></a>
-									<a data-url="{{ route('historias.historia',[$user->paciente->id,'ginecologia']) }}" class="open-modal2" href="#"><span class="label label-default">Ginecología</span></a>
+									@if( $user->genero=='Femenino')
+										<a data-url="{{ route('historias.historia',[$user->paciente->id,'ginecologia']) }}" class="open-modal2" href="#"><span class="label label-default">Ginecología</span></a>
+									@endif
 									<a  data-url="{{ route('historias.historia',[$user->paciente->id,'pediatria']) }}" class="open-modal2" href="#"><span class="label label-default">Pediatría</span></a>
 									</td>
 								</tr>
