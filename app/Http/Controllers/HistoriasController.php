@@ -114,25 +114,7 @@ class HistoriasController extends Controller
         return  view('historias.index')->with(['users'=>$users,'medicos'=>$medicos ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-   
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
+     /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -208,12 +190,6 @@ class HistoriasController extends Controller
 
     }
 
-     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy_ocupacional($paciente_id,$medico_id,$historia_ocupacional_id)
     {
         $historia_ocupacional = Historia_ocupacional::findOrFail($historia_ocupacional_id);
@@ -375,10 +351,11 @@ class HistoriasController extends Controller
         $combos=array();
         $tiempo_fumadores = Tiempo_fumador::all()->sortBy('id')->pluck('descripcion','id');
         $cantidad_fumadores = Cantidad_fumador::all()->sortBy('id')->pluck('descripcion','id');
-        $tiempo_licores = Tiempo_licor::all()->sortBy('id')->pluck('descripcion','id');
+        $tiempo_licores = Tiempo_licor::where('tipo','<>','Exbebedor')->pluck('descripcion','id');
+        $tiempo_licores2 = Tiempo_licor::where('tipo','<>','Si')->pluck('descripcion','id');
         $regularidad_medicamentos = Regularidad_medicamento::all()->sortBy('id')->pluck('descripcion','id');
         $enfermedades = Enfermedad::all()->sortBy('descripcion')->pluck('descripcion','id');
-        $combos=['enfermedades' => $enfermedades,'tiempo_fumadores' => $tiempo_fumadores,'cantidad_fumadores' => $cantidad_fumadores,'tiempo_licores' => $tiempo_licores,'regularidad_medicamentos' => $regularidad_medicamentos];
+        $combos=['enfermedades' => $enfermedades,'tiempo_fumadores' => $tiempo_fumadores,'cantidad_fumadores' => $cantidad_fumadores,'tiempo_licores' => $tiempo_licores,'tiempo_licores2' => $tiempo_licores2,'regularidad_medicamentos' => $regularidad_medicamentos];
 
         $Habito_fumador = Habito_fumador::where(['historia_ocupacional_id'=> $historia_ocupacional->id])->first();
         if($Habito_fumador)
@@ -397,12 +374,26 @@ class HistoriasController extends Controller
         if($Habito_licor)
         {
             $bebedor=$Habito_licor->descripcion;
-            $tiempo_licor_id=$Habito_licor->tiempo_licor_id;
             $tipolicor=$Habito_licor->tipolicor;
+            if($Habito_licor->descripcion=='Si'){
+                $tiempo_licor_id=$Habito_licor->tiempo_licor_id;
+                $tiempo_licor2_id=1;
+
+            }elseif($Habito_licor->descripcion=='Exbebedor'){
+
+                $tiempo_licor_id=1;
+                $tiempo_licor2_id=$Habito_licor->tiempo_licor_id;
+
+            }else{
+                $tiempo_licor_id=1;
+                $tiempo_licor2_id=1;
+            }
+            
         }else{
 
             $bebedor='No';
             $tiempo_licor_id=1;
+            $tiempo_licor2_id=1;
             $tipolicor='';
         }
 
@@ -449,7 +440,7 @@ class HistoriasController extends Controller
 
         $enfermedades = Patologico::where(['historia_ocupacional_id'=> $historia_ocupacional->id])->with('enfermedad')->get();
         $inmunizaciones = Inmunizacion::where(['historia_ocupacional_id'=> $historia_ocupacional->id])->get();
-        $datos=['enfermedades'=>$enfermedades,'inmunizaciones'=>$inmunizaciones,'fumador'=> $fumador, 'tiempo_fumador_id'=> $tiempo_fumador_id, 'cantidad_fumador_id'=> $cantidad_fumador_id, 'nombremedicamento'=> $nombremedicamento, 'regularidad_medicamento_id'=> $regularidad_medicamento_id, 'medicamento'=> $medicamento, 'bebedor'=> $bebedor, 'tiempo_licor_id'=> $tiempo_licor_id, 'tipolicor'=> $tipolicor, 'fum' => $fum, 'fuc' => $fuc, 'citologia' => $citologia, 'dismenorrea' => $dismenorrea, 'gravidez' => $gravidez, 'partos' => $partos, 'cesarias' => $cesarias,'abortos'=>$abortos];
+        $datos=['enfermedades'=>$enfermedades,'inmunizaciones'=>$inmunizaciones,'fumador'=> $fumador, 'tiempo_fumador_id'=> $tiempo_fumador_id, 'cantidad_fumador_id'=> $cantidad_fumador_id, 'nombremedicamento'=> $nombremedicamento, 'regularidad_medicamento_id'=> $regularidad_medicamento_id, 'medicamento'=> $medicamento, 'bebedor'=> $bebedor, 'tiempo_licor_id'=> $tiempo_licor_id, 'tiempo_licor2_id'=> $tiempo_licor2_id, 'tipolicor'=> $tipolicor, 'fum' => $fum, 'fuc' => $fuc, 'citologia' => $citologia, 'dismenorrea' => $dismenorrea, 'gravidez' => $gravidez, 'partos' => $partos, 'cesarias' => $cesarias,'abortos'=>$abortos];
 
         return  view('historias.historia.ocupacional.patologias')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional,'combos'=>$combos,'datos'=>$datos ]);
     }
@@ -465,6 +456,7 @@ class HistoriasController extends Controller
 
             'bebedor' => 'required|string|max:10', 
             'tiempo_licor_id' => 'required|exists:tiempo_licores,id', 
+            'tiempo_licor2_id' => 'required|exists:tiempo_licores,id', 
             'tipolicor' => 'string|max:150',
             
             'medicamento'=>'required|string|max:10',
@@ -494,7 +486,19 @@ class HistoriasController extends Controller
                 $Habito_licor=new Habito_licor;
             } 
             $Habito_licor->descripcion=$request->bebedor;
-            $Habito_licor->tiempo_licor()->associate($request->tiempo_licor_id);
+
+            if($request->tiempo_licor_id==1 && $request->tiempo_licor2_id==1)
+            {
+                $tiempo_licor_id=1;
+
+            }elseif($request->tiempo_licor_id==1){
+                $tiempo_licor_id=$request->tiempo_licor2_id;
+
+            }else{
+                $tiempo_licor_id=$request->tiempo_licor_id;
+
+            }
+            $Habito_licor->tiempo_licor()->associate($tiempo_licor_id);
             $Habito_licor->tipolicor=$request->tipolicor;
             $Habito_licor->historia_ocupacional()->associate($historia_ocupacional);
             $Habito_licor->save();

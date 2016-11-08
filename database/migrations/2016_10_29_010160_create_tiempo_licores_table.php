@@ -16,6 +16,7 @@ class CreateTiempoLicoresTable extends Migration
         Schema::create('tiempo_licores', function (Blueprint $table) {
             $table->increments('id');
             $table->string('descripcion');
+            $table->string('tipo',10);
             $table->softDeletes();
             $table->timestamps();
         });

@@ -112,9 +112,27 @@
                     <div class="form-group col-md-3">
                         {!! Form::label('tiempo_licor_id','Tiempo') !!}
                         @if($datos['bebedor']=='No')
-                            {!! Form::select('tiempo_licor_id',$combos['tiempo_licores'], $datos['tiempo_licor_id'],['class' => 'form-control','style' => 'width: 100%','disabled'=>'disabled']) !!}
+
+                                {!! Form::select('tiempo_licor_id',$combos['tiempo_licores'], $datos['tiempo_licor_id'],['class' => 'form-control','style' => 'width:100%','disabled'=>'disabled']) !!}
+
+                                {!! Form::select('tiempo_licor2_id',$combos['tiempo_licores2'], $datos['tiempo_licor2_id'],['class' => 'form-control','style' => 'width: 100%;display:none','disabled'=>'disabled','id'=>'tiempo_licor2_id']) !!}
+
                         @else
-                            {!! Form::select('tiempo_licor_id',$combos['tiempo_licores'], $datos['tiempo_licor_id'],['class' => 'form-control','style' => 'width: 100%']) !!}
+
+                            @if($datos['bebedor']=='Si')
+                                {!! Form::select('tiempo_licor_id',$combos['tiempo_licores'], $datos['tiempo_licor_id'],['class' => 'form-control','style' => 'width: 100%']) !!}
+                                
+                                {!! Form::select('tiempo_licor2_id',$combos['tiempo_licores2'], $datos['tiempo_licor2_id'],['class' => 'form-control','style' => 'width: 100%;display:none;','id'=>'tiempo_licor2_id']) !!}
+                            @endif
+
+
+                            @if($datos['bebedor']=='Exbebedor')
+                                {!! Form::select('tiempo_licor_id',$combos['tiempo_licores'], $datos['tiempo_licor_id'],['class' => 'form-control','style' => 'width: 100%;display:none;']) !!}
+                                
+                                {!! Form::select('tiempo_licor2_id',$combos['tiempo_licores2'], $datos['tiempo_licor2_id'],['class' => 'form-control','style' => 'width: 100%','id'=>'tiempo_licor2_id']) !!}
+                            @endif
+
+
                         @endif
 
                     </div>
@@ -492,14 +510,39 @@ $(document).on("change", ".bebedor", function () {
     if(texto == 'No'){
 
         $('#tiempo_licor_id').val('1');
+        $('#tiempo_licor2_id').val('1');
         $('#tipolicor').val('');
+
         $('#tiempo_licor_id').prop('disabled', true);
+        $('#tiempo_licor2_id').prop('disabled', true);
         $('#tipolicor').prop('disabled', true);
+
+        $('#tiempo_licor_id').show();
+        $('#tiempo_licor2_id').hide();
      
-    }else{
+    }
+    if(texto == 'Si'){
+
+        $('#tiempo_licor2_id').val('1');
         
         $('#tiempo_licor_id').prop('disabled', false);
+        $('#tiempo_licor2_id').prop('disabled', false);
         $('#tipolicor').prop('disabled', false);
+
+        $('#tiempo_licor_id').show();
+        $('#tiempo_licor2_id').hide();
+    
+    }
+    if(texto == 'Exbebedor'){
+        $('#tiempo_licor_id').val('1');
+
+        $('#tiempo_licor_id').prop('disabled', false);
+        $('#tiempo_licor2_id').prop('disabled', false);
+        $('#tipolicor').prop('disabled', false);
+
+        $('#tiempo_licor_id').hide();
+        $('#tiempo_licor2_id').show();
+
     }
 });
 
@@ -524,6 +567,7 @@ $(document).on('submit', "#myform", function(e) {
     $('#tiempo_fumador_id').prop('disabled', false);
     $('#cantidad_fumador_id').prop('disabled', false);
     $('#tiempo_licor_id').prop('disabled', false);
+    $('#tiempo_licor2_id').prop('disabled', false);
     $('#tipolicor').prop('disabled', false);
     $('#regularidad_medicamento_id').prop('disabled', false);
     $('#nombremedicamento').prop('disabled', false);
