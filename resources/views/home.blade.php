@@ -13,5 +13,5 @@
 @endsection
 
 @section('content')
-
+ 	@include('flash::message')
 @endsection

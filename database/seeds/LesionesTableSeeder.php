@@ -25,7 +25,7 @@ class LesionesTableSeeder extends Seeder
 		$lesion->save();$lesion= New Lesion;
     	$lesion->descripcion = 'Craneano';
 		$lesion->save();$lesion= New Lesion;
-    	$lesion->descripcion = 'Otro';
+    	$lesion->descripcion = 'Otros';
 		$lesion->save();
     }
 }

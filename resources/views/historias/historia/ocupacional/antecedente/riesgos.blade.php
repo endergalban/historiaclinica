@@ -1,16 +1,18 @@
 @extends('layouts.main')
 
 @section('content-header')
-    <h1>
+     <h1>
         Historias
-        <small>Diagnóstico Médico</small>
+        <small>Antecedentes Ocupacionales Riesgos</small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('home') }}"><i class="fa fa-home"></i> Escritorio</a></li>
         <li><a href="{{ route('historias.index') }}">Historias</a></li>
         <li><a href="{{ route('historias.historia',[$paciente->id,'ocupacional',$medico->id]) }}">Historia Ocupacional</a></li>
-        <li class="active">Diagnóstico Médico</li>
+        <li><a href="{{ route('historias.ocupacional.antecedentes',[$paciente->id,$historia_ocupacional->id,$antecedente_ocupacional->id]) }}">Antecedentes Ocupacionales</a></li>
+        <li class="active">Riesgos</li>
     </ol>
+
 @endsection
 
 @section('content')
@@ -25,13 +27,16 @@
                 <div class="col-md-12 no-padding">
                     <div class="form-group col-md-1">
                         <img class='profile-user-img img-responsive' src="{{ asset('images/users/'.$paciente->user->imagen) }}" />
-                    </div> 
+                    </div>
                 </div>
-                <div class="form-group col-md-12">
+               <div class="form-group col-md-12">
                     <h3 class="box-title"><b>Paciente:</b> {{ $paciente->user->primernombre.' '.$paciente->user->segundonombre.' '.$paciente->user->primerapellido.' '.$paciente->user->segundoapellido.' : '.$paciente->user->tipodocumento.' '.$paciente->user->numerodocumento }}</h3>
                 </div>    
                 <div class="form-group col-md-12">
                     <h3 class="box-title"><b>Médico:</b> {{ $medico->user->primernombre.' '.$medico->user->segundonombre.' '.$medico->user->primerapellido.' '.$medico->user->segundoapellido.' : '.$medico->user->tipodocumento.' '.$medico->user->numerodocumento }}</h3>
+                </div>
+                <div class="form-group col-md-12">
+                    <h3 class="box-title"><b>Empresa:</b> {{ $antecedente_ocupacional->empresa }}</h3>
                 </div>
             </div>  
             <div class="box-tools pull-right">
@@ -54,51 +59,59 @@
         </div>
     </div>
 
+<!--****************Información Ocupacional ****************-->
+  
     <div class="box box-default">
         <div class="box-header with-border">
-            <h3 class="box-title">Diagnóstico del Médico</h3>
+            <h3 class="box-title">Factores de Riesgos</h3>
             <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
             </div>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-            @include('flash::message')
             <div class="row">
-               <div class="col-md-12">
+                   <div class="col-md-12">
                     <div class="box-body table-responsive">
                         <table id="example2" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th class="text-center">Código</th>
-                                    <th>Nombre</th>
-                                    <th>Concepto</th>
+                                    <th>Tipo de Factor</th>
+                                    <th>Descripción</th>
+                                    <th>Tiempo de Exposición</th>
+                                    <th>Medidas de Control</th>
                                     <th class="text-center">Acción</th>
-                                </tr>
+                                <tr>
                             </thead>
                             <tbody>
-                            @foreach($combos['diagnosticos'] as $diagnostico)
-                                 <tr>
-                                    <td class="text-center">{{ $diagnostico->tipo_diagnostico->codigo }}</td>
-                                    <td>{{ $diagnostico->tipo_diagnostico->descripcion }}</td>
-                                    <td>{{ $diagnostico->concepto }}</td>
+                                @foreach($combos['factores'] as $factor)
+                                <tr>
+                                    <td>{{ $factor->factor_riesgo->tipo_factor_riesgo->descripcion }}</td>
+                                    @if( $factor->factor_riesgo->descripcion == 'Otros' && $factor->otro !='' )
+                                        <td>{{ $factor->otro }}</td>
+                                    @else
+                                        <td>{{ $factor->factor_riesgo->descripcion }}</td>
+                                    @endif
+                                    <td>{{ $factor->tiempoexposicion }}</td>
+                                    <td>{{ $factor->medidacontrol }}</td>
                                     <td class="text-center">
-                                        <a data-toggle="modal" data-url="{{ route('historias.ocupacional.diagnosticos.destroy',[$paciente->id,$historia_ocupacional->id,$diagnostico->id]) }}" class="open-modal" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
+                                        <a data-toggle="modal" data-url="{{ route('historias.ocupacional.antecedentes.destroy_riesgo',[$paciente->id,$historia_ocupacional->id,$antecedente_ocupacional->id,$factor->id]) }}" class="open-modal" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
                                     </td>
                                 </tr>
-                            @endforeach
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="box-footer">
-                        <button type="button" data-toggle="modal" href="#myAlert2" class="btn btn-primary btn-sm open-modal">Agregar Diagnóstico Médico</button>
+                        <button type="button" data-toggle="modal" href="#myAlert2" class="btn btn-primary btn-sm open-modal">Agregar Factor de Riesgo</button>
                     </div>
                 </div>
+                
             </div>
         </div>
-    </div> 
+    </div>
 
     <div class="modal fade"  id="myAlert2" tabindex="-1">
         <div class="modal-dialog">
@@ -106,30 +119,43 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Agregando Diagnóstico Médico</h4>
+                    <h4 class="modal-title">Agregando Factor de Riesgo</h4>
                 </div>
-                 {!! Form::open(['class' => '','method' => 'POST','route' => ['historias.ocupacional.diagnosticos.store',$paciente->id,$historia_ocupacional->id],'role' => 'form']) !!}
-                 {!! Form::hidden('historia_ocupacional_id', $historia_ocupacional->id) !!}
+                {!! Form::open(['class' => '','method' => 'POST','route' => ['historias.ocupacional.antecedentes.riesgos.store',$paciente->id,$historia_ocupacional->id,$antecedente_ocupacional->id],'role' => 'form']) !!}
+                {!! Form::hidden('historia_ocupacional_id', $historia_ocupacional->id) !!}
+                {!! Form::hidden('antecedente_ocupacional_id', $antecedente_ocupacional->id) !!}
+             
                 <div class="modal-body">
                     <div class="col-md-12">
                         <div class="form-group col-md-12">
-                            {!! Form::label('tipo_diagnostico_id','Diagnóstico') !!}
-                            {!! Form::select('tipo_diagnostico_id',$combos['tipo_diagnosticos'], old('tipo_diagnostico_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
+                            {!! Form::label('factor_riesgo_id','Tipo de Riesgo') !!}
+                            {!! Form::select('factor_riesgo_id',$combos['factor_riesgos'], old('factor_riesgo_id'),['class' => 'form-control factor_riesgo_id','style' => 'width: 100%']) !!}
                         </div>
                     </div>
-                    
+                    <div class="col-md-12">
+                        <div class="form-group col-md-12">
+                            {!! Form::label('otro','Otro tipo de Riesgo') !!}
+                            {!! Form::text('otro',old('otro'),['placeholder' => '','class'=>'form-control','disabled'=>'form-disabled']) !!}
+                        </div>
+                    </div>
+                    <div class="form-group col-md-12">
+                        <div class="form-group col-md-8">
+                            {!! Form::label('tiempoexposicion','Tiempo de Exposición') !!}
+                            {!! Form::text('tiempoexposicion',old('tiempoexposicion'),['placeholder' => 'Tiempo que duro expuesto','class'=>'form-control']) !!}
+                        </div>
+                    </div>
                     <div class="form-group col-md-12">
                         <div class="form-group col-md-12">
-                            {!! Form::label('concepto','Concepto') !!}
-                            {!! Form::textarea('concepto',old('concepto'),['placeholder' => 'Observación general','class'=>'form-control','rows'=>'3']) !!}
+                            {!! Form::label('medidacontrol','Medidas de Control') !!}
+                            {!! Form::textarea('medidacontrol',old('medidacontrol'),['placeholder' => '','class'=>'form-control','rows'=>'3']) !!}
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-default">Agregar</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" >Agregar</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                 </div>
-                {!! Form::close() !!}
+                 {!! Form::close() !!}
             </div>
         </div>
     </div>
@@ -152,4 +178,23 @@
             </div>
         </div>
     </div>
-  @endsection
+@endsection
+
+
+@section('javascript')
+<script >
+
+$(document).on("change", ".factor_riesgo_id", function () {
+    texto=$("#factor_riesgo_id option:selected").html();
+    if(texto.slice(-5,-1) == 'Otro'){
+
+        $('#otro').prop('disabled', false);
+        $('#otro').focus();
+    }else{
+        $('#otro').val('');
+        $('#otro').prop('disabled', true);
+    }
+});
+
+</script>  
+@endsection  

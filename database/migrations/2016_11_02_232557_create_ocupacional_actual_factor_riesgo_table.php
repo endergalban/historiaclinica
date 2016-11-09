@@ -19,7 +19,12 @@ class CreateOcupacionalActualFactorRiesgoTable extends Migration
             $table->foreign('ocupacional_actual_id','ocu_act_fac_rie_01')->references('id')->on('ocupacional_actuales')->onDelete('restrict');
             $table->integer('factor_riesgo_id')->unsigned();
             $table->foreign('factor_riesgo_id','ocu_act_fac_rie_02')->references('id')->on('factor_riesgos')->onDelete('restrict');
+            $table->string('medidacontrol');
+            $table->string('tiempoexposicion');
+            $table->string('otro');
+            $table->softDeletes();
             $table->timestamps();
+
         });
     }
 
@@ -30,6 +35,6 @@ class CreateOcupacionalActualFactorRiesgoTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('ocupacional_actual_factor_riesgo');
     }
 }

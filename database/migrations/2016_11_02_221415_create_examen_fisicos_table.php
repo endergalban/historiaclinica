@@ -15,6 +15,7 @@ class CreateExamenFisicosTable extends Migration
     {
         Schema::create('examen_fisicos', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('historia_ocupacional_id')->unsigned();$table->foreign('historia_ocupacional_id')->references('id')->on('historia_ocupacionales')->onDelete('restrict');
             $table->integer('lateralidad_id')->unsigned(); $table->foreign('lateralidad_id')->references('id')->on('lateralidades')->onDelete('restrict');
             $table->float('peso');
             $table->float('talla');

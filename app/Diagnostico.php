@@ -12,19 +12,19 @@ class Diagnostico extends Model
 	protected $table = 'diagnosticos';
 
 	protected $fillable = [
-        'concepto','id_tipo_diagnostico'
+        'concepto','tipo_diagnostico_id','historia_ocupacional_id'
     ];
     
     protected $dates = ['deleted_at'];
 
     public function tipo_diagnostico()
     {
-        return $this->belongs('App\Tipo_diagnostico','id_tipo_diagnostico');
+        return $this->belongsTo('App\Tipo_diagnostico','tipo_diagnostico_id');
     }
 
-    public function historia_ocupacionales()
+    public function historia_ocupacional()
     {
-        return $this->belongsToMany('App\Historia_ocupacional','historia_ocupacional_diagnostico','diagnostico_id','historia_ocupacional_id');
+        return $this->belongsTo('App\Historia_ocupacional','historia_ocupacional_id');
     }
        
 }

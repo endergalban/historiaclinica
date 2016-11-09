@@ -17,11 +17,11 @@ class RegularidadMedicamentosTableSeeder extends Seeder
         $Regularidad_medicamento->save();
 
         $Regularidad_medicamento= New Regularidad_medicamento;
-        $Regularidad_medicamento->descripcion = '1 o mas dosis al día';
+        $Regularidad_medicamento->descripcion = 'No consume regularmente';
         $Regularidad_medicamento->save();
 
         $Regularidad_medicamento= New Regularidad_medicamento;
-        $Regularidad_medicamento->descripcion = 'Mas de 3 dosis al día';
+        $Regularidad_medicamento->descripcion = 'Si consume regularmente';
         $Regularidad_medicamento->save();
 
       

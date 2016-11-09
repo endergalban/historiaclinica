@@ -20,8 +20,8 @@ class ExamenVisualesTableSeeder extends Seeder
         foreach ($tipo_examen_visuales_query as $tipo_examen_visual) {
     		 foreach ($ojos_query as $ojo) {
     		 	$Examen_visual= New Examen_visual;
-	       		$Examen_visual->ojos()->associate($ojo);
-	       		$Examen_visual->tipo_examen_visuales()->associate($tipo_examen_visual);
+	       		$Examen_visual->ojo()->associate($ojo);
+	       		$Examen_visual->tipo_examen_visual()->associate($tipo_examen_visual);
 				$Examen_visual->save(); 
     		 }
         }

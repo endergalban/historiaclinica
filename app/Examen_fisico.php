@@ -5,11 +5,11 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Examen_fisicos extends Model
+class Examen_fisico extends Model
 {
 	 use SoftDeletes;
 	
-    protected $table='historia_ocupacionales';
+    protected $table='examen_fisicos';
 
     protected $fillable = [
         'historia_ocupacional_id','lateralidad_id','peso','talla','imc','ta','fc','fr',

@@ -12,7 +12,7 @@ class Habito_fumador extends Model
     protected $table='habito_fumadores';
 
     protected $fillable = [
-        'historia_ocupacional_id','tiempo_fumador_id','cantidad_fumador_id',
+        'historia_ocupacional_id','tiempo_fumador_id','cantidad_fumador_id','descripcion'
     ];
 
     protected $dates = ['deleted_at'];

@@ -27,7 +27,12 @@
                         <img class='profile-user-img img-responsive' src="{{ asset('images/users/'.$paciente->user->imagen) }}" />
                     </div>
                 </div>
-                <h3 class="box-title">{{ $paciente->user->primernombre.' '.$paciente->user->segundonombre.' '.$paciente->user->primerapellido.' '.$paciente->user->segundoapellido.' : '.$paciente->user->tipodocumento.' '.$paciente->user->numerodocumento }}</h3>
+               <div class="form-group col-md-12">
+                    <h3 class="box-title"><b>Paciente:</b> {{ $paciente->user->primernombre.' '.$paciente->user->segundonombre.' '.$paciente->user->primerapellido.' '.$paciente->user->segundoapellido.' : '.$paciente->user->tipodocumento.' '.$paciente->user->numerodocumento }}</h3>
+                </div>    
+                <div class="form-group col-md-12">
+                    <h3 class="box-title"><b>Médico:</b> {{ $medico->user->primernombre.' '.$medico->user->segundonombre.' '.$medico->user->primerapellido.' '.$medico->user->segundoapellido.' : '.$medico->user->tipodocumento.' '.$medico->user->numerodocumento }}</h3>
+                </div>
             </div>  
             <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
@@ -61,49 +66,51 @@
         <div class="box-body">
             @include('flash::message')
             <div class="row">
-                {!! Form::open(['class' => '','method' => 'POST','route' => 'especialidades.store','role' => 'form']) !!}
-
+                {!! Form::open(['class' => '','method' => 'POST','route' => ['historias.ocupacional.fisicos.store',$paciente->id,$historia_ocupacional->id],'role' => 'form']) !!}
+                {!! Form::hidden('historia_ocupacional_id', $historia_ocupacional->id) !!}
                 <div class="col-md-12">
-                    <div class="form-group col-md-1">
+                    <div class="form-group col-md-2">
                         {!! Form::label('peso','Peso') !!}
-                        {!! Form::text('peso',old('peso'),['placeholder' => '','class'=>'form-control']) !!}
-                    </div>
-
-                    <div class="form-group col-md-1">
-                        {!! Form::label('talla','Talla') !!}
-                        {!! Form::text('talla',old('talla'),['placeholder' => '','class'=>'form-control']) !!}
-                    </div>
-
-                    <div class="form-group col-md-1">
-                        {!! Form::label('imc','IMC') !!}
-                        {!! Form::text('imc',old('imc'),['placeholder' => '','class'=>'form-control']) !!}
-                    </div>
-
-                    <div class="form-group col-md-1">
-                        {!! Form::label('ta','TA') !!}
-                        {!! Form::text('ta',old('ta'),['placeholder' => '','class'=>'form-control']) !!}
-                    </div>
-
-                     <div class="form-group col-md-1">
-                        {!! Form::label('fc','FC') !!}
-                        {!! Form::text('fc',old('fc'),['placeholder' => '','class'=>'form-control']) !!}
-                    </div>
-
-                     <div class="form-group col-md-1">
-                        {!! Form::label('fr','FR') !!}
-                        {!! Form::text('fr',old('fr'),['placeholder' => '','class'=>'form-control']) !!}
+                        {!! Form::text('peso',number_format($datos['peso'],2),['placeholder' => '0.00','class'=>'form-control']) !!}
                     </div>
 
                     <div class="form-group col-md-2">
+                        {!! Form::label('talla','Talla') !!}
+                        {!! Form::text('talla',number_format($datos['talla'],2),['placeholder' => '0.00','class'=>'form-control']) !!}
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        {!! Form::label('imc','IMC') !!}
+                        {!! Form::text('imc',number_format($datos['imc'],2),['placeholder' => '','class'=>'form-control','readonly'=>'readonly']) !!}
+                    </div>
+                </div>
+                <div class="col-md-12">
+
+                    <div class="form-group col-md-2">
+                        {!! Form::label('ta','TA') !!}
+                        {!! Form::text('ta',$datos['ta'],['placeholder' => '###/###','class'=>'form-control']) !!}
+                    </div>
+
+                     <div class="form-group col-md-2">
+                        {!! Form::label('fc','FC') !!}
+                        {!! Form::text('fc',$datos['fc'],['placeholder' => '###/min','class'=>'form-control']) !!}
+                    </div>
+
+                     <div class="form-group col-md-2">
+                        {!! Form::label('fr','FR') !!}
+                        {!! Form::text('fr',$datos['fr'],['placeholder' => '###/min','class'=>'form-control']) !!}
+                    </div>
+
+                    <div class="form-group col-md-3">
                         {!! Form::label('lateralidad_id','Lateralidad') !!}
-                        {!! Form::select('lateralidad_id',$combos['lateralidades'], old('lateralidad_id'),['class' => 'form-control','style' => 'width: 100%']) !!}
+                        {!! Form::select('lateralidad_id',$combos['lateralidades'], $datos['lateralidad_id'],['class' => 'form-control','style' => 'width: 100%']) !!}
                     </div>
                      <!-- /.form-group -->
                 </div>
 
                 <div class="col-md-12">
                     <div class="box-footer">
-                        <button type="button" class="btn btn-primary btn-sm">Actualizar</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Actualizar</button>
                     </div>
                 </div>
                 {!! Form::close() !!}
@@ -112,40 +119,43 @@
     </div>
 
     <!--****************Exámenes Ocupacionales****************-->
-    <div class="box box-default">
+    <div class="box box-default collapsed-box">
         <div class="box-header with-border">
             <h3 class="box-title">Exámenes Ocupacionales</h3>
             <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
             </div>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-            @include('flash::message')
             <div class="row">
+             {!! Form::open(['class' => '','method' => 'POST','route' => ['historias.ocupacional.fisicos.store_exploracion',$paciente->id,$historia_ocupacional->id],'role' => 'form']) !!}
+                {!! Form::hidden('historia_ocupacional_id', $historia_ocupacional->id) !!}
                <div class="col-md-12">
-                    <div class="box-body table-responsive">
+                    <div class="box-body table-responsive" >
                         <table id="example2" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
                                     <th>Tipo de Examen</th>
-                                    <th class="text-center">Chequeo</th>
-                                    <th class="text-center col-md-7">Observación</th>
+                                    <th class="text-center">Normal/Anormal</th>
+                                    <th class="text-center col-md-5">Observación</th>
                                 </tr>
                             </thead>
                             <tbody>
                             @foreach($combos['examenes_ocupacionales'] as $tipo_organo)
                                 @foreach($tipo_organo['organos'] as $organo)
+
                                 <tr>
                                     <td><strong>{{ $tipo_organo['descripcion'] }}</strong> > {{ $organo['descripcion'] }}</td>
+
+                                    
                                     <td class="text-center">
-                                         {!! Form::checkbox('id_organo()',$organo['id'],false,['class'=>'form-control flat-red']) !!}
+                                         {!! Form::checkbox('input()',$organo['id'],$organo['check'],['class'=>'form-control flat-red input']) !!}
                                     </td>
                                     <td>
-                                        {!! Form::text('resultado()',old('resultado()'),['placeholder' => '','class'=>'form-control','style' => 'width: 100%']) !!}
+                                        {!! Form::text($organo['id'],$organo['resultado'],['placeholder' => '','class'=>'form-control','style' => 'width: 100%','id' => $organo['id'], $organo['disabled'] ]) !!}
                                     </td>
-                                   
-
+                                 
                                 </tr>
                                 @endforeach
                             @endforeach
@@ -153,77 +163,100 @@
                         </table>
                     </div>
                 </div>
+                <div class="col-md-12">
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary btn-sm">Actualizar</button>
+                    </div>
+                </div>
+                {!! Form::close() !!}
             </div>
         </div>
     </div>
 
     <!--****************Prediagnóstico Visual****************-->
-    <div class="box box-default">
+    <div class="box box-default collapsed-box">
         <div class="box-header with-border">
             <h3 class="box-title">Prediagnóstico Visual</h3>
             <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
             </div>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-            @include('flash::message')
             <div class="row">
+                 {!! Form::open(['class' => '','method' => 'POST','route' => ['historias.ocupacional.fisicos.store_visual',$paciente->id,$historia_ocupacional->id],'role' => 'form']) !!}
+                {!! Form::hidden('historia_ocupacional_id', $historia_ocupacional->id) !!}
                <div class="col-md-12">
                     <div class="box-body table-responsive">
                         <table id="example2" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
                                     <th>Tipo de Examen</th>
-                                    <th>Ojo</th>
-                                    <th>Descripción</th>
+                                    <th class="text-center">Normal/Anormal</th>
+                                    <th class="text-center col-md-7">Descripción</th>
                                     
                                 </tr>
                             </thead>
                             <tbody>
+                             @foreach($combos['examenes_visuales'] as $examenes_visuales)
+
+                                @foreach($examenes_visuales['examen_visuales'] as $examen_visual)
+
+                                <tr>
+                                    <td><strong>{{ $examenes_visuales['descripcion'] }}</strong> > {{ $examen_visual['descripcion'] }}</td>
+
+                                    
+                                    <td class="text-center">
+                                         {!! Form::checkbox('input()',$examen_visual['id'],$examen_visual['check'],['class'=>'form-control flat-red input2']) !!}
+                                    </td>
+                                    <td>
+                                        {!! Form::text($examen_visual['id'],$examen_visual['observacion'],['placeholder' => '','class'=>'form-control','style' => 'width: 100%','id' => 'ob_'.$examen_visual['id'], $examen_visual['disabled'] ]) !!}
+                                    </td>
+                                 
+                                </tr>
+                                @endforeach
+                            @endforeach
                             </tbody>
                         </table>
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="box-footer">
-                        <button type="button" data-toggle="modal" href="#myAlert2" class="btn btn-primary btn-sm open-modal">Agregar Diagnóstico</button>
+                        <button type="submit" class="btn btn-primary btn-sm open-modal">Actualizar</button>
                     </div>
                 </div>
+                 {!! Form::close() !!}
             </div>
         </div>
     </div>
 
-    <div class="modal fade"  id="myAlert2" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Agregando Factor de Riesgo</h4>
-                </div>
-                <div class="modal-body">
-                  
-                    <div class="col-md-12">
-                        <div class="form-group col-md-12">
-                            {!! Form::label('examen_visual_id','Tipo de Examen') !!}
-                            {!! Form::select('examen_visual_id',$combos['examen_visuales'],old('examen_visual_id'),['placeholder' => '','class'=>'form-control']) !!}
-                        </div>
-                    </div>
-                   
-                    <div class="form-group col-md-12">
-                        <div class="form-group col-md-12">
-                            {!! Form::label('descripcion','Observación') !!}
-                            {!! Form::textarea('descripcion',old('descripcion'),['placeholder' => '','class'=>'form-control','rows'=>'3']) !!}
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Agregar</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-  @endsection
+@endsection
+
+@section('javascript')
+<script >
+  $('.input').on('ifChecked', function(event){
+
+         $('#'+event.target.value).prop('disabled', false);
+        $('#'+event.target.value).focus();
+   });
+
+  $('.input').on('ifUnchecked', function(event){
+        $('#'+event.target.value).prop('disabled', true);
+        $('#'+event.target.value).val('');
+   });
+
+
+  $('.input2').on('ifChecked', function(event){
+
+         $('#ob_'+event.target.value).prop('disabled', false);
+        $('#ob_'+event.target.value).focus();
+   });
+
+  $('.input2').on('ifUnchecked', function(event){
+        $('#ob_'+event.target.value).prop('disabled', true);
+        $('#ob_'+event.target.value).val('');
+   });
+
+</script> 
+@endsection

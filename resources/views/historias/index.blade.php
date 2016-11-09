@@ -19,7 +19,11 @@
 					{!! Form::open(['method' => 'GET','route' => ['historias.index'],'role' => 'form','class' => '']) !!}
 					<div class="box-tools ">
 						<div class="form-group col-md-4">
+						@if(is_array($medicos))
 							{!! Form::select('medico_id',$medicos,0,['class' => 'form-control select2','style' => 'width: 100%','data-placeholder' => 'Seleccione','id' => 'medico_id' ]) !!}
+						@else
+							{!! Form::hidden('medico_id',$medicos,['id'=>'medico_id']) !!}
+						@endif
 						</div>
 						<div class="input-group input-group-sm pull-right" style="width: 250px;">
 						
@@ -41,7 +45,7 @@
 							<tr >
 								<th>Identificación</th>
 								<th>Nombre</th>
-								<th>Fecha de Nacimiento</th>
+								<th class="text-center">Fecha de Nacimiento</th>
 								<th class="text-center">Historia</th>
 							</tr>
 				   		</thead>
@@ -51,11 +55,13 @@
 								<tr>
 									<td>{{ $user->tipodocumento.' '.$user->numerodocumento }}</td>
 									<td>{{ $user->primerapellido.' '.$user->primernombre }}</td>
-									<td>{{ $user->fechanacimiento }}</td>
+									<td class="text-center">{{ date("d/m/Y", strtotime($user->fechanacimiento)) }}</td>
 						
 									<td class="text-center">
 									<a  data-url="{{ route('historias.historia',[$user->paciente->id,'ocupacional']) }}" class="open-modal2" href="#"><span class="label label-default">Ocupacional</span></a>
-									<a data-url="{{ route('historias.historia',[$user->paciente->id,'ginecologia']) }}" class="open-modal2" href="#"><span class="label label-default">Ginecología</span></a>
+									@if( $user->genero=='Femenino')
+										<a data-url="{{ route('historias.historia',[$user->paciente->id,'ginecologia']) }}" class="open-modal2" href="#"><span class="label label-default">Ginecología</span></a>
+									@endif
 									<a  data-url="{{ route('historias.historia',[$user->paciente->id,'pediatria']) }}" class="open-modal2" href="#"><span class="label label-default">Pediatría</span></a>
 									</td>
 								</tr>

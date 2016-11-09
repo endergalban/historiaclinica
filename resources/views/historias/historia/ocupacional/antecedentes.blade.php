@@ -27,7 +27,12 @@
                         <img class='profile-user-img img-responsive' src="{{ asset('images/users/'.$paciente->user->imagen) }}" />
                     </div>
                 </div>
-                <h3 class="box-title">{{ $paciente->user->primernombre.' '.$paciente->user->segundonombre.' '.$paciente->user->primerapellido.' '.$paciente->user->segundoapellido.' : '.$paciente->user->tipodocumento.' '.$paciente->user->numerodocumento }}</h3>
+                <div class="form-group col-md-12">
+                    <h3 class="box-title"><b>Paciente:</b> {{ $paciente->user->primernombre.' '.$paciente->user->segundonombre.' '.$paciente->user->primerapellido.' '.$paciente->user->segundoapellido.' : '.$paciente->user->tipodocumento.' '.$paciente->user->numerodocumento }}</h3>
+                </div>    
+                <div class="form-group col-md-12">
+                    <h3 class="box-title"><b>Médico:</b> {{ $medico->user->primernombre.' '.$medico->user->segundonombre.' '.$medico->user->primerapellido.' '.$medico->user->segundoapellido.' : '.$medico->user->tipodocumento.' '.$medico->user->numerodocumento }}</h3>
+                </div>
             </div>  
             <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
@@ -81,9 +86,9 @@
                                     <td>{{ $antecedente_ocupacional->tiemposervicio }}</td>
                                     <td>{{ $antecedente_ocupacional->ocupacion }}</td>
                                     <td class="text-center">
-                                        <a href="#" ><span class="label label-info">Factores de Riesgos</span></a>
-                                        <a href="#" ><span class="label label-info">Lesiones</span></a>
-                                        <a data-toggle="modal" data-url="{{ route('historias.ocupacional.antecedentes.destroy',[$paciente->id,$historia_ocupacional->id,$antecedente_ocupacional->id]) }}" class=open-modal label label-danger" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
+                                        <a href="{{ route('historias.ocupacional.antecedentes.riesgos',[$paciente->id,$historia_ocupacional->id,$antecedente_ocupacional->id]) }}" ><span class="label label-info">Factores de Riesgos</span></a>
+                                        <a href="{{ route('historias.ocupacional.antecedentes.lesiones',[$paciente->id,$historia_ocupacional->id,$antecedente_ocupacional->id]) }}" ><span class="label label-info">Lesiones</span></a>
+                                        <a data-toggle="modal" data-url="{{ route('historias.ocupacional.antecedentes.destroy',[$paciente->id,$historia_ocupacional->id,$antecedente_ocupacional->id]) }}" class="open-modal" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -110,7 +115,7 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Agregando Factores de Riesgos</h4>
+                    <h4 class="modal-title">Agregando Empresa</h4>
                 </div>
                  {!! Form::open(['class' => '','method' => 'POST','route' => ['historias.ocupacional.antecedentes.store',$paciente->id,$historia_ocupacional->id],'role' => 'form']) !!}
                  {!! Form::hidden('historia_ocupacional_id', $historia_ocupacional->id) !!}
@@ -118,19 +123,19 @@
                     <div class="col-md-12">
                         <div class="form-group col-md-12">
                             {!! Form::label('empresa','Empresa') !!}
-                            {!! Form::text('empresa',old('empresa'),['placeholder' =>    '','class'=>'form-control']) !!}
+                            {!! Form::text('empresa',old('empresa'),['placeholder' => 'Nombre de la empresa donde laboró','class'=>'form-control']) !!}
                         </div>
                     </div>
                     <div class="col-md-12">
 
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-8">
                             {!! Form::label('tiemposervicio','Tiempo de Servicio') !!}
-                            {!! Form::text('tiemposervicio',old('tiemposervicio'),['placeholder' => '','class'=>'form-control']) !!}
+                            {!! Form::text('tiemposervicio',old('tiemposervicio'),['placeholder' => 'Tiempo que duró laborando en la empresa','class'=>'form-control']) !!}
                         </div>
 
                         <div class="form-group col-md-12">
                             {!! Form::label('ocupacion','Oupación') !!}
-                            {!! Form::text('ocupacion',old('ocupacion'),['placeholder' => '','class'=>'form-control']) !!}
+                            {!! Form::text('ocupacion',old('ocupacion'),['placeholder' => 'Nombre del cargo que ejerció en la empresa','class'=>'form-control']) !!}
                         </div>
                     
                         
@@ -148,25 +153,25 @@
     </div>
 
     <div class="modal fade"  id="myAlert" tabindex="-1">
-          <div class="modal-dialog">
+        <div class="modal-dialog">
             <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Confirmación</h4>
-              </div>
-              <div class="modal-body">
-                <p>Esta seguro que desea continuar con la operación...? </p>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                <a  class="btnsi"><button type="button" class="btn btn-primary">Si</button></a>
-              </div>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Confirmación</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Esta seguro que desea continuar con la operación...? </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <a  class="btnsi"><button type="button" class="btn btn-primary">Si</button></a>
+                </div>
             </div>
             <!-- /.modal-content -->
-          </div>
-          <!-- /.modal-dialog -->
         </div>
+          <!-- /.modal-dialog -->
+    </div>
         <!-- /.modal -->
 
 	
