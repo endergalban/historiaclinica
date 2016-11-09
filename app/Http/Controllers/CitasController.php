@@ -6,28 +6,74 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Citas;
-use App\User;
+use App\Paciente;
+
 class CitasController extends Controller
 {
     public function index()
     {
 
         
-        $pacientes=User::join('user_role','users.id','user_role.user_id')->where('role_id',4)->pluck('primernombre', 'users.id');
-        //$paciente_list=['pacientes'=> $pacientes];
-        return view('citas.index')->with(['pacientes' => $pacientes]);
-       //return $data;
+        $querypacientes=Paciente::with('user')->get();
+        $pacientes = array();
+        foreach ($querypacientes as $paciente) {
+            $pacientes[$paciente->id]=$paciente->user->numerodocumento.' - '.$paciente->user->primernombre.' '.$paciente->user->primerapellido;
+        }
+       return view('citas.index')->with(['pacientes' => $pacientes]);
        }
     public function create(){
+
         $title = $_POST['title'];
         $start = $_POST['start'];
+        $duracion = $_POST['duracion'];
+        $color = $_POST['color'];
+        $id_paciente = $_POST['id_paciente'];
         
+        //$date = date_create($start);
+        $date = date_create_from_format('d/m/Y H:i A',$start);
+
         $evento = new Citas;
-        $evento -> fechainicio = $start;
+        $evento -> fechainicio =$date->format('Y-m-d H:i:s');
+        $evento -> fechafin = $date->modify("+{$duracion} minutes");
         $evento -> descripcion = $title;
+        $evento -> color = $color;
+        $evento -> medico_paciente_id = $id_paciente;
         
         $evento->save();
         
+    }
+
+    public function api()
+    {
+        $start = $_GET['start'];
+        $end = $_GET['end'];
+               // echo $start;
+        //return;
+        $citas = array();
+        $id = Citas::where('fechainicio','>=',$start)->where('fechafin','<=',$end)->pluck('id');
+        $titulo = Citas::where('fechainicio','>=',$start)->where('fechafin','<=',$end)->pluck('descripcion');
+        $fechainicio = Citas::where('fechainicio','>=',$start)->where('fechafin','<=',$end)->pluck('fechainicio');
+        $fechafin = Citas::where('fechainicio','>=',$start)->where('fechafin','<=',$end)->pluck('fechafin');
+        $color= Citas::where('fechainicio','>=',$start)->where('fechafin','<=',$end)->pluck('color');
+        $id_pa= Citas::where('fechainicio','>=',$start)->where('fechafin','<=',$end)->pluck('medico_paciente_id');
+        $count = count($id);
+        $interval = $fechainicio->diff($fechafin);
+        for ($i=0 ; $i< $count; $i++){
+            $citas[$i]= array(
+                'title' => $titulo[$i],
+                'start' => $fechainicio[$i],
+                'end' => $fechafin[$i],
+                'allDay' => false,
+                'backgroundColor' => $color[$i],
+                'borderColor'=> $color[$i],
+                'id' => $id[$i],
+                'id_pa' => $id_pa[$i],
+                'diff' => $interval
+            );    
+
+        }  
+        json_encode($citas);
+        return $citas;
     }
 
 }
