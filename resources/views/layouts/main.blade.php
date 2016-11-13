@@ -458,6 +458,11 @@
     <!-- bootstrap datepicker -->
     <script src="{{ asset('plugins/datepicker/bootstrap-datepicker.js') }}"></script>
     <script src="{{ asset('plugins/datepicker/locales/bootstrap-datepicker.es.js') }}"></script>   
+    <!-- bootstrap time picker -->
+    <script src="{{ asset('plugins/timepicker/bootstrap-timepicker.min.js') }}"></script>
+    <!-- date-range-picker -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+    <script src="{{ asset('plugins/daterangepicker/daterangepicker.js') }}"></script>
     <!-- iCheck 1.0.1 -->
     <script src="{{ asset('plugins/iCheck/icheck.min.js') }}"></script>
 

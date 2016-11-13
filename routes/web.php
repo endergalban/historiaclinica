@@ -43,12 +43,11 @@ Route::group(['middleware' => 'roles','site'=>'asistentes'], function () {
 /*Citas*/
 Route::group(['middleware' => 'roles','site'=>'citas'], function () {
 
-	Route::resource('citas','CitasController',['except' => ['delete','show']]);
-	Route::get('citas/{id}/destroy',['uses'=>'CitasController@destroy','as'=>'citas.destroy']);
-  	Route::get('CargarCitas(id?)','CitasController@index');
-  	Route::post('guardarcita', array('as'=> 'guardarcita', 'uses'=> 'CitasController@create'));
 
-
+		Route::resource('citas','CitasController',['except' => ['delete','show']]);
+		Route::get('citas/{id}/destroy',['uses'=>'CitasController@destroy','as'=>'citas.destroy']);
+  		Route::post('guardarcita', array('as'=> 'guardarcita', 'uses'=> 'CitasController@create'));
+  		Route::get('api','CitasController@api');
 });
 
 /*Combos*/

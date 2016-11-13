@@ -15,25 +15,7 @@
    
  <div class="row">
         <div class="col-md-3">
-          <div class="box box-solid">
-            <div class="box-header with-border">
-              <h4 class="box-title">Eventos desplazables</h4>
-            </div>
-            <div class="box-body">
-              <!-- the events -->
-              <div id="external-events">
-                <div class="external-event bg-green">Almorzar</div>
-                
-                <div class="checkbox">
-                  <label for="drop-remove">
-                    <input type="checkbox" id="drop-remove">
-                    Eliminar despues de asignar
-                  </label>
-                </div>
-              </div>
-            </div>
-            <!-- /.box-body -->
-          </div>
+
           <!-- /. box -->
           <div class="box box-solid">
             <div class="box-header with-border">
@@ -60,15 +42,40 @@
               </div>
               <!-- /btn-group -->
               <div class="input-group">
-                <input id="new-event" type="text" class="form-control" placeholder="Nombre del Evento">
+                <!--<input id="new-event" type="text" class="form-control" placeholder="Nombre del Evento">-->
+                <!-- {!! Form::label('paciente_id','Paciente') !!} -->
+                {!! Form::select('pacientes[]',$pacientes,null,['id' => 'new-event', 'class' => 'form-control select2','style' => 'width: 100%','placeholder' => 'Seleccione el Paciente' ]) !!}
+                {!! Form::text('fechainicio',null,['class'=>'form-control pull-right', 'id'=>'fechainicio']) !!}
+                <!--{!! Form::select('duracion', 
+                    [
+                       '10' => '10min',
+                       '20' => '20min',
+                       '30' => '30min', 
+                       '40' => '40min',
+                       '45' => '45min',
+                       '50' => '50min',
+                       '60' => '60min' 
 
-                {!! Form::label('paciente_id','Paciente') !!}
-                {!! Form::select('pacientes[]',$pacientes,null,['class' => 'form-control select2','style' => 'width: 100%','data-placeholder' => 'Seleccione' ]) !!}
-                <div class="input-group-btn">
-                  <button id="add-new-event" type="button" class="btn btn-primary btn-flat">Añadir</button>
+                     ], old('duracion'),['id' => 'duracion', 'class' => 'form-control select2','style' => 'width: 100%', 'placeholder' => 'Duración de la Consulta']) !!}-->
+                     <!-- <input type="text" class="form-control pull-right" id="reservationtime">-->
+                     </div>
+                     <div class="checkbox">
+                    <label>
+                      {!! Form::checkbox('delete',null,false, ['id'=>'delete']) !!}
+                      Borrar
+                    </label>
+                  </div>
+
+                    <!-- <div class="input-group">
+                    {!! Form::checkbox('delete',null,false, ['id'=>'delete']) !!}
+                    {!! Form::label('borrar','Borrar') !!}
+                    </div>-->
+                  <!-- /btn-group -->
+                  
+              
+              <div class="input-group-btn">
+                  <button id="add-new-event" type="button" class="btn btn-primary btn-flat">Guardar</button>
                 </div>
-                <!-- /btn-group -->
-              </div>
               <!-- /input-group -->
               {!! Form::open(['route' => ['guardarcita'], 'method'=> 'POST', 'id' => 'form-calendario']) !!}
               {!! Form::close() !!}
@@ -96,9 +103,49 @@
 <!-- fullCalendar 2.2.5 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
 <script src="{{ asset('plugins/fullcalendar/fullcalendar.min.js') }}"></script>
+
+
+
+
+
 <!-- Page specific script -->
 <script>
   $(function () {
+         //Timepicker
+    $('#fechainicio').daterangepicker({
+      timePicker: true, 
+      timePickerIncrement: 5,
+      locale: {
+       format: 'DD/MM/YYYY h:mm A',
+       applyLabel: "Aplicar",
+       weekLabel: "S",
+       daysOfWeek: [
+            "Do",
+            "Lu",
+            "Ma",
+            "Mi",
+            "Ju",
+            "Vi",
+            "Sa"
+        ],
+        monthNames: [
+            "Enero",
+            "Febrero",
+            "Marzo",
+            "Abril",
+            "Mayo",
+            "Junio",
+            "Julio",
+            "Agosto",
+            "Septiembre",
+            "Octobre",
+            "Noviembre",
+            "Diciembre"
+        ],
+        "firstDay": 1},
+       startDate: moment(),
+       singleDatePicker: true,
+     });
 
     /* initialize the external events
      -----------------------------------------------------------------*/
@@ -125,7 +172,7 @@
     }
 
     ini_events($('#external-events div.external-event'));
-
+    
     /* initialize the calendar
      -----------------------------------------------------------------*/
     //Date for the calendar events (dummy data)
@@ -139,47 +186,55 @@
         center: 'title',
         right: 'month,agendaWeek,agendaDay'
       },
-      buttonText: {
+
+      //defaultTimedEventDuration: '00:30:00',
+            buttonText: {
         today: 'today',
         month: 'month',
         week: 'week',
         day: 'day'
       },
       //CARGA DE EVENTOS POR BD
-      events: [ ],
+      events: {url: "api"},
 
-      editable: true,
-      droppable: true, // this allows things to be dropped onto the calendar !!!
+      editable: false,
+      droppable: false, // this allows things to be dropped onto the calendar !!!
       drop: function (date, allDay) { // this function is called when something is dropped
 
         // retrieve the dropped element's stored Event Object
         var originalEventObject = $(this).data('eventObject');
+
+        
 
         // we need to copy it, so that multiple events don't have a reference to the same object
         var copiedEventObject = $.extend({}, originalEventObject);
 
         // assign it the date that was reported
         copiedEventObject.start = date;
-        copiedEventObject.allDay = allDay;
+        copiedEventObject.end = date;
+        copiedEventObject.end = copiedEventObject.end.add(2,'h');
+        copiedEventObject.allDay = false;
         copiedEventObject.backgroundColor = $(this).css("background-color");
         copiedEventObject.borderColor = $(this).css("border-color");
+        copiedEventObject.id=$(this).attr("id");
 
         // render the event on the calendar
         // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
         $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
 
         // is the "remove after drop" checkbox checked?
-        if ($('#drop-remove').is(':checked')) {
+        //if ($('#drop-remove').is(':checked')) {
           // if so, remove the element from the "Draggable Events" list
           $(this).remove();
-        }
+        //}
         var title = copiedEventObject.title;
-        var start= copiedEventObject.start.format("YYYY-MM-DD HH:mm");
-        
+        var start = copiedEventObject.start.format("YYYY-MM-DD HH:mm");
+        var end =   copiedEventObject.end.format("YYYY-MM-DD HH:mm");
+        var id_pa = copiedEventObject.id;
         crsfToken = document.getElementsByName("_token")[0].value;
         $.ajax({
           url:'guardarcita',
-          data:'title='+ title+'&start='+start,
+          data:'title='+ title+'&start='+start+'&id_paciente='+id_pa,
           type: "POST",
           headers:{
             "X-CSRF-TOKEN":crsfToken
@@ -194,6 +249,14 @@
         
         });
         
+      },
+      eventClick: function(calEvent)
+      {
+        $("#new-event").val(calEvent.id_pa).trigger('change');
+        //$("#fechainicio").val(calEvent.start.format('DD/MM/YYYY h:mm A'));
+        $('#fechainicio').val('');
+        $('#fechainicio').data('daterangepicker').setStartDate(calEvent.start.format('DD/MM/YYYY h:mm A'));
+        //alert(calEvent.title);
       }
     });
 
@@ -212,21 +275,51 @@
       e.preventDefault();
       //Get value and make sure it is not null
       var val = $("#new-event").val();
-      if (val.length == 0) {
+      if (val.length == 0 || $("#duracion").val() == 0) {
         return;
       }
 
       //Create events
-      var event = $("<div />");
+      /*var event = $("<div />");
       event.css({"background-color": currColor, "border-color": currColor, "color": "#fff"}).addClass("external-event");
-      event.html(val);
+      event.html($("#new-event option:selected").text());\
+
+      //event.attr("id",val);
       $('#external-events').prepend(event);
 
       //Add draggable funtionality
-      ini_events(event);
+      ini_events(event);*/
+      crsfToken = document.getElementsByName("_token")[0].value;
+      var title= $("#new-event option:selected").text();
+      var id_pa= $("#new-event").val();
+      var start = $("#fechainicio").val();
+      var color= currColor;
+      var duracion = 30;
+      var borrar = false;
+      if ($("input:checked").val() > 0)
+      {
+        borrar =true;
+      }
+      $.ajax({
+          url:'guardarcita',
+          data:'title='+ title+'&start='+start+'&duracion='+duracion+'&id_paciente='+id_pa+'&color='+currColor+'&borrar='+borrar,
+          type: "POST",
+          headers:{
+            "X-CSRF-TOKEN":crsfToken
+          },
+          success: function(events){
+            console.log("Evento creado");
+            $('#calendar').fullCalendar('refetchEvents');
+          },
+          error: function(json){
+            console.log("Error");
+          }
+        
+        });  
+      //Reset event from text input
+      $("#new-event").val('').trigger('change');
+      $("#duracion").val('').trigger('change');
 
-      //Remove event from text input
-      $("#new-event").val("");
     });
   });
 </script>
