@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateModulosTable extends Migration
+class CreateTipoExamenAlturasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,9 @@ class CreateModulosTable extends Migration
      */
     public function up()
     {
-       Schema::create('modulos', function (Blueprint $table) {
+        Schema::create('tipo_examen_alturas', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('orden');
             $table->string('descripcion',100);
-            $table->string('site',100);
-            $table->string('icono',20);
-            $table->boolean('visible',20)->default('1');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -32,6 +28,6 @@ class CreateModulosTable extends Migration
      */
     public function down()
     {
-         Schema::dropIfExists('modulos');
+        Schema::dropIfExists('tipo_examen_alturas');
     }
 }

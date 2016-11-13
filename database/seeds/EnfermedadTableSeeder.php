@@ -31,7 +31,7 @@ class EnfermedadTableSeeder extends Seeder
     	$enfermedad->descripcion = 'Hipertencion y Cardiovascular';
 		$enfermedad->save();
 		$enfermedad= New Enfermedad;
-    	$enfermedad->descripcion = 'Ginecobstreticos (Embrasos, Abortos)';
+    	$enfermedad->descripcion = 'Ginecobs. (Embrasos, Abortos)';
 		$enfermedad->save();
 		$enfermedad= New Enfermedad;
     	$enfermedad->descripcion = 'Tuberculosis';

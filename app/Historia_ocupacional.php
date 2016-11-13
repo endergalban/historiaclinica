@@ -12,7 +12,7 @@ class Historia_ocupacional extends Model
     protected $table='historia_ocupacionales';
 
     protected $fillable = [
-        'medico_paciente_id','escolaridad_id','tipo_examen_id','numerohijos','numeropersonascargo','arl_id','afp_id','empresa_id','empresa',
+        'medico_paciente_id','escolaridad_id','tipo_examen_id','numerohijos','numeropersonascargo','arl_id','afp_id','empresa_id','empresa','recomendaciones',
     ];
 
     protected $dates = ['deleted_at'];
@@ -67,19 +67,19 @@ class Historia_ocupacional extends Model
         return $this->hasMany('App\Patologico','historia_ocupacional_id');
     }
 
-    public function habito_fumadores()
+    public function habito_fumador()
     {
-        return $this->hasMany('App\Habito_fumador','historia_ocupacional_id');
+        return $this->hasOne('App\Habito_fumador','historia_ocupacional_id');
     }
 
-    public function habito_licores()
+    public function habito_licor()
     {
-        return $this->hasMany('App\Habito_licor','historia_ocupacional_id');
+        return $this->hasOne('App\Habito_licor','historia_ocupacional_id');
     }
 
-    public function habito_medicamentos()
+    public function habito_medicamento()
     {
-        return $this->hasMany('App\Habito_medicamento','historia_ocupacional_id');
+        return $this->hasOne('App\Habito_medicamento','historia_ocupacional_id');
     }
 
     public function inmunizaciones()
@@ -87,9 +87,9 @@ class Historia_ocupacional extends Model
         return $this->hasMany('App\Inmunizacion','historia_ocupacional_id');
     }
 
-    public function ginecobstetricas()
+    public function ginecobstetrica()
     {
-        return $this->hasMany('App\Ginecobstetrica','historia_ocupacional_id');
+        return $this->hasOne('App\Ginecobstetrica','historia_ocupacional_id');
     }
 
     public function exploraciones()
@@ -109,6 +109,21 @@ class Historia_ocupacional extends Model
 
     public function diagnosticos()
     {
-        return $this->belongsToMany('App\Factor_riesgo','historia_ocupacional_diagnostico','historia_ocupacional_id','diagnostico_id');
+        return $this->hasMany('App\Diagnostico','historia_ocupacional_id');
+    }
+
+     public function condicion_diagnostico()
+    {
+        return $this->hasOne('App\Condicion_diagnostico','historia_ocupacional_id');
+    }
+
+     public function examen_alturas()
+    {
+        return $this->hasMany('App\Examen_altura','historia_ocupacional_id');
+    }
+    
+    public function condicion_altura()
+    {
+        return $this->hasOne('App\Condicion_altura','historia_ocupacional_id');
     }
 }

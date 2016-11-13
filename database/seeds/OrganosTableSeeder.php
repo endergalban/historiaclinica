@@ -218,7 +218,7 @@ class OrganosTableSeeder extends Seeder
         $Organo->save();
 
 
-        $Tipo_organo = Tipo_organo::where([ 'descripcion' => 'Sistema nervioso' ])->first();
+        $Tipo_organo = Tipo_organo::where([ 'descripcion' => 'Sistema Nervioso' ])->first();
 
         $Organo = new Organo;
         $Organo->descripcion ='Reflejos';

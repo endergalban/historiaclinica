@@ -37,7 +37,7 @@ class TipoFactorRiesgosSeeder extends Seeder
         $tipo_factor_riego->save();
 
         $tipo_factor_riego = new Tipo_factor_riesgo;
-        $tipo_factor_riego->descripcion ='Fenómenos Naturales';
+        $tipo_factor_riego->descripcion ='FN';
         $tipo_factor_riego->save();
     }
 }

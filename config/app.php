@@ -180,7 +180,8 @@ return [
 
         Collective\Html\HtmlServiceProvider::class,
         Laracasts\Flash\FlashServiceProvider::class,
-        Intervention\Image\ImageServiceProvider::class
+        Intervention\Image\ImageServiceProvider::class,
+        Anouar\Fpdf\FpdfServiceProvider::class,
 
     ],
 
@@ -232,7 +233,8 @@ return [
 
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
-        'Image' => Intervention\Image\Facades\Image::class
+        'Image' => Intervention\Image\Facades\Image::class,
+        'Fpdf'    => Anouar\Fpdf\Fpdf::class,
 
     ],
 

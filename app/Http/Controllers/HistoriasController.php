@@ -29,6 +29,7 @@ use App\Empresa;
 use App\Arl;
 use App\Afp;
 use App\Diagnostico;
+use App\Condicion_diagnostico;
 use App\Tipo_diagnostico;
 use App\Lateralidad;
 use App\Examen_visual;
@@ -52,6 +53,9 @@ use App\Habito_medicamento;
 use App\Antecedente_ocupacional_factor_riesgo;
 use App\Lesion;
 use App\Traumatologico;
+use App\Condicion_altura;
+use App\Tipo_examen_altura;
+use App\Examen_altura;
 use Auth;
 
 class HistoriasController extends Controller
@@ -66,7 +70,25 @@ class HistoriasController extends Controller
         $users=User::ofType($request->search)->has('paciente')->orderby('numerodocumento','ASC')->paginate(15);
         $role = User::find(Auth::user()->id)->roles()->pluck('descripcion');
 
-        if($role->contains('medico')){
+        if($role->contains('administrador')){
+          
+            $querymedicos=User::has('medico')->with('medico');
+            if($querymedicos->count()==0){
+
+                flash('No existen médicos registrados en el sistema!', 'danger');
+                return redirect()->route('home');
+               
+            }elseif($querymedicos->count()==1){
+
+                $medicos=$querymedicos->first()->medico->id;
+
+            }else{
+                
+                foreach ($querymedicos->get() as $medico) {
+                    $medicos[$medico->medico->id]=$medico->tipodocumento.' '.$medico->numerodocumento.' '.$medico->primerapellido.' '.$medico->primernombre;
+                }
+            }
+        }elseif($role->contains('medico')){
             $medico=Medico::has('user')->where('user_id',Auth::user()->id)->first();
             $medicos=$medico->id;
 
@@ -88,24 +110,6 @@ class HistoriasController extends Controller
                 }
             }
          
-        }elseif($role->contains('administrador')){
-          
-            $querymedicos=Medico::with('user.roles');
-            if($querymedicos->count()==0){
-
-                flash('No existen médicos registrados en el sistema!', 'danger');
-                return redirect()->route('home');
-               
-            }elseif($querymedicos->count()==1){
-
-                $medicos=$querymedicos->first()->id;
-
-            }else{
-                
-                foreach ($querymedicos->get() as $medico) {
-                    $medicos[$medico->id]=$medico->user->tipodocumento.' '.$medico->user->numerodocumento.' '.$medico->user->primerapellido.' '.$medico->user->primernombre;
-                }
-            }
         }else{
             flash('No tiene permiso de entrar a esta área, por favor contacte al administrador!', 'danger');
             return redirect()->route('home');
@@ -215,6 +219,7 @@ class HistoriasController extends Controller
         $historia_ocupacional->numerohijos=0;
         $historia_ocupacional->numeropersonascargo=0;
         $historia_ocupacional->empresa='';
+        $historia_ocupacional->recomendaciones='';
         $historia_ocupacional->save();
 
         $Habito_fumador=new Habito_fumador;   
@@ -272,11 +277,23 @@ class HistoriasController extends Controller
         $Examen_fisico->lateralidad()->associate(1);
         $Examen_fisico->save();
 
+        $Condicion_altura=new Condicion_altura;
+        $Condicion_altura->condicion= 'N/A';
+        $Condicion_altura->observacion= '';
+        $Condicion_altura->historia_ocupacional()->associate($historia_ocupacional);
+        $Condicion_altura->save();
+
+        $Condicion_diagnostico=new Condicion_diagnostico;
+        $Condicion_diagnostico->condicion= 'N/A';
+        $Condicion_diagnostico->observacion= '';
+        $Condicion_diagnostico->historia_ocupacional()->associate($historia_ocupacional);
+        $Condicion_diagnostico->save();
+
   
        return redirect()->route('historias.ocupacional.edit',[$medico_paciente->paciente_id,$historia_ocupacional->id]);
     }
 
-
+    //DATOS DEL PACIENTE
     public function ocupacional_edit($paciente_id,$historia_ocupacional_id)
     {
         $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
@@ -411,7 +428,7 @@ class HistoriasController extends Controller
 
 
 
-         $Ginecobstetrica = Ginecobstetrica::where(['historia_ocupacional_id'=> $historia_ocupacional->id])->first();
+        $Ginecobstetrica = Ginecobstetrica::where(['historia_ocupacional_id'=> $historia_ocupacional->id])->first();
         if($Ginecobstetrica)
         {
             $fum=$Ginecobstetrica->fum;
@@ -778,9 +795,49 @@ class HistoriasController extends Controller
         }
         $diagnosticos= Diagnostico::where(['historia_ocupacional_id' => $historia_ocupacional->id])->with('tipo_diagnostico')->orderBy('id')->get();
 
-        $combos=[ 'tipo_diagnosticos' => $tipo_diagnosticos,'diagnosticos'=>$diagnosticos];
+        $Condicion_diagnostico = Condicion_diagnostico::where(['historia_ocupacional_id' => $historia_ocupacional->id])->first();
+        if(!is_null($Condicion_diagnostico))
+        {
+            $condicion=$Condicion_diagnostico->condicion;
+            $observacion=$Condicion_diagnostico->observacion;
+        }else{
+            $condicion='N/A';
+            $observacion='';
+        }
+
+
+        $combos=[ 'condicion' => $condicion, 'observacion' => $observacion,'tipo_diagnosticos' => $tipo_diagnosticos,'diagnosticos'=>$diagnosticos];
 
         return  view('historias.historia.ocupacional.diagnosticos')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional,'combos'=>$combos ]);
+    }
+
+    public function ocupacional_diagnosticos_store_condicion(Request $request)
+    {
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();
+
+        $validator = Validator::make($request->all(), [
+            'condicion' => 'required|string|max:50|not_in:N/A', 
+            'observacion' => 'string|max:500',  
+        ]);
+
+        if ($validator->fails()) {
+            flash(implode('<br>',$validator->errors()->all()), 'danger');
+            return redirect()->route('historias.ocupacional.diagnosticos',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id])->withInput();
+        }else{
+
+             $Condicion_diagnostico = Condicion_diagnostico::where(['historia_ocupacional_id' => $historia_ocupacional->id])->first();
+            if(is_null($Condicion_diagnostico))
+            {
+                $Condicion_diagnostico=new Condicion_diagnostico;
+            }
+            $Condicion_diagnostico->condicion= $request->condicion;
+            $Condicion_diagnostico->observacion= $request->observacion;
+            $Condicion_diagnostico->historia_ocupacional()->associate($historia_ocupacional);
+            $Condicion_diagnostico->save();
+
+            flash('Se ha registrado la información de forma exitosa!', 'success');
+            return redirect()->route('historias.ocupacional.diagnosticos',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id]);
+        }
     }
 
     public function ocupacional_diagnosticos_store(Request $request)
@@ -815,6 +872,99 @@ class HistoriasController extends Controller
         $Diagnostico->delete();
         flash('El registro se ha eliminado de forma exitosa!', 'danger');
         return redirect()->route('historias.ocupacional.diagnosticos',[$historia_ocupacional->medico_paciente->paciente->id,$historia_ocupacional->id]);
+
+    }
+
+     //ALTURAS
+    public function ocupacional_alturas($paciente_id,$historia_ocupacional_id)
+    {
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+        $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();
+        $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();
+
+        $combos=array();
+        
+        $tipo_examen_alturas = Tipo_examen_altura::orderby('id')->pluck('descripcion','id');
+        
+        $examen_alturas= Examen_altura::where(['historia_ocupacional_id' => $historia_ocupacional->id])->with('tipo_examen_altura')->orderBy('id')->get();
+
+        $Condicion_altura = Condicion_altura::where(['historia_ocupacional_id' => $historia_ocupacional->id])->first();
+        if(!is_null($Condicion_altura))
+        {
+            $condicion=$Condicion_altura->condicion;
+            $observacion=$Condicion_altura->observacion;
+            
+        }else{
+            $condicion='N/A';
+            $observacion='';
+        }
+
+
+        $combos=[ 'condicion' => $condicion, 'observacion' => $observacion,'tipo_examen_alturas' => $tipo_examen_alturas,'examen_alturas'=>$examen_alturas];
+
+        return  view('historias.historia.ocupacional.alturas')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional,'combos'=>$combos ]);
+    }
+
+    public function ocupacional_alturas_store_condicion(Request $request)
+    {
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();
+
+        $validator = Validator::make($request->all(), [
+            'condicion' => 'required|string|max:50|not_in:N/A', 
+            'observacion' => 'string|max:500',  
+        ]);
+
+        if ($validator->fails()) {
+            flash(implode('<br>',$validator->errors()->all()), 'danger');
+            return redirect()->route('historias.ocupacional.alturas',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id])->withInput();
+        }else{
+
+             $Condicion_altura = Condicion_altura::where(['historia_ocupacional_id' => $historia_ocupacional->id])->first();
+            if(is_null($Condicion_altura))
+            {
+                $Condicion_altura=new Condicion_altura;
+            }
+            $Condicion_altura->condicion= $request->condicion;
+            $Condicion_altura->observacion= $request->observacion;
+            $Condicion_altura->historia_ocupacional()->associate($historia_ocupacional);
+            $Condicion_altura->save();
+
+            flash('Se ha registrado la información de forma exitosa!', 'success');
+            return redirect()->route('historias.ocupacional.alturas',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id]);
+        }
+    }
+
+    public function ocupacional_alturas_store(Request $request)
+    {
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();
+
+
+        $validator = Validator::make($request->all(), [
+            'tipo_examen_altura_id' => 'required|exists:tipo_examen_alturas,id',   
+            'observacion' => 'string|max:500', 
+        ]);
+        if ($validator->fails()) {
+            flash(implode('<br>',$validator->errors()->all()), 'danger');
+            return redirect()->route('historias.ocupacional.alturas',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id])->withInput();
+        }else{
+            
+            $Examen_altura=new Examen_altura;
+            $Examen_altura->tipo_examen_altura()->associate($request->tipo_examen_altura_id);
+            $Examen_altura->historia_ocupacional()->associate($historia_ocupacional);
+            $Examen_altura->observacion=$request->observacion;
+            $Examen_altura->save();
+            flash('Se ha registrado la información de forma exitosa!', 'success');
+            return redirect()->route('historias.ocupacional.alturas',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id]);
+        }
+    }
+
+    public function ocupacional_alturas_destroy($paciente_id,$historia_ocupacional_id,$examen_altura_id)
+    {
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+        $Examen_altura = Examen_altura::findOrFail($examen_altura_id);
+        $Examen_altura->delete();
+        flash('El registro se ha eliminado de forma exitosa!', 'danger');
+        return redirect()->route('historias.ocupacional.alturas',[$historia_ocupacional->medico_paciente->paciente->id,$historia_ocupacional->id]);
 
     }
 
@@ -894,42 +1044,31 @@ class HistoriasController extends Controller
             $fc='';
             $fr='';
         }
-        $datos=['lateralidad_id'=>$lateralidad_id, 'peso'=>$peso, 'talla'=>$talla, 'imc'=>$imc, 'ta'=>$ta, 'fc'=>$fc, 'fr'=>$fr];
+        $exploraciones = Exploracion::where(['historia_ocupacional_id' => $historia_ocupacional->id ])->with('organo.tipo_organo')->orderby('id')->get();
+        $visuales = Visual::where(['historia_ocupacional_id' => $historia_ocupacional->id ])->with('examen_visual.tipo_examen_visual')->with('examen_visual.ojo')->orderby('id')->get();
+
+
+
+        $datos=[ 'visuales' => $visuales, 'exploraciones' => $exploraciones,'lateralidad_id'=>$lateralidad_id, 'peso'=>$peso, 'talla'=>$talla, 'imc'=>$imc, 'ta'=>$ta, 'fc'=>$fc, 'fr'=>$fr];
 
         $combos=array();
         $lateralidades = Lateralidad::all()->sortBy('descripcion')->pluck('descripcion','id')->prepend('N/A', 1);
       
-
-        $examenes_ocupacionales=array();
-        $tipo_organos_query = Tipo_organo::orderby('id')->get();
+        $organos=array();
+        $tipo_organos_query = Tipo_organo::orderby('id')->get();      
         foreach ($tipo_organos_query as $tipo_organo) {
             $organos_query = Organo::where('tipo_organo_id',$tipo_organo->id)->orderby('descripcion')->get();
-            $organos= array();
             foreach ($organos_query as $organo) {
-              $exploracion = Exploracion::where(['historia_ocupacional_id'=> $historia_ocupacional->id,'organo_id' =>  $organo->id ])->first();
-              if(is_null($exploracion))
-              {
-                $resultado='';
-                $check=false;
-                $disabled='disabled';
-              }else{
-                $resultado=$exploracion->resultado;
-                $check=true;
-                $disabled='';
-              }  
-              $organos[]=['id' => $organo->id,'descripcion' => $organo->descripcion,'resultado' =>$resultado,'check' => $check,'disabled'=>$disabled];
+                
+                $organos[$organo->id]= $tipo_organo->descripcion.' > '.$organo->descripcion;
             }
-
-            $examenes_ocupacionales[]=[ 'id' => $tipo_organo->id,'descripcion' => $tipo_organo->descripcion, 'organos' => $organos];
+ 
         }
 
-        $examenes_visuales=array();
-        $Tipo_examen_visual_query = Tipo_examen_visual::orderby('id')->get();
-        foreach ($Tipo_examen_visual_query as $tipo_examen_visual) {
+        $examen_visuales=array();
+        $Examen_visuales_query = Examen_visual::orderby('id')->with('tipo_examen_visual')->with('ojo')->get();
+        foreach ($Examen_visuales_query as $examen_visual) {
 
-            $Examen_visual_query = Examen_visual::where('tipo_examen_visual_id',$tipo_examen_visual->id)->with('ojo')->orderby('id')->get();
-            $examen_visuales= array();
-            foreach ($Examen_visual_query as $examen_visual) {
                 if($examen_visual->ojo_id == 3){
                     $ambos='Ojos';
                     $ojo='';
@@ -937,24 +1076,11 @@ class HistoriasController extends Controller
                     $ambos='';
                     $ojo='Ojo';
                 }
-                $visual = Visual::where(['historia_ocupacional_id'=> $historia_ocupacional->id,'examen_visual_id' =>  $examen_visual->id ])->first();
-                if(is_null($visual))
-                {
-                    $observacion='';
-                    $check=false;
-                    $disabled='disabled';
-                }else{
-                    $observacion=$visual->descripcion;
-                    $check=true;
-                    $disabled='';
-                }  
-                $examen_visuales[]=['id' => $examen_visual->id,'descripcion' => $ojo.' '.$examen_visual->ojo->descripcion.' '.$ambos,'observacion' =>$observacion,'check' => $check,'disabled'=>$disabled];
-
-            }
-
-            $examenes_visuales[]=[ 'id' => $tipo_examen_visual->id,'descripcion' => $tipo_examen_visual->descripcion, 'examen_visuales' => $examen_visuales];
+                $examen_visuales[$examen_visual->id]= $examen_visual->tipo_examen_visual->descripcion.' > '.$ojo.' '.$examen_visual->ojo->descripcion.' '.$ambos;
+            
         }
-        $combos=[ 'lateralidades' => $lateralidades,'examenes_ocupacionales' => $examenes_ocupacionales,'examenes_visuales'=>$examenes_visuales];
+      
+        $combos=[ 'lateralidades' => $lateralidades,'organos' => $organos,'examen_visuales'=>$examen_visuales];
         return  view('historias.historia.ocupacional.fisicos')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional,'combos'=> $combos, 'datos' =>  $datos]);
     }
 
@@ -1008,69 +1134,68 @@ class HistoriasController extends Controller
     public function ocupacional_fisicos_store_exploracion(Request $request)
     {
         $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();
-        
-        $organos_query = Organo::orderby('descripcion')->get();
-        $organos= array();
-        foreach ($organos_query as $organo) {
 
-           $Exploracion = Exploracion::where(['organo_id' => $organo->id,'historia_ocupacional_id'=>$historia_ocupacional->id])->first();   
-           if($request[$organo->id]) {
-                
-                if(is_null($Exploracion))
-                {
-                    $Exploracion= new Exploracion;
-                    $Exploracion->resultado=$request[$organo->id];
-                    $Exploracion->historia_ocupacional()->associate($historia_ocupacional);
-                    $Exploracion->organo()->associate($organo->id);
-                    $Exploracion->save();
-                }else{
-                    $Exploracion->resultado=$request[$organo->id];
-                    $Exploracion->save();
-                }
-           }else{
-                if(!is_null($Exploracion))
-                {
-                    $Exploracion->delete();
-                }
-           }
-        }
-
-        flash('Se ha registrado la información de forma exitosa!', 'success');
+        $validator = Validator::make($request->all(), [
+            'organo_id' => 'required|exists:organos,id', 
+            'resultado' => 'string|max:250', 
+        ]); 
+        if ($validator->fails()) {
+            flash(implode('<br>',$validator->errors()->all()), 'danger');
+            return redirect()->route('historias.ocupacional.fisicos',[$historia_ocupacional->medico_paciente->id,$historia_ocupacional->id])->withInput();
+        }else{
+       
+            $Exploracion= new Exploracion;
+            $Exploracion->resultado=$request->resultado;
+            $Exploracion->historia_ocupacional()->associate($historia_ocupacional);
+            $Exploracion->organo()->associate($request->organo_id);
+            $Exploracion->save();
+            flash('Se ha registrado la información de forma exitosa!', 'success');
             return redirect()->route('historias.ocupacional.fisicos',[$historia_ocupacional->medico_paciente->id,$historia_ocupacional->id]);
+        }
+    }
+
+    public function ocupacional_fisicos_destroy_exploracion($paciente_id,$historia_ocupacional_id,$exploracion_id)
+    {
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+        $Exploracion = Exploracion::findOrFail($exploracion_id);
+        $Exploracion->delete();
+        flash('Los datos se han eliminado de forma exitosa!', 'danger');
+        return redirect()->route('historias.ocupacional.fisicos',[$historia_ocupacional->medico_paciente->paciente->id,$historia_ocupacional->id]);
+
     }
 
      public function ocupacional_fisicos_store_visual(Request $request)
     {
         $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();
+         $validator = Validator::make($request->all(), [
+            'examen_visual_id' => 'required|exists:organos,id', 
+            'descripcion' => 'string|max:250', 
+        ]); 
         
-        $examen_visuales_query = Examen_visual::orderby('id')->get();
-        $examen_visuales= array();
-        foreach ($examen_visuales_query as $examen_visual) {
-
-           $Visual = Visual::where(['examen_visual_id' => $examen_visual->id,'historia_ocupacional_id'=>$historia_ocupacional->id])->first();   
-           if($request[$examen_visual->id]) {
-                
-                if(is_null($Visual))
-                {
-                    $Visual= new Visual;
-                    $Visual->descripcion=$request[$examen_visual->id];
-                    $Visual->historia_ocupacional()->associate($historia_ocupacional);
-                    $Visual->examen_visual()->associate($examen_visual->id);
-                    $Visual->save();
-                }else{
-                    $Visual->descripcion=$request[$examen_visual->id];
-                    $Visual->save();
-                }
-           }else{
-                if(!is_null($Visual))
-                {
-                    $Visual->delete();
-                }
-           }
+        if ($validator->fails()) {
+            flash(implode('<br>',$validator->errors()->all()), 'danger');
+            return redirect()->route('historias.ocupacional.fisicos',[$historia_ocupacional->medico_paciente->id,$historia_ocupacional->id])->withInput();
+        }else{
+      
+            $Visual= new Visual;
+            $Visual->descripcion=$request->descripcion;
+            $Visual->historia_ocupacional()->associate($historia_ocupacional);
+            $Visual->examen_visual()->associate($request->examen_visual_id);
+            $Visual->save();
+                 
+            flash('Se ha registrado la información de forma exitosa!', 'success');
+            return redirect()->route('historias.ocupacional.fisicos',[$historia_ocupacional->medico_paciente->id,$historia_ocupacional->id]);
         }
+    }
 
-        flash('Se ha registrado la información de forma exitosa!', 'success');
-        return redirect()->route('historias.ocupacional.fisicos',[$historia_ocupacional->medico_paciente->id,$historia_ocupacional->id]);
+    public function ocupacional_fisicos_destroy_visual($paciente_id,$historia_ocupacional_id,$visual_id)
+    {
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+        $Visual = Visual::findOrFail($visual_id);
+        $Visual->delete();
+        flash('Los datos se han eliminado de forma exitosa!', 'danger');
+        return redirect()->route('historias.ocupacional.fisicos',[$historia_ocupacional->medico_paciente->paciente->id,$historia_ocupacional->id]);
+
     }
 
     
@@ -1255,6 +1380,39 @@ class HistoriasController extends Controller
         flash('La información se ha eliminado de forma exitosa!', 'danger');
         return redirect()->route('historias.ocupacional.antecedentes.lesiones',[$paciente_id,$historia_ocupacional_id,$antecedente_ocupacional_id]);
     }
+
+    public function ocupacional_recomendaciones($paciente_id,$historia_ocupacional_id)
+    {
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+        $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();
+        $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();
+
+        return  view('historias.historia.ocupacional.recomendaciones')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional ]);
+    }
+
+
+    public function ocupacional_recomendaciones_store(Request $request)
+    {
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();
+        $validator = Validator::make($request->all(), [
+            'recomendaciones' => 'string|max:2500',   
+            
+        ]);
+
+         if ($validator->fails()) {
+            flash(implode('<br>',$validator->errors()->all()), 'danger');
+            return redirect()->route('historias.ocupacional.recomendaciones',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id])->withInput();
+        }else{
+
+            $historia_ocupacional->recomendaciones=$request->recomendaciones;
+            $historia_ocupacional->save();
+            flash('Se ha registrado la información de forma exitosa!', 'success');
+            return redirect()->route('historias.ocupacional.recomendaciones',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id]);
+
+       }
+    }
+
+
   
         
 }

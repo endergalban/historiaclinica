@@ -327,6 +327,6 @@ class MedicosController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
         flash('El paciente '.$user->primernombre.' '.$user->primerapellido.' se ha eliminado de forma exitosa!', 'danger');
-        return redirect()->route('pacientes.index');
+        return redirect()->route('medicos.index');
     }
 }

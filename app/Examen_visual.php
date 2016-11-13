@@ -12,7 +12,7 @@ class Examen_visual extends Model
     protected $table = 'examen_visuales';
 
 	protected $fillable = [
-        'tipo_examen_id','ojo_id',
+        'tipo_examen_visual_id','ojo_id',
     ];
 
     protected $dates = ['deleted_at'];

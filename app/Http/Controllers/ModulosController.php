@@ -30,7 +30,8 @@ class ModulosController extends Controller
             'orden' => 'required|integer',     
             'icono' => 'required|string|min:4',
             'descripcion' => 'required|string|max:50',          
-            'site' => 'required|string|max:50',         
+            'site' => 'required|string|max:50',
+            'visible' => 'required|boolean',         
            
         ]);
         if ($validator->fails()) {
@@ -44,6 +45,7 @@ class ModulosController extends Controller
         $modulo->icono         = $request->icono;
         $modulo->descripcion   = $request->descripcion;
         $modulo->site          = $request->site;
+        $modulo->visible          = $request->visible;
         $modulo->save();
         foreach($request->roles as $role){
 
@@ -76,7 +78,8 @@ class ModulosController extends Controller
             'orden' => 'required|integer',     
             'icono' => 'required|string|min:4',
             'descripcion' => 'required|string|max:50',          
-            'site' => 'required|string|max:50',         
+            'site' => 'required|string|max:50',
+            'visible' => 'required|boolean',         
            
         ]);
 
@@ -84,6 +87,7 @@ class ModulosController extends Controller
         $modulo->icono         = $request->icono;
         $modulo->descripcion   = $request->descripcion;
         $modulo->site          = $request->site;
+        $modulo->visible       = $request->visible;
         $modulo->save();
         $modulo->roles()->detach();
         foreach($request->roles as $role){

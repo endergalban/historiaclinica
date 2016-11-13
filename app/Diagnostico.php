@@ -17,7 +17,7 @@ class Diagnostico extends Model
     
     protected $dates = ['deleted_at'];
 
-    public function tipo_diagnostico()
+    public function Tipo_diagnostico()
     {
         return $this->belongsTo('App\Tipo_diagnostico','tipo_diagnostico_id');
     }

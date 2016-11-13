@@ -202,7 +202,7 @@ class FactorRiesgosSeeder extends Seeder
         $factor->tipo_factor_riesgo()->associate($tipo);
 		$factor->save();
 
-		$tipo = Tipo_factor_riesgo::where([ 'descripcion' => 'Fenómenos Naturales' ])->first();
+		$tipo = Tipo_factor_riesgo::where([ 'descripcion' => 'FN' ])->first();
     	$factor= New Factor_riesgo;
     	$factor->descripcion = 'Fenómenos Naturales';
         $factor->tipo_factor_riesgo()->associate($tipo);

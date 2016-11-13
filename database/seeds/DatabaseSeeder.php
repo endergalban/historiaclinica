@@ -38,5 +38,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ExamenVisualesTableSeeder::class);
         $this->call(TipoOrganosTableSeeder::class);
         $this->call(OrganosTableSeeder::class);
+        $this->call(TipoExamenAlturasSeeder::class);
     }
 }

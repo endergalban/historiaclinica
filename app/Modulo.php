@@ -12,7 +12,7 @@ class Modulo extends Model
     protected $table = 'modulos';
 
     protected $fillable = [
-  		'site','icono','orden','descripcion',
+  		'site','icono','orden','descripcion','visible',
   	];
 
   	protected $dates = ['deleted_at'];
