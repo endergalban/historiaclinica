@@ -22,9 +22,9 @@ use App\Afp;
 class PacientesController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * .
+     * Muestra los pacientes del sistema
+     * @param  $request->search  para filtro de resultado
      */
     public function index(Request $request)
     {
@@ -32,10 +32,10 @@ class PacientesController extends Controller
         return  view('pacientes.index')->with(['users'=>$users ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     /**
+     * .
+     * Configura el formulario para la creación de un paciente
+     * 
      */
     public function create()
     {
@@ -80,11 +80,10 @@ class PacientesController extends Controller
         return  view('pacientes.create')->with(['nacimiento' => $nacimiento ,'residencia' => $residencia ,'empresas' => $empresas,'afps' => $afps,'arls' => $arls]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     /**
+     * .
+     * Registra un paciente en el sistema
+     *  @param  $request con los datos del paciente
      */
     public function store(Request $request)
     {
@@ -119,11 +118,8 @@ class PacientesController extends Controller
             flash(implode('<br>',$validator->errors()->all()), 'danger');
             return redirect()->route('pacientes.create')->withInput();
         }
-
-
         $municipio_id = Municipio::where(['id'=>$request->municipio_id])->first();
         $municipioresidencia_id = Municipio::where(['id'=>$request->municipioresidencia_id])->first();
-
         $user= new User;
         $user->email                  = $request->email;
         $user->password               = bcrypt('123456');
@@ -144,8 +140,6 @@ class PacientesController extends Controller
         $user->save();
         $currentrole = Role::where(['id'=>4])->first();
         $user->roles()->attach($currentrole);
-       
-
         if( $request->hasFile('imagen')){ 
             $imageName = $user->id . '.' . $request->file('imagen')->getClientOriginalExtension();
             Image::make($request->file('imagen'))->resize(null, 150, function ($constraint) {
@@ -177,11 +171,10 @@ class PacientesController extends Controller
         return redirect()->route('pacientes.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     /**
+     * .
+     * Muestra los datos de un paciente en el sistema
+     *  @param  $id del paciente
      */
     public function show($id)
     {
@@ -190,8 +183,6 @@ class PacientesController extends Controller
          //Nacimiento
         $departamentos=Departamento::where('pais_id',$user->municipio->departamento->pais->id)->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
         $municipios=Municipio::where('departamento_id',$user->municipio->departamento->id)->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
-
-
         //residencia
         if($user->paciente->municipio_id)
         {
@@ -205,9 +196,7 @@ class PacientesController extends Controller
             $residencia=['pais_id'=> '0','departamento_id'=> '0','municipio_id'=> '0'];
             $departamentoresidencias= ['0'=>'N/A'];
             $municipioresidencias= ['0'=>'N/A'];
-
         }   
-         
           $empresas=Empresa::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A', 0);
           $arls=Arl::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A', 0);
           $afps=Afp::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A', 0);
@@ -215,11 +204,10 @@ class PacientesController extends Controller
         return  view('pacientes.show')->with(['user' => $user,'paises' => $paises,'departamentos' => $departamentos,'municipios' => $municipios,'residencia' => $residencia,'departamentoresidencias' => $departamentoresidencias,'municipioresidencias' => $municipioresidencias,'empresas' => $empresas,'arls' => $arls,'afps' => $afps]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     /**
+     * .
+     * Restablece el password del paciente 123456
+     *  @param  $id del paciente
      */
 
      public function password($id)
@@ -231,17 +219,18 @@ class PacientesController extends Controller
         return redirect()->route('pacientes.index');
     }
 
-
+    /**
+     * .
+     * Muestra los datos de un paciente en el sistema para su edición
+     *  @param  $id del paciente
+     */
     public function edit($id)
     {
         $user=User::with('municipio.departamento.pais')->with('paciente')->where('id',$id)->first();
-       
-
         //COMBOS PACIENTES
         $paises=Pais::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('Seleccione una opción', 0);
         $departamentos=Departamento::where('pais_id',$user->municipio->departamento->pais->id)->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
         $municipios=Municipio::where('departamento_id',$user->municipio->departamento->id)->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
-
         if($user->paciente->municipio_id)
         {
             $residenciadata=Municipio::with('departamento.pais')->where('id',$user->paciente->municipio_id)->first();
@@ -255,27 +244,19 @@ class PacientesController extends Controller
             $departamentoresidencias= ['0'=>'Seleccione una opción'];
             $municipioresidencias= ['0'=>'Seleccione una opción'];
             $residencia=['pais_id'=> '0','departamento_id'=> '0','municipio_id'=> '0'];
-
-
         }   
-       
-      
         $empresas=Empresa::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A', 0);
         $arls=Arl::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A', 0);
         $afps=Afp::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('N/A', 0);
-
         $user=User::with('municipio.departamento.pais')->with('paciente')->where('id',$id)->first();
-
-
         return  view('pacientes.edit')->with(['user' => $user,'paises' => $paises,'departamentos' => $departamentos,'municipios' => $municipios,'residencia' => $residencia,'departamentoresidencias' => $departamentoresidencias,'municipioresidencias' => $municipioresidencias,'empresas' => $empresas,'arls' => $arls,'afps' => $afps ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+    
+   /**
+     * .
+     * Edita los datos de un paciente 
+     *  @param  $request con los datos del paciente 
      */
     public function update(Request $request, $id)
     {
@@ -306,17 +287,13 @@ class PacientesController extends Controller
             'empresa_id' => 'exists:empresas,id', 
             'arl_id' => 'exists:arls,id', 
             'afp_id' => 'exists:afps,id',               
-
-
         ]);
         if ($validator->fails()) {
             flash(implode('<br>',$validator->errors()->all()), 'danger');
             return redirect()->route('pacientes.edit',$user->id);
         }
-
         $municipio_id = Municipio::where(['id'=>$request->municipio_id])->first();
         $municipioresidencia_id = Municipio::where(['id'=>$request->municipioresidencia_id])->first();
-
         $user->email                  = $request->email;
         $user->tipodocumento          = $request->tipodocumento;          
         $user->numerodocumento        = $request->numerodocumento;
@@ -351,23 +328,20 @@ class PacientesController extends Controller
             $user->firma=$imagefirma;
             $user->save();
         }
-
         $paciente = Paciente::where('user_id',$user->id)->first();
         $paciente->municipio()->associate($municipioresidencia_id);
         $paciente->empresa_id = $request->empresa_id;
         $paciente->afp_id = $request->afp_id;
         $paciente->arl_id = $request->arl_id;
         $paciente->save();
-
         flash('Edición realizada de forma exitosa!', 'success');
         return redirect()->route('pacientes.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     /**
+     * .
+     * Elimina un paciente 
+     *  @param  $id del paciente 
      */
     public function destroy($id)
     {

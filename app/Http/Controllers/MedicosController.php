@@ -19,9 +19,9 @@ use App\Especialidad;
 class MedicosController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * .
+     * Muestra los asistentes del sistema
+     * @param  $request->search  para filtro de resultado
      */
     public function index(Request $request)
     {
@@ -30,9 +30,9 @@ class MedicosController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * .
+     * Configura el formulario para la creación de asistente
+     * 
      */
     public function create()
     {
@@ -44,7 +44,6 @@ class MedicosController extends Controller
         }else{
             $departamentos=['0'=>'Seleccione una opción'];
         }
-
         if(old('departamento_id'))
         {
             $municipios=Municipio::where('departamento_id',old('departamento_id'))->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id')->prepend('Seleccione una opción', 0);
@@ -52,17 +51,13 @@ class MedicosController extends Controller
             $municipios=['0'=>'Seleccione una opción'];
         }
         $nacimiento=['municipios'=> $municipios,'departamentos'=> $departamentos,'paises'=> $paises];
-
-
-       
         return  view('medicos.create')->with(['nacimiento' => $nacimiento ,'especialidades' => $especialidades]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     /**
+     * .
+     *  Registra un medico en el sistema
+     *  @param  $request con los datos del medico
      */
     public function store(Request $request)
     {
@@ -94,11 +89,7 @@ class MedicosController extends Controller
             flash(implode('<br>',$validator->errors()->all()), 'danger');
             return redirect()->route('medicos.create')->withInput();
         }
-
-
         $municipio_id = Municipio::where(['id'=>$request->municipio_id])->first();
-       
-
         $user= new User;
         $user->email                  = $request->email;
         $user->password               = bcrypt('123456');
@@ -138,9 +129,6 @@ class MedicosController extends Controller
             $user->firma=$imagefirma;
             $user->save();
         }
-
-
-
 		$medico = new Medico;
 		$medico->user()->associate($user);
         $medico->registro = $request->registro;
@@ -170,11 +158,10 @@ class MedicosController extends Controller
         return redirect()->route('medicos.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     /**
+     * .
+     * Muestra los datos de un medico en el sistema
+     *  @param  $id del medico
      */
     public function show($id)
     {
@@ -190,15 +177,10 @@ class MedicosController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * .
+     * Muestra los datos de un medico en el sistema para su edición
+     *  @param  $id del medico
      */
-
- 
-
-
     public function edit($id)
     {
         $user=User::with('municipio.departamento.pais')->with('medico')->where('id',$id)->first();
@@ -212,12 +194,10 @@ class MedicosController extends Controller
         return  view('medicos.edit')->with(['user' => $user,'paises' => $paises,'departamentos' => $departamentos,'municipios' => $municipios,'especialidades' => $especialidades,'especialidad_medico'=>$especialidad_medico ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     /**
+     * .
+     * Edita los datos de un medico 
+     *  @param  $request con los datos del medico 
      */
     public function update(Request $request, $id)
     {
@@ -250,9 +230,7 @@ class MedicosController extends Controller
           flash(implode('<br>',$validator->errors()->all()), 'danger');
             return redirect()->route('medicos.edit',$user->id);
         }
-
         $municipio_id = Municipio::where(['id'=>$request->municipio_id])->first();
-
         $user->email                  = $request->email;
         $user->tipodocumento          = $request->tipodocumento;          
         $user->numerodocumento        = $request->numerodocumento;
@@ -269,7 +247,6 @@ class MedicosController extends Controller
         $user->telefono               = $request->telefono;
         $user->activo                 = $request->activo;
         $user->save();
-
         if( $request->hasFile('imagen')){ 
             $imageName = $user->id . '.' . $request->file('imagen')->getClientOriginalExtension();
             Image::make($request->file('imagen'))->resize(null, 150, function ($constraint) {
@@ -287,11 +264,9 @@ class MedicosController extends Controller
             $user->firma=$imagefirma;
             $user->save();
         }
-
         $medico  =   Medico::where('user_id',$user->id)->first();
         $medico->registro = $request->registro;
         $medico->save();
-
         $medico->especialidades()->detach();
         if($request->especialidades){
             foreach($request->especialidades as $especialidad){
@@ -302,7 +277,6 @@ class MedicosController extends Controller
                 }
             }
         }
-
         if( $request->hasFile('banner')){ 
             $imagebanner = $medico->user_id . '.' . $request->file('banner')->getClientOriginalExtension();
             Image::make($request->file('banner'))->resize(null, 150, function ($constraint) {
@@ -316,11 +290,10 @@ class MedicosController extends Controller
         return redirect()->route('medicos.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+   /**
+     * .
+     * Elimina un medico 
+     *  @param  $id del medico 
      */
     public function destroy($id)
     {

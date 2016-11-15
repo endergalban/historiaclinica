@@ -260,7 +260,7 @@ class ReportsController extends Controller
 			$empresa=utf8_decode($historia_ocupacional->empresa);
 			$cedula=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->tipodocumento.' '.$historia_ocupacional->medico_paciente->paciente->user->numerodocumento);
 			$cargo=utf8_decode($historia_ocupacional->ocupacional_actual->cargoactual);
-			$edad=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->fechanacimiento->diff(Carbon::now())->format('%y años'));
+			$edad=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->fechanacimiento->diff(Carbon::now())->format('%y'));
 			$firmatrabajador=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->firma);
 			$query_eps = Empresa::findOrFail($historia_ocupacional->empresa_id);if(!is_null($query_eps)){ $eps=utf8_decode($query_eps->descripcion);}else{$eps='N/A';}
 
@@ -480,7 +480,7 @@ class ReportsController extends Controller
 		$fpdf->Cell(10,$alto,$dian,1,0,'C',0);
 		$fpdf->Cell(10,$alto,$mesn,1,0,'C',0);
 		$fpdf->Cell(10,$alto,$anion,1,0,'C',0);
-		$fpdf->Cell(10,$alto,'',0,0,'C',0);
+		$fpdf->Cell(10,$alto,$edad,0,0,'C',0);
 		$fpdf->Cell(5,$alto,$m,1,0,'C',0);
 		$fpdf->Cell(5,$alto,$f,1,0,'C',0);
 		$fpdf->Cell(8,$alto,$so,1,0,'C',0);	
