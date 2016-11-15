@@ -36,8 +36,9 @@ class Paciente extends Model
     {
         return $this->belongsTo('App\Arl');
     }
-
-
+    public function medico_pacientes(){
+         return $this->hasMany('App\Medico_paciente','paciente_id');
+    }
 
     public function municipio()
     {

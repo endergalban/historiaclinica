@@ -170,7 +170,7 @@ class MedicosController extends Controller
          //Nacimiento
         $departamentos=Departamento::where('pais_id',$user->municipio->departamento->pais->id)->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
         $municipios=Municipio::where('departamento_id',$user->municipio->departamento->id)->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
-         $especialidades=Especialidad::all()->sortBy('descripcion')->pluck('descripcion', 'id');
+        $especialidades=Especialidad::all()->sortBy('descripcion')->pluck('descripcion', 'id');
         $especialidad_medico=Medico::find($user->medico->id)->especialidades()->pluck('especialidad_id')->toArray();
 
         return  view('medicos.show')->with(['user' => $user,'paises' => $paises,'departamentos' => $departamentos,'municipios' => $municipios,'especialidades' => $especialidades,'especialidad_medico' => $especialidad_medico ]);

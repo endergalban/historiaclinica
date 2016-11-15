@@ -21,6 +21,7 @@ class Especialidad extends Model
 		return $this->belongsToMany('App\Medico','especialidad_medico','especialidad_id','medico_id');
 	}
 
+
 	public function scopeOfType($query, $type){
 		
 		return $query->where('descripcion', 'like' , '%'.$type.'%');

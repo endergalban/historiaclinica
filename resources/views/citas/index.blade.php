@@ -19,7 +19,7 @@
           <!-- /. box -->
           <div class="box box-solid">
             <div class="box-header with-border">
-              <h3 class="box-title">Crear nuevo Evento</h3>
+              <h3 class="box-title">Crear nueva Cita</h3>
             </div>
             <div class="box-body">
               <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
@@ -42,37 +42,17 @@
               </div>
               <!-- /btn-group -->
               <div class="input-group">
-                <!--<input id="new-event" type="text" class="form-control" placeholder="Nombre del Evento">-->
-                <!-- {!! Form::label('paciente_id','Paciente') !!} -->
+                @if(is_array($medicos))
+                  {!! Form::select('medico_id',$medicos,0,['class' => 'form-control select2','style' => 'width: 100%','id' => 'medico_id' ]) !!}
+                @else
+                  {!! Form::hidden('medico_id',$medicos,['id'=>'medico_id']) !!}
+                @endif
+                {!! Form::select('especialidad_id',$especialidades, old('especialidad_id'),['class' => 'form-control select2','style' => 'width: 100%','id' => 'especialidad_id']) !!}
+
                 {!! Form::select('pacientes[]',$pacientes,null,['id' => 'new-event', 'class' => 'form-control select2','style' => 'width: 100%','placeholder' => 'Seleccione el Paciente' ]) !!}
                 {!! Form::text('fechainicio',null,['class'=>'form-control pull-right', 'id'=>'fechainicio']) !!}
-                <!--{!! Form::select('duracion', 
-                    [
-                       '10' => '10min',
-                       '20' => '20min',
-                       '30' => '30min', 
-                       '40' => '40min',
-                       '45' => '45min',
-                       '50' => '50min',
-                       '60' => '60min' 
-
-                     ], old('duracion'),['id' => 'duracion', 'class' => 'form-control select2','style' => 'width: 100%', 'placeholder' => 'Duración de la Consulta']) !!}-->
-                     <!-- <input type="text" class="form-control pull-right" id="reservationtime">-->
-                     </div>
-                     <div class="checkbox">
-                    <label>
-                      {!! Form::checkbox('delete',null,false, ['id'=>'delete']) !!}
-                      Borrar
-                    </label>
-                  </div>
-
-                    <!-- <div class="input-group">
-                    {!! Form::checkbox('delete',null,false, ['id'=>'delete']) !!}
-                    {!! Form::label('borrar','Borrar') !!}
-                    </div>-->
-                  <!-- /btn-group -->
-                  
-              
+              </div>
+             
               <div class="input-group-btn">
                   <button id="add-new-event" type="button" class="btn btn-primary btn-flat">Guardar</button>
                 </div>
@@ -96,7 +76,34 @@
         <!-- /.col -->
       </div>
       <!-- /.row -->
+  <div class="modal fade"  id="myAlert2" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Detalle de la información</h4>
+                </div>
+                <div class="form-group col-md-12">
+                    <h4 class="box-title"><b>Paciente:</b><label id="lbPaciente" name="lbPaciente"></label>
+                    </h4>
+                </div>
+                <div class="form-group col-md-12">
+                    <h4 class="box-title"><b>Cita:</b><label id="lbCita" name="lbCita"></label>
+                    </h4>
+                </div>
+                                <div class="modal-body">
 
+                            <input type="hidden" id="hdnIdCita" name="hdnIdCita" />
+                            <button type="button" id="btnVerP" class="btn btn-default">Ver Infomación Paciente</button>
+                            <button type="button" class="btn btn-danger" onclick="eliminar()" data-dismiss="modal" >Eliminar Cita</button>
+                </div>
+                <div class="modal-footer">
+                   
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('javascript')
@@ -110,7 +117,55 @@
 
 <!-- Page specific script -->
 <script>
+function eliminar()
+{
+    crsfToken = document.getElementsByName("_token")[0].value;
+    $.ajax({
+          url:'eliminarcita',
+          data:'id_cita='+ $("#hdnIdCita").val(),
+          type: "POST",
+          headers:{
+            "X-CSRF-TOKEN":crsfToken
+          },
+          success: function(events){
+            console.log("Evento Eliminado");
+            $('#calendar').fullCalendar('removeEvents',$("#hdnIdCita").val());
+          },
+          error: function(json){
+            console.log("Error");
+          }
+        
+    }); 
+}
+
+   $('#medico_id').change(function(e) {
+        console.log(e);
+        var medico_id = e.target.value;
+         $.get("{{ url('getDataEspecialidades') }}/"+medico_id, function(data) {
+              $('#especialidad_id').empty();
+              //$('#especialidad_id').append('<option value="0">Seleccione una opción</option>');
+               $.each(data[0].especialidades, function(i, objeto) {
+                  //if(objeto.medico_id==medico_id){
+                    $('#especialidad_id').append('<option value="'+objeto.id+'">'+objeto.descripcion+'</option>');
+
+                  //}
+               });
+             var events= {url: 'api',
+                          data:{ medico_id:$('#medico_id').val(), especialidad_id:$('#especialidad_id').val()},
+                          type: 'GET'}; 
+               $('#calendar').fullCalendar( 'removeEventSource', events);
+             $('#calendar').fullCalendar( 'addEventSource', events);                      
+          });
+      });
+    $('#especialidad_id').change(function(e) {
+             var events= {url: 'api',
+                          data:{ medico_id:$('#medico_id').val(), especialidad_id:$('#especialidad_id').val()},
+                          type: 'GET'}; 
+               $('#calendar').fullCalendar( 'removeEventSource', events);
+               $('#calendar').fullCalendar( 'addEventSource', events);                      
+      });
   $(function () {
+
          //Timepicker
     $('#fechainicio').daterangepicker({
       timePicker: true, 
@@ -195,7 +250,10 @@
         day: 'day'
       },
       //CARGA DE EVENTOS POR BD
-      events: {url: "api"},
+      events: {
+        url: 'api',
+        data:{ medico_id:$('#medico_id').val(), especialidad_id:$('#especialidad_id').val()},
+        type: 'GET'},
 
       editable: false,
       droppable: false, // this allows things to be dropped onto the calendar !!!
@@ -252,11 +310,12 @@
       },
       eventClick: function(calEvent)
       {
-        $("#new-event").val(calEvent.id_pa).trigger('change');
-        //$("#fechainicio").val(calEvent.start.format('DD/MM/YYYY h:mm A'));
-        $('#fechainicio').val('');
-        $('#fechainicio').data('daterangepicker').setStartDate(calEvent.start.format('DD/MM/YYYY h:mm A'));
-        //alert(calEvent.title);
+         
+         $("#btnVerP").attr("onclick","location.href='pacientes/"+calEvent.id_pa+"'");
+         $("#hdnIdCita").val(calEvent.id);
+         document.getElementById('lbPaciente').innerHTML = calEvent.title;
+         document.getElementById('lbCita').innerHTML = calEvent.start.format("DD/MM/YYYY h:mm A");
+         $("#myAlert2").modal();
       }
     });
 
@@ -293,6 +352,8 @@
       var title= $("#new-event option:selected").text();
       var id_pa= $("#new-event").val();
       var start = $("#fechainicio").val();
+      var id_me= $("#medico_id").val();
+      var id_esp= $("#especialidad_id").val();
       var color= currColor;
       var duracion = 30;
       var borrar = false;
@@ -302,7 +363,7 @@
       }
       $.ajax({
           url:'guardarcita',
-          data:'title='+ title+'&start='+start+'&duracion='+duracion+'&id_paciente='+id_pa+'&color='+currColor+'&borrar='+borrar,
+          data:'title='+ title+'&start='+start+'&duracion='+duracion+'&id_paciente='+id_pa+'&id_medico='+id_me+'&id_especialidad='+id_esp+'&color='+currColor+'&borrar='+borrar,
           type: "POST",
           headers:{
             "X-CSRF-TOKEN":crsfToken

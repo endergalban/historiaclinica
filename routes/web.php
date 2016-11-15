@@ -47,11 +47,13 @@ Route::group(['middleware' => 'roles','site'=>'citas'], function () {
 		Route::resource('citas','CitasController',['except' => ['delete','show']]);
 		Route::get('citas/{id}/destroy',['uses'=>'CitasController@destroy','as'=>'citas.destroy']);
   		Route::post('guardarcita', array('as'=> 'guardarcita', 'uses'=> 'CitasController@create'));
+  		Route::post('eliminarcita', array('as'=> 'eliminarcita', 'uses'=> 'CitasController@borrar'));
   		Route::get('api','CitasController@api');
 });
 
 /*Combos*/
 Route::group(['middleware' => 'roles','site'=>'all'], function () {
+
 	Route::get('/getDataDepartamantos/{id}',	function($id){	
         $dataDepartamantos= App\Departamento::all()->where('pais_id',$id);
 		return Response::json($dataDepartamantos);
@@ -62,6 +64,12 @@ Route::group(['middleware' => 'roles','site'=>'all'], function () {
 		return Response::json($dataMunicipios);
 	})->name('dataMunicipios');
 
+<<<<<<< HEAD
+	Route::get('/getDataEspecialidades/{id}',	function($id){	
+        $dataEspecialidades= App\Medico::with('especialidades')->where('id',$id)->get();
+		return Response::json($dataEspecialidades);
+	})->name('getDataEspecialidades');
+=======
 	Route::get('/getTipoDiagnostico/{descripcion?}',function($descripcion = ''){	
         $dataTipoDiagnosticos= App\Tipo_diagnostico::ofType($descripcion)->limit(15)->pluck('descripcion','id');
         $valid_tags=array();
@@ -70,6 +78,7 @@ Route::group(['middleware' => 'roles','site'=>'all'], function () {
         }
    		return Response::json($valid_tags);
 	})->name('dataTipoDiagnostico');
+>>>>>>> origin/master
 });
 
 /*Descraga*/
@@ -78,6 +87,8 @@ Route::group(['middleware' => 'roles','site'=>'all'], function () {
 	Route::get('descargar/{file}',['uses'=>'DescargasController@descargar','as'=>'descargar']);
 
 });
+
+
 
 /*Especialidades*/
 Route::group(['middleware' => 'roles','site'=>'especialidades'], function () {
