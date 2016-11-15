@@ -17,7 +17,7 @@ class Especialidad extends Model
 
     protected $dates = ['deleted_at'];
 
-	public function users(){
+	public function medicos(){
 		return $this->belongsToMany('App\Medico','especialidad_medico','especialidad_id','medico_id');
 	}
 
