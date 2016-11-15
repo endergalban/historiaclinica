@@ -57,6 +57,8 @@
       z-index: 1;
     }
 
+   
+
     .ventana-modal .modal {
       background: transparent !important;
     }

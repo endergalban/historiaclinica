@@ -26,6 +26,11 @@ use App\Afp;
 class UsersController extends Controller
 {
 
+    /**
+     * .
+     * Muestra los usuarios del sistema
+     * @param  $request->search  para filtro de resultado
+     */
     public function index(Request $request)
     {
 		$users=User::ofType($request->search)->with('roles')->orderby('numerodocumento','ASC')->paginate(15);
@@ -33,6 +38,11 @@ class UsersController extends Controller
         return	view('users.index')->with(['users'=>$users,'roles'=>$roles]);
     }
 
+     /**
+     * .
+     * Configura el formulario para la creación de usuario
+     * 
+     */
     public function create()
     {
        
@@ -56,10 +66,13 @@ class UsersController extends Controller
 
     }
 
+     /**
+     * .
+     * Registra un usuario en el sistema
+     *  @param  $request con los datos del usuario
+     */
     public function store(Request $request)
     {
-        
-        
         $validator = Validator::make($request->all(), [
             'imagen' => 'image', 
             'tipodocumento' => 'required|string|max:2',     
@@ -85,11 +98,8 @@ class UsersController extends Controller
             flash(implode('<br>',$validator->errors()->all()), 'danger');
             return redirect()->route('users.create')->withInput();
         }
-
-
         $municipio_id = Municipio::where(['id'=>$request->municipio_id])->first();
         $municipioresidencia_id = Municipio::where(['id'=>$request->municipio_id])->first();
-
         $user= new User;
         $user->email                  = $request->email;
         $user->password               = bcrypt('123456');
@@ -168,6 +178,11 @@ class UsersController extends Controller
         return redirect()->route('users.index');
     }
 
+    /**
+     * .
+     * Muestra los datos de un usuario en el sistema
+     *  @param  $id del usuario
+     */
     public function show($id)
     {
         $user=User::with('municipio.departamento.pais')->where('id',$id)->first();
@@ -175,25 +190,29 @@ class UsersController extends Controller
          //Nacimiento
         $departamentos=Departamento::where('pais_id',$user->municipio->departamento->pais->id)->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
         $municipios=Municipio::where('departamento_id',$user->municipio->departamento->id)->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
-              
-
         return  view('users.show')->with(['user' => $user,'paises' => $paises,'departamentos' => $departamentos,'municipios' => $municipios ]);
     }
-
+    /**
+     * .
+     * Muestra los datos de un usuario en el sistema para su edición
+     *  @param  $id del usuario
+     */
     public function edit($id)
     {
         $user=User::with('municipio.departamento.pais')->where('id',$id)->first();
-        
         $roles=Role::all()->sortBy('descripcion')->pluck('descripcion', 'id');
         $user_role = User::find($id)->roles()->pluck('role_id')->toArray();
-      
         $paises=Pais::all()->sortBy('descripcion')->pluck('descripcion', 'id');
          //Nacimiento
         $departamentos=Departamento::where('pais_id',$user->municipio->departamento->pais->id)->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
         $municipios=Municipio::where('departamento_id',$user->municipio->departamento->id)->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
         return	view('users.edit')->with(['user' => $user,'paises' => $paises,'departamentos' => $departamentos,'municipios' => $municipios,'roles' => $roles,'user_role' =>  $user_role ]);
     }
-
+    /**
+     * .
+     *  Restablece el password de un usuario a 123456 
+     *  @param  $id del usuario
+     */
     public function password($id)
     {
 		$user	=	User::findOrFail($id);
@@ -202,7 +221,11 @@ class UsersController extends Controller
 		flash('El password del usuario '.$user->primernombre.' '.$user->primerapellido.' ha sido restablecido de forma exitosa (132456)!', 'success');
         return redirect()->route('users.index');
     }
-
+    /**
+     * .
+     *  Cambia el estatus de un usuario
+     *  @param  $id del usuario
+     */
     public function estatus($id)
     {
 		$user	=	User::findOrFail($id);
@@ -215,7 +238,11 @@ class UsersController extends Controller
 		flash('El estatus del usuario '.$user->primernombre.' '.$user->primerapellido.' ha cambiado de forma exitosa!', 'success');
         return redirect()->route('users.index');
     }
-
+    /**
+     * .
+     * Edita los datos de un usuario 
+     *  @param  $request con los datos de un usuario 
+     */
     public function update(Request $request, $id)
     {
 		 $user	=	User::findOrFail($id);
@@ -239,8 +266,6 @@ class UsersController extends Controller
             'telefono' => 'required|string|max:13',   
             'direccion' => 'string|max:255',   
             'firma' => 'image',              
-
-
         ]);
         if ($validator->fails()) {
             flash(implode('<br>',$validator->errors()->all()), 'danger');
@@ -326,7 +351,11 @@ class UsersController extends Controller
         return redirect()->route('users.index');
     }
 
-    
+    /**
+     * .
+     * Elimina un usuario 
+     *  @param  $id del usuario 
+     */
     public function destroy($id)
     {
         $user = User::findOrFail($id);
@@ -334,7 +363,12 @@ class UsersController extends Controller
         flash('El usuario '.$user->primernombre.' '.$user->primerapellido.' se ha eliminado de forma exitosa!', 'danger');
         return redirect()->route('users.index');
     }
-
+    
+    /**
+     * .
+     *  Muestra los datos especifico del rol seleccionado 
+     *  @param  $id,$rol_id
+     */
     public function role($id,$rol_id)
     {
         $user = User::findOrFail($id);
@@ -354,7 +388,6 @@ class UsersController extends Controller
 
             $asistente = User::find($id)->asistente()->first();
             $querymedicos=User::has('medico')->orderby('tipodocumento','ASC')->get();
-
             $medicos=array();
             foreach ($querymedicos as $medico) {
                 $medicos[$medico->medico->id]=$medico->tipodocumento.' '.$medico->numerodocumento
@@ -362,13 +395,11 @@ class UsersController extends Controller
             }
 
             $asistente_medico=Asistente::find($asistente->id)->medicos()->pluck('medico_id')->toArray();
-           
-             return  view('users.asistente')->with(['asistente' => $asistente,'medicos' => $medicos,'asistente_medico' => $asistente_medico]);
+            return  view('users.asistente')->with(['asistente' => $asistente,'medicos' => $medicos,'asistente_medico' => $asistente_medico]);
 
         }elseif($role->id == 4){// PACIENTE
 
             $paciente=User::where('id',$id)->with('paciente.municipio.departamento.pais')->first();
-            
             $paises=Pais::all()->pluck('descripcion', 'id')->prepend('Seleccione una opción',0); 
             if(isset($paciente->paciente->municipio->departamento->pais->id))
             {
@@ -386,17 +417,18 @@ class UsersController extends Controller
                 $residencia['departamentoresidencia_id']='0';
                 $residencia['paisresidencia_id']='0';
             }
-
             $empresas=Empresa::all()->sortBy('descripcion')->pluck('descripcion', 'id');
             $arls=Arl::all()->sortBy('descripcion')->pluck('descripcion', 'id');
             $afps=Afp::all()->sortBy('descripcion')->pluck('descripcion', 'id');
 
             return  view('users.paciente')->with(['paciente' => $paciente,'empresas' => $empresas,'paises' => $paises,'departamentos' => $departamentos,'municipios' => $municipios,'arls' => $arls,'afps' => $afps,'residencia' => $residencia]);
         }
-
-        
     }
-
+    /**
+     * .
+     *  Actualiza los datos del rol médico
+     *  @param  $request con los datos necesarios
+     */
     public function medico(Request $request, $id)
     {
         $medico  =   Medico::findOrFail($id);
@@ -434,11 +466,14 @@ class UsersController extends Controller
         return redirect()->route('users.role',[$medico->user_id,2]);
        
     }
-
+     /**
+     * .
+     *  Actualiza los datos del rol asistente
+     *  @param  $request con los datos necesarios
+     */
      public function asistente(Request $request, $id)
     {
         $asistente  =   Asistente::findOrFail($id);
-
         $asistente->medicos()->detach();
         if($request->medicos){
             foreach($request->medicos as $medico){
@@ -449,14 +484,14 @@ class UsersController extends Controller
                 }
             }
         }
-       
-        
         flash('Edición realizada de forma exitosa!', 'success');
         return redirect()->route('users.role',[$asistente->user_id,3]);
-       
     }
-
-
+    /**
+     * .
+     *  Actualiza los datos del rol paciente
+     *  @param  $request con los datos necesarios
+     */
     public function paciente(Request $request, $id)
     {
          $paciente  =   Paciente::findOrFail($id);
@@ -483,11 +518,7 @@ class UsersController extends Controller
         $paciente->arl_id = $request->arl_id;
         $paciente->afp_id = $request->afp_id;
         $paciente->save();
-               
         flash('Edición realizada de forma exitosa!', 'success');
         return redirect()->route('users.role',[$paciente->user_id,4]);
-       
     }
-
-
 }

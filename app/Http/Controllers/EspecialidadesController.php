@@ -1,5 +1,5 @@
 <?php
-
+ 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -11,9 +11,9 @@ use App\Especialidad;
 class EspecialidadesController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * .
+     * Muestra las especialidades del sistema
+     * @param  $request->search  para filtro de resultado
      */
     public function index(Request $request)
     {
@@ -22,20 +22,19 @@ class EspecialidadesController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * .
+     * Configura el formulario para la creación de la especialidad
+     * 
      */
     public function create()
     {
          return  view('especialidades.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     /**
+     * .
+     * Registra los datos de una especialidad en el sistema
+     *  @param $request con los datos de una especialidad 
      */
     public function store(Request $request)
     {
@@ -56,17 +55,9 @@ class EspecialidadesController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-   
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * .
+     * Muestra los datos de una especialidad en el sistema para su edición
+     *  @param  $id de la especialidad
      */
     public function edit($id)
     {
@@ -74,12 +65,10 @@ class EspecialidadesController extends Controller
        return  view('especialidades.edit')->with('especialidad',$especialidad);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     /**
+     * .
+     * Edita los datos de una especialidad 
+     *  @param  $request con los datos de una especialidad 
      */
     public function update(Request $request, $id)
     {
@@ -99,10 +88,9 @@ class EspecialidadesController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * .
+     * Elimina una especialidad 
+     *  @param  $id de la especialidad 
      */
     public function destroy($id)
     {

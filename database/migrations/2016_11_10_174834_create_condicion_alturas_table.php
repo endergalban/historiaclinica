@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateModulosTable extends Migration
+class CreateCondicionAlturasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,11 @@ class CreateModulosTable extends Migration
      */
     public function up()
     {
-       Schema::create('modulos', function (Blueprint $table) {
+        Schema::create('condicion_alturas', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('orden');
-            $table->string('descripcion',100);
-            $table->string('site',100);
-            $table->string('icono',20);
-            $table->boolean('visible',20)->default('1');
+            $table->integer('historia_ocupacional_id')->unsigned();$table->foreign('historia_ocupacional_id')->references('id')->on('historia_ocupacionales')->onDelete('restrict');
+            $table->string('condicion',50);
+            $table->string('observacion',500);
             $table->softDeletes();
             $table->timestamps();
         });
@@ -32,6 +30,6 @@ class CreateModulosTable extends Migration
      */
     public function down()
     {
-         Schema::dropIfExists('modulos');
+        Schema::dropIfExists('condicion_alturas');
     }
 }

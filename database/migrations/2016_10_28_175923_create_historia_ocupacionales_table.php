@@ -24,6 +24,7 @@ class CreateHistoriaOcupacionalesTable extends Migration
             $table->integer('numerohijos');
             $table->integer('numeropersonascargo');
             $table->string('empresa');
+            $table->text('recomendaciones');
             $table->softDeletes();
             $table->timestamps();
         });

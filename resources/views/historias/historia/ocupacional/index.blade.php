@@ -50,6 +50,7 @@
             <table id="example2" class="table table-bordered table-hover">
                 <thead>
                     <tr class="text-center">
+                        <th>Nro. Historia</th>
                         <th>Fecha</th>
                         <th>Empresa</th>
                         <th>Tipo de Examen</th>
@@ -59,13 +60,16 @@
                 <tbody>
                     @foreach( $historias as $historia )
                     <tr>
-                        <td>{{ $historia->created_at }}</td>
+                        <td>HO-{{ str_pad($historia->id, 8, "0", STR_PAD_LEFT) }}</td>
+                        <td>{{ date("d/m/Y", strtotime($historia->created_at))  }}</td>
                         <td>{{ $historia->empresa }}</td>
                         <td>{{ $historia->tipo_examen->descripcion }}</td>
                         
                         <td class="text-center">
-                            <a href="#"><span class="label label-primary">Descargar</span></a>
+                            <a href="{{ route('reporte.certificado_ocupacional',[$historia->id]) }}" target="_BLANK"><span class="label label-primary" >Certificado</span></a>
+                            <a href="{{ route('reporte.historia',[$historia->id]) }}" target="_BLANK"><span class="label label-primary">Informe</span></a>
                             <a href="{{ route('historias.ocupacional.edit',[$paciente->id,$historia->id]) }}" ><span class="label label-warning">Editar</span></a>
+                            <a href="{{ route('historias.ocupacional.documentos',[$paciente->id,$historia->id]) }}" ><span class="label bg-purple">Documentos</span></a>
                             <a data-toggle="modal" data-url="{{ route('historias.destroy_ocupacional',[$paciente->id,$medico->id , $historia->id ]) }}" class="open-modal" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
 
                         </td>

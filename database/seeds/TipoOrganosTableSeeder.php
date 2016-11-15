@@ -41,7 +41,7 @@ class TipoOrganosTableSeeder extends Seeder
         $Tipo_organo->save();
 
         $Tipo_organo = new Tipo_organo;
-        $Tipo_organo->descripcion ='Sistema nervioso';
+        $Tipo_organo->descripcion ='Sistema Nervioso';
         $Tipo_organo->save();
 
         $Tipo_organo = new Tipo_organo;

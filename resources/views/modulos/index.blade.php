@@ -39,6 +39,7 @@
 								<th class="text-center">icono</th>
 								<th>Nombre</th>
 								<th>Site</th>
+								<th class="text-center">Visible</th>
 								<th>Roles</th>
 								<th class="text-center">Acción</th>
 							</tr>
@@ -50,6 +51,11 @@
 									<td class="text-center"><i class="fa {{ $modulo->icono }}"></i></td>
 									<td>{{ $modulo->descripcion }}</td>
 									<td>{{ $modulo->site }}</td>
+									@if($modulo->visible == 1)
+										<td class="text-center">Si</td>
+									@else
+										<td class="text-center">No</td>
+									@endif
 									<td>	
 									@foreach( $modulo->roles as $role )
 										<a  href="#"><span class="label label-default">{{ $role->descripcion }}</span></a>

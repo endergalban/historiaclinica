@@ -238,7 +238,7 @@
         <div class="pull-right hidden-xs">
           <b>Version</b> 1.0.0
         </div>
-        <strong>Desarrolladopor: <a href="http://www.endergalban.com,ve">Ender Galbán</a> - <a href="http://www.enriquepetzold.com,ve">Enrique Petzold</a></strong> 
+        <strong>Desarrollado por: <a href="http://www.endergalban.com,ve">Ender Galbán</a> - <a href="http://www.enriquepetzold.com,ve">Enrique Petzold </a></strong> 
       </footer>
 
       <!-- Control Sidebar -->
@@ -454,9 +454,10 @@
     <script src="{{ asset('dist/js/demo.js') }}"></script>
     <!-- Select2 -->
     <script src="{{ asset('plugins/select2/select2.full.min.js') }}"></script>
+    <script src="{{ asset('plugins/select2/i18n/es.js') }}" type="text/javascript"></script>
     <!-- bootstrap datepicker -->
     <script src="{{ asset('plugins/datepicker/bootstrap-datepicker.js') }}"></script>
-    <script src="{{ asset('plugins/datepicker/locales/bootstrap-datepicker.es.js') }}"></script>   
+    <script src="{{ asset('plugins/datepicker/locales/bootstrap-datepicker.es.js') }}"></script>
     <!-- bootstrap time picker -->
     <script src="{{ asset('plugins/timepicker/bootstrap-timepicker.min.js') }}"></script>
     <!-- date-range-picker -->
@@ -467,7 +468,6 @@
 
     <!-- date-range-picker -->
     
-
     <script>
 
     $(document).on("click", ".open-modal", function () {
@@ -477,8 +477,12 @@
     });
 
      $(function () {
-      //Initialize Select2 Elements
+      
+      @if(Route::currentRouteName() != 'historias.ocupacional.diagnosticos')
+        //Initialize Select2 Elements
         $(".select2").select2();
+        @endif
+        $.fn.modal.Constructor.prototype.enforceFocus = function() {};
          //Date picker
        $('.datepicker').datepicker({
           autoclose: true,
@@ -490,7 +494,7 @@
             radioClass: 'iradio_flat-green'
           });
       });
-
+ 
     </script>
 
     @yield('javascript')

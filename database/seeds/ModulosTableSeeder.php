@@ -23,6 +23,7 @@ class ModulosTableSeeder extends Seeder
         $modulo->icono = 'fa-home';
         $modulo->descripcion = 'Escritorio';
         $modulo->site = 'home';
+        $modulo->visible = 1;
         $modulo->save();
         $modulo->roles()->attach($role_administrador);
         $modulo->roles()->attach($role_medico);
@@ -35,6 +36,7 @@ class ModulosTableSeeder extends Seeder
         $modulo->icono = 'fa-users';
         $modulo->descripcion = 'Usuarios';
         $modulo->site = 'users';
+        $modulo->visible = 1;
         $modulo->save();
         $modulo->roles()->attach($role_administrador);
 
@@ -43,6 +45,7 @@ class ModulosTableSeeder extends Seeder
         $modulo->icono = 'fa-list';
         $modulo->descripcion = 'Módulos';
         $modulo->site = 'modulos';
+        $modulo->visible = 1;
         $modulo->save();
         $modulo->roles()->attach($role_administrador);
 
@@ -51,6 +54,7 @@ class ModulosTableSeeder extends Seeder
         $modulo->icono = 'fa-user-md';
         $modulo->descripcion = 'Médicos';
         $modulo->site = 'medicos';
+        $modulo->visible = 1;
         $modulo->save();
         $modulo->roles()->attach($role_administrador);
         
@@ -60,6 +64,7 @@ class ModulosTableSeeder extends Seeder
         $modulo->icono = 'fa-user';
         $modulo->descripcion = 'Asistentes';
         $modulo->site = 'asistentes';
+        $modulo->visible = 1;
         $modulo->save();
         $modulo->roles()->attach($role_administrador);
 
@@ -69,6 +74,7 @@ class ModulosTableSeeder extends Seeder
         $modulo->icono = 'fa-wheelchair';
         $modulo->descripcion = 'Pacientes';
         $modulo->site = 'pacientes';
+        $modulo->visible = 1;
         $modulo->save();
         $modulo->roles()->attach($role_administrador);
         $modulo->roles()->attach($role_medico);
@@ -79,6 +85,7 @@ class ModulosTableSeeder extends Seeder
         $modulo->icono = 'fa-newspaper-o';
         $modulo->descripcion = 'Historias';
         $modulo->site = 'historias';
+        $modulo->visible = 1;
         $modulo->save();
         $modulo->roles()->attach($role_administrador);
         $modulo->roles()->attach($role_medico);
@@ -92,32 +99,7 @@ class ModulosTableSeeder extends Seeder
         $modulo->icono = 'fa-medkit';
         $modulo->descripcion = 'Especialidades';
         $modulo->site = 'especialidades';
-        $modulo->save();
-        $modulo->roles()->attach($role_administrador);
-
-        $modulo= new Modulo;
-        $modulo->orden = 11;
-        $modulo->icono = 'fa-plus-square';
-        $modulo->descripcion = 'EPS';
-        $modulo->site = 'empresas';
-        $modulo->save();
-        $modulo->roles()->attach($role_administrador);
-      
-
-        $modulo= new Modulo;
-        $modulo->orden = 12;
-        $modulo->icono = 'fa-plus-square';
-        $modulo->descripcion = 'AFP';
-        $modulo->site = 'afps';
-        $modulo->save();
-        $modulo->roles()->attach($role_administrador);
-   
-
-        $modulo= new Modulo;
-        $modulo->orden = 13;
-        $modulo->icono = 'fa-plus-square';
-        $modulo->descripcion = 'ARL';
-        $modulo->site = 'arls';
+        $modulo->visible = 1;
         $modulo->save();
         $modulo->roles()->attach($role_administrador);
 
@@ -127,6 +109,7 @@ class ModulosTableSeeder extends Seeder
         $modulo->icono = 'fa-book';
         $modulo->descripcion = 'Citas';
         $modulo->site = 'citas';
+        $modulo->visible = 1;
         $modulo->save();
         $modulo->roles()->attach($role_asistente);
     

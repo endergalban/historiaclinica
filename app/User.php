@@ -90,7 +90,7 @@ class User extends Authenticatable
 
     public function menu($id){
 
-        $result = $this->modulos()->select('modulos.orden as orden','modulos.icono as icono','modulos.descripcion as descripcion','modulos.site as site')->where('users.id', $id)->orderBy('orden', 'asc')->groupBy(['modulos.id','modulos.orden','modulos.icono','modulos.descripcion','modulos.site'])->get();
+        $result = $this->modulos()->select('modulos.orden as orden','modulos.icono as icono','modulos.descripcion as descripcion','modulos.site as site')->where(['users.id' => $id,'modulos.visible' => 1])->orderBy('orden', 'asc')->groupBy(['modulos.id','modulos.orden','modulos.icono','modulos.descripcion','modulos.site'])->get();
         return $result;
     }
 

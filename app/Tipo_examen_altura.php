@@ -5,11 +5,11 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Tipo_examen_visual extends Model
+class Tipo_examen_altura extends Model
 {
-    use SoftDeletes;
+     use SoftDeletes;
 
-    protected $table = 'tipo_examen_visuales';
+    protected $table = 'tipo_examen_alturas';
 
 	protected $fillable = [
         'descripcion',
@@ -17,10 +17,8 @@ class Tipo_examen_visual extends Model
 
     protected $dates = ['deleted_at'];
 
-    public function visuales()
+    public function examen_alturas()
     {
-        return $this->hasMany('App\Examen_visual','tipo_examen_visual_id');
+        return $this->hasMany('App\Examen_altura','tipo_examen_altura_id');
     }
-
-    
 }
