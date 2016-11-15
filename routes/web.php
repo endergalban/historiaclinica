@@ -64,12 +64,12 @@ Route::group(['middleware' => 'roles','site'=>'all'], function () {
 		return Response::json($dataMunicipios);
 	})->name('dataMunicipios');
 
-<<<<<<< HEAD
+
 	Route::get('/getDataEspecialidades/{id}',	function($id){	
         $dataEspecialidades= App\Medico::with('especialidades')->where('id',$id)->get();
 		return Response::json($dataEspecialidades);
 	})->name('getDataEspecialidades');
-=======
+
 	Route::get('/getTipoDiagnostico/{descripcion?}',function($descripcion = ''){	
         $dataTipoDiagnosticos= App\Tipo_diagnostico::ofType($descripcion)->limit(15)->pluck('descripcion','id');
         $valid_tags=array();
@@ -78,17 +78,13 @@ Route::group(['middleware' => 'roles','site'=>'all'], function () {
         }
    		return Response::json($valid_tags);
 	})->name('dataTipoDiagnostico');
->>>>>>> origin/master
+
 });
 
-/*Descraga*/
+/*Descargas*/
 Route::group(['middleware' => 'roles','site'=>'all'], function () {
-
 	Route::get('descargar/{file}',['uses'=>'DescargasController@descargar','as'=>'descargar']);
-
 });
-
-
 
 /*Especialidades*/
 Route::group(['middleware' => 'roles','site'=>'especialidades'], function () {
@@ -179,9 +175,6 @@ Route::group(['middleware' => 'roles','site'=>'historias'], function () {
 	Route::post('historias/{id}/ocupacional/{historia_ocupacional_id}/recomendaciones/store',['uses'=>'HistoriasController@ocupacional_recomendaciones_store','as'=>'historias.ocupacional.recomendaciones.store']);
 	
 });
-
- 						
-
 
 /*Médicos*/
 Route::group(['middleware' => 'roles','site'=>'medicos'], function () {

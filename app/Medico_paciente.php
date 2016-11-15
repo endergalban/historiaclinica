@@ -33,7 +33,7 @@ class Medico_paciente extends Model
         return $this->belongsTo('App\Medico','medico_id');
     }
 
-  public function citas()
+    public function citas()
     {
         return $this->hasMany('App\Citas','medico_paciente_id');
     }
