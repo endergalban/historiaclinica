@@ -1,5 +1,5 @@
 <?php
-
+ 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -11,9 +11,9 @@ use App\Arl;
 class ArlsController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * .
+     * Muestra los arl del sistema
+     * @param  $request->search  para filtro de resultado
      */
      public function index(Request $request)
     {
@@ -22,9 +22,9 @@ class ArlsController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * .
+     * Configura el formulario para la creación del arl
+     * 
      */
     public function create()
     {
@@ -32,10 +32,9 @@ class ArlsController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * .
+     * Registra un arl en el sistema
+     *  @param  $request con los datos del arl
      */
     public function store(Request $request)
     {
@@ -55,18 +54,10 @@ class ArlsController extends Controller
         return redirect()->route('arls.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-   
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     /**
+     * .
+     * Muestra los datos de un arl en el sistema para su edición
+     *  @param  $id del arl
      */
     public function edit($id)
     {
@@ -74,12 +65,10 @@ class ArlsController extends Controller
        return  view('arls.edit')->with('arl',$arl);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     /**
+     * .
+     * Edita los datos de un arl 
+     *  @param  $request con los datos de un arl 
      */
     public function update(Request $request, $id)
     {
@@ -98,11 +87,10 @@ class ArlsController extends Controller
         return redirect()->route('arls.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     /**
+     * .
+     * Elimina un arl 
+     *  @param  $id del arl 
      */
     public function destroy($id)
     {

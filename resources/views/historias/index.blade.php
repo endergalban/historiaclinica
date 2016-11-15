@@ -58,11 +58,11 @@
 									<td class="text-center">{{ date("d/m/Y", strtotime($user->fechanacimiento)) }}</td>
 						
 									<td class="text-center">
-									<a  data-url="{{ route('historias.historia',[$user->paciente->id,'ocupacional']) }}" class="open-modal2" href="#"><span class="label label-default">Ocupacional</span></a>
+									<a  data-url="{{ route('historias.historia',[$user->paciente->id,'ocupacional']) }}" class="open-modal2" href="#"><span class="label bg-navy">Ocupacional</span></a>
 									@if( $user->genero=='Femenino')
-										<a data-url="{{ route('historias.historia',[$user->paciente->id,'ginecologia']) }}" class="open-modal2" href="#"><span class="label label-default">Ginecología</span></a>
+										<a data-url="{{ route('historias.historia',[$user->paciente->id,'ginecologia']) }}" class="open-modal2" href="#"><span class="label bg-maroon">Ginecología</span></a>
 									@endif
-									<a  data-url="{{ route('historias.historia',[$user->paciente->id,'pediatria']) }}" class="open-modal2" href="#"><span class="label label-default">Pediatría</span></a>
+									<a  data-url="{{ route('historias.historia',[$user->paciente->id,'pediatria']) }}" class="open-modal2" href="#"><span class="label bg-teal">Pediatría</span></a>
 									</td>
 								</tr>
 								@endforeach

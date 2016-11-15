@@ -72,6 +72,12 @@ Route::group(['middleware' => 'roles','site'=>'all'], function () {
 	})->name('dataTipoDiagnostico');
 });
 
+/*Descraga*/
+Route::group(['middleware' => 'roles','site'=>'all'], function () {
+
+	Route::get('descargar/{file}',['uses'=>'DescargasController@descargar','as'=>'descargar']);
+
+});
 
 /*Especialidades*/
 Route::group(['middleware' => 'roles','site'=>'especialidades'], function () {
@@ -90,6 +96,11 @@ Route::group(['middleware' => 'roles','site'=>'historias'], function () {
 	Route::get('historias/{id}/{tipo}/{medico_id?}',['uses'=>'HistoriasController@historia','as'=>'historias.historia']);
 
 	Route::get('historias/{id}/ocupacional/{medico_paciente}/create',['uses'=>'HistoriasController@ocupacional_create','as'=>'historias.ocupacional.create']);
+
+	//DOCUMENTOS
+	Route::get('historias/{id}/ocupacional/{historia_ocupacional_id}/documentos',['uses'=>'HistoriasController@ocupacional_documentos','as'=>'historias.ocupacional.documentos']);
+	Route::post('historias/{id}/ocupacional/{historia_ocupacional_id}/documentos/store',['uses'=>'HistoriasController@ocupacional_documentos_store','as'=>'historias.ocupacional.documentos.store']);
+	Route::get('historias/{id}/ocupacional/{historia_ocupacional_id}/documentos/{documento}/destroy',['uses'=>'HistoriasController@ocupacional_documentos_destroy','as'=>'historias.ocupacional.documentos.destroy']);
 
 	//DATOS DEL PACIENTE
 	Route::get('historias/{id}/ocupacional/{historia_ocupacional_id}/edit',['uses'=>'HistoriasController@ocupacional_edit','as'=>'historias.ocupacional.edit']);

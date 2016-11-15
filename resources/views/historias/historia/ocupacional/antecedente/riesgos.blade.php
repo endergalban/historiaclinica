@@ -37,6 +37,9 @@
                     <h3 class="box-title"><b>Médico:</b> {{ $medico->user->primernombre.' '.$medico->user->segundonombre.' '.$medico->user->primerapellido.' '.$medico->user->segundoapellido.' : '.$medico->user->tipodocumento.' '.$medico->user->numerodocumento }}</h3>
                 </div>
                 <div class="form-group col-md-12">
+                    <h3 class="box-title"><b>Nro. Historia:</b> HO-{{ str_pad($historia_ocupacional->id, 8, "0", STR_PAD_LEFT) }}</h3>
+                </div>
+                <div class="form-group col-md-12">
                     <h3 class="box-title"><b>Empresa:</b> {{ $antecedente_ocupacional->empresa }}</h3>
                 </div>
             </div>  

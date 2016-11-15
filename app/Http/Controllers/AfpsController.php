@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 namespace App\Http\Controllers;
 
@@ -11,9 +11,9 @@ use App\Afp;
 class AfpsController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * .
+     * Muestra los afp del sistema
+     * @param  $request->search  para filtro de resultado
      */
      public function index(Request $request)
     {
@@ -22,20 +22,19 @@ class AfpsController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * .
+     * Configura el formulario para la creación del afp
+     * 
      */
     public function create()
     {
          return  view('afps.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     /**
+     * .
+     * Registra un afp en el sistema
+     *  @param  $request con los datos del afp
      */
     public function store(Request $request)
     {
@@ -55,18 +54,10 @@ class AfpsController extends Controller
         return redirect()->route('afps.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-   
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     /**
+     * .
+     * Muestra los datos de un afp en el sistema para su edición
+     *  @param  $id del afp
      */
     public function edit($id)
     {
@@ -74,12 +65,10 @@ class AfpsController extends Controller
        return  view('afps.edit')->with('afp',$afp);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     /**
+     * .
+     * Edita los datos de un afp 
+     *  @param  $request con los datos de un afp 
      */
     public function update(Request $request, $id)
     {
@@ -98,11 +87,10 @@ class AfpsController extends Controller
         return redirect()->route('afps.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     /**
+     * .
+     * Elimina un afp 
+     *  @param  $id del afp 
      */
     public function destroy($id)
     {

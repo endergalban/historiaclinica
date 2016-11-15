@@ -167,16 +167,19 @@
 @section('javascript')
     <script>
         $("#tipo_diagnostico_id").select2({
+
             language: "es",
             placeholder: 'Seleccione',
             ajax: {
-              url: "{{ url('/getTipoDiagnostico/')}}",
+              url:  function (params) {
+                  return '{{ url('/getTipoDiagnostico')}}/' + params.term;
+                },
               dataType: 'json',
               delay: 250,
               processResults: function (data) {
                 return {
                   results: data
-                };
+                };  
               },
               cache: true
             }

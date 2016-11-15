@@ -204,22 +204,37 @@
 	"buffers":
 	[
 		{
-			"file": "/opt/lampp/htdocs/historiaclinica/app/Examen_visual.php",
+			"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/AfpsController.php",
 			"settings":
 			{
-				"buffer_size": 557,
+				"buffer_size": 2755,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"contents": "                    <div class=\"pull-left\">\n                      <a href=\"{{route('perfil.index')}}\" class=\"btn btn-default btn-flat\">Perfil</a>\n                    </div>\n                    <div class=\"pull-right\">\n                      \n                      <a href=\"{{ url('/logout') }}\" class=\"btn btn-default btn-flat\" onclick=\"event.preventDefault();document.getElementById('logout-form').submit();\">Salir</a>\n                        <form id=\"logout-form\" action=\"{{ url('/logout') }}\" method=\"POST\" style=\"display: none;\">\n                            {{ csrf_field() }}\n                        </form>\n                    </div>\n                  </li>\n                </ul>\n              </li>\n              <!-- Control Sidebar Toggle Button -->\n              <li>\n                <a href=\"#\" data-toggle=\"control-sidebar\"><i class=\"fa fa-gears\"></i></a>\n              </li>\n            </ul>\n          </div>\n        </nav>\n      </header>\n\n      <!-- =============================================== -->\n\n      <!-- Left side column. contains the sidebar -->\n      <aside class=\"main-sidebar\">\n        <!-- sidebar: style can be found in sidebar.less -->\n        <section class=\"sidebar\">\n          <!-- Sidebar user panel -->\n          <div class=\"user-panel\">\n            <div class=\"pull-left image\">\n              <img src=\"{{ asset('images/users/'.Auth::user()->imagen)}}\" class=\"img-circle\" alt=\"User Image\">\n            </div>\n            <div class=\"pull-left info\">\n              <p> {{ Auth::user()->primernombre.' '.Auth::user()->primerapellido }}</p>\n             <!-- <a href=\"#\"><i class=\"fa fa-circle text-success\"></i> Online</a>-->\n            </div>\n          </div>\n          <!-- search form -->\n          @if(Auth::user()->hasAnyRole('administrador'))\n            {!! Form::open(['method' => 'GET','route' => ['users.index'],'role' => 'form','class' => 'sidebar-form']) !!}\n          @else\n            {!! Form::open(['method' => 'GET','route' => ['pacientes.index'],'role' => 'form','class' => 'sidebar-form']) !!}\n          @endif\n            <div class=\"input-group\">\n              <input type=\"text\" name=\"search\" id=\"search\" class=\"form-control\" placeholder=\"Buscar...\">\n                  <span class=\"input-group-btn\">\n                    <button type=\"submit\"  class=\"btn btn-flat\"><i class=\"fa fa-search\"></i>\n                    </button>\n                  </span>\n            </div>\n          {!! Form::close() !!}\n          <!-- /.search form -->\n          <!-- sidebar menu: : style can be found in sidebar.less -->\n          <ul class=\"sidebar-menu\">\n            <li class=\"header\">Menú de Navegación </li>\n            @foreach(Auth::user()->menu(Auth::user()->id) as $menu)\n            @if(strpos('Pr'.Route::currentRouteName(),$menu->site))\n              <li class=\"active\">\n            @else\n             <li>\n            @endif\n              @if($menu->site=='home')\n                <a href=\"{{ route($menu->site) }}\"><i class=\"fa {{ $menu->icono }}\"></i> <span>{{ $menu->descripcion.' ' }}</span></a></li>\n              @else\n                <a href=\"{{ route($menu->site.'.index') }}\"><i class=\"fa {{ $menu->icono }}\"></i> <span>{{ $menu->descripcion.' ' }}</span></a></li>\n              @endif\n            @endforeach\n          </ul>\n        </section>\n        <!-- /.sidebar -->\n      </aside>\n\n      <!-- =============================================== -->\n\n      <!-- Content Wrapper. Contains page content -->\n      <div class=\"content-wrapper\">\n        <!-- Content Header (Page header) -->\n        <section class=\"content-header\">\n        \n        @yield('content-header')\n        \n        </section>\n\n        <!-- Main content -->\n        <section class=\"content\">\n\n        @yield('content')\n\n        </section>\n        <!-- /.content -->\n      </div>\n      <!-- /.content-wrapper -->\n\n      <footer class=\"main-footer\">\n        <div class=\"pull-right hidden-xs\">\n          <b>Version</b> 1.0.0\n        </div>\n        <strong>Desarrollado por: <a href=\"http://www.endergalban.com,ve\">Ender Galbán</a> - <a href=\"http://www.enriquepetzold.com,ve\">Enrique Petzold </a></strong> \n      </footer>\n\n      <!-- Control Sidebar -->\n      <aside class=\"control-sidebar control-sidebar-dark\">\n        <!-- Create the tabs -->\n        <ul class=\"nav nav-tabs nav-justified control-sidebar-tabs\">\n          <li><a href=\"#control-sidebar-home-tab\" data-toggle=\"tab\"><i class=\"fa fa-home\"></i></a></li>\n\n          <li><a href=\"#control-sidebar-settings-tab\" data-toggle=\"tab\"><i class=\"fa fa-gears\"></i></a></li>\n        </ul>\n        <!-- Tab panes -->\n        <div class=\"tab-content\">\n          <!-- Home tab content -->\n          <div class=\"tab-pane\" id=\"control-sidebar-home-tab\">\n            <h3 class=\"control-sidebar-heading\">Recent Activity</h3>\n            <ul class=\"control-sidebar-menu\">\n              <li>\n                <a href=\"javascript:void(0)\">\n                  <i class=\"menu-icon fa fa-birthday-cake bg-red\"></i>\n\n                  <div class=\"menu-info\">\n                    <h4 class=\"control-sidebar-subheading\">Langdon's Birthday</h4>\n\n                    <p>Will be 23 on April 24th</p>\n                  </div>\n                </a>\n              </li>\n              <li>\n                <a href=\"javascript:void(0)\">\n                  <i class=\"menu-icon fa fa-user bg-yellow\"></i>\n\n                  <div class=\"menu-info\">\n                    <h4 class=\"control-sidebar-subheading\">Frodo Updated His Profile</h4>\n\n                    <p>New phone +1(800)555-1234</p>\n                  </div>\n                </a>\n              </li>\n              <li>\n                <a href=\"javascript:void(0)\">\n                  <i class=\"menu-icon fa fa-envelope-o bg-light-blue\"></i>\n\n                  <div class=\"menu-info\">\n                    <h4 class=\"control-sidebar-subheading\">Nora Joined Mailing List</h4>\n\n                    <p>nora@example.com</p>\n                  </div>\n                </a>\n              </li>\n              <li>\n                <a href=\"javascript:void(0)\">\n                  <i class=\"menu-icon fa fa-file-code-o bg-green\"></i>\n\n                  <div class=\"menu-info\">\n                    <h4 class=\"control-sidebar-subheading\">Cron Job 254 Executed</h4>\n\n                    <p>Execution time 5 seconds</p>\n                  </div>\n                </a>\n              </li>\n            </ul>\n            <!-- /.control-sidebar-menu -->\n\n            <h3 class=\"control-sidebar-heading\">Tasks Progress</h3>\n            <ul class=\"control-sidebar-menu\">\n              <li>\n                <a href=\"javascript:void(0)\">\n                  <h4 class=\"control-sidebar-subheading\">\n                    Custom Template Design\n                    <span class=\"label label-danger pull-right\">70%</span>\n                  </h4>\n\n                  <div class=\"progress progress-xxs\">\n                    <div class=\"progress-bar progress-bar-danger\" style=\"width: 70%\"></div>\n                  </div>\n                </a>\n              </li>\n              <li>\n                <a href=\"javascript:void(0)\">\n                  <h4 class=\"control-sidebar-subheading\">\n                    Update Resume\n                    <span class=\"label label-success pull-right\">95%</span>\n                  </h4>\n\n                  <div class=\"progress progress-xxs\">\n                    <div class=\"progress-bar progress-bar-success\" style=\"width: 95%\"></div>\n                  </div>\n                </a>\n              </li>\n              <li>\n                <a href=\"javascript:void(0)\">\n                  <h4 class=\"control-sidebar-subheading\">\n                    Laravel Integration\n                    <span class=\"label label-warning pull-right\">50%</span>\n                  </h4>\n\n                  <div class=\"progress progress-xxs\">\n                    <div class=\"progress-bar progress-bar-warning\" style=\"width: 50%\"></div>\n                  </div>\n                </a>\n              </li>\n              <li>\n                <a href=\"javascript:void(0)\">\n                  <h4 class=\"control-sidebar-subheading\">\n                    Back End Framework\n                    <span class=\"label label-primary pull-right\">68%</span>\n                  </h4>\n\n                  <div class=\"progress progress-xxs\">\n                    <div class=\"progress-bar progress-bar-primary\" style=\"width: 68%\"></div>\n                  </div>\n                </a>\n              </li>\n            </ul>\n            <!-- /.control-sidebar-menu -->\n\n          </div>\n          <!-- /.tab-pane -->\n          <!-- Stats tab content -->\n          <div class=\"tab-pane\" id=\"control-sidebar-stats-tab\">Stats Tab Content</div>\n          <!-- /.tab-pane -->\n          <!-- Settings tab content -->\n          <div class=\"tab-pane\" id=\"control-sidebar-settings-tab\">\n            <form method=\"post\">\n              <h3 class=\"control-sidebar-heading\">General Settings</h3>\n\n              <div class=\"form-group\">\n                <label class=\"control-sidebar-subheading\">\n                  Report panel usage\n                  <input type=\"checkbox\" class=\"pull-right\" checked>\n                </label>\n\n                <p>\n                  Some information about this general settings option\n                </p>\n              </div>\n              <!-- /.form-group -->\n\n              <div class=\"form-group\">\n                <label class=\"control-sidebar-subheading\">\n                  Allow mail redirect\n                  <input type=\"checkbox\" class=\"pull-right\" checked>\n                </label>\n\n                <p>\n                  Other sets of options are available\n                </p>\n              </div>\n              <!-- /.form-group -->\n\n              <div class=\"form-group\">\n                <label class=\"control-sidebar-subheading\">\n                  Expose author name in posts\n                  <input type=\"checkbox\" class=\"pull-right\" checked>\n                </label>\n\n                <p>\n                  Allow the user to show his name in blog posts\n                </p>\n              </div>\n              <!-- /.form-group -->\n\n              <h3 class=\"control-sidebar-heading\">Chat Settings</h3>\n\n              <div class=\"form-group\">\n                <label class=\"control-sidebar-subheading\">\n                  Show me as online\n                  <input type=\"checkbox\" class=\"pull-right\" checked>\n                </label>\n              </div>\n              <!-- /.form-group -->\n\n              <div class=\"form-group\">\n                <label class=\"control-sidebar-subheading\">\n                  Turn off notifications\n                  <input type=\"checkbox\" class=\"pull-right\">\n                </label>\n              </div>\n              <!-- /.form-group -->\n\n              <div class=\"form-group\">\n                <label class=\"control-sidebar-subheading\">\n                  Delete chat history\n                  <a href=\"javascript:void(0)\" class=\"text-red pull-right\"><i class=\"fa fa-trash-o\"></i></a>\n                </label>\n              </div>\n              <!-- /.form-group -->\n            </form>\n          </div>\n          <!-- /.tab-pane -->\n        </div>\n      </aside>\n      <!-- /.control-sidebar -->\n      <!-- Add the sidebar's background. This div must be placed\n           immediately after the control sidebar -->\n      <div class=\"control-sidebar-bg\"></div>\n    </div>\n    <!-- ./wrapper -->\n\n    <!-- jQuery 2.2.3 -->\n    <script src=\"{{ asset('plugins/jQuery/jquery-2.2.3.min.js') }}\"></script>\n    <!-- Bootstrap 3.3.6 -->\n    <script src=\"{{ asset('bootstrap/js/bootstrap.min.js') }}\"></script>\n    <!-- jQuery UI 1.11.4 -->\n    <script src=\"https://code.jquery.com/ui/1.11.4/jquery-ui.min.js\"></script>\n    <!-- SlimScroll -->\n    <script src=\"{{ asset('plugins/slimScroll/jquery.slimscroll.min.js') }}\"></script>\n    <!-- FastClick -->\n    <script src=\"{{ asset('plugins/fastclick/fastclick.js') }}\"></script>\n    <!-- AdminLTE App -->\n    <script src=\"{{ asset('dist/js/app.min.js') }}\"></script>\n    <!-- AdminLTE for demo purposes -->\n    <script src=\"{{ asset('dist/js/demo.js') }}\"></script>\n    <!-- Select2 -->\n    <script src=\"{{ asset('plugins/select2/select2.full.min.js') }}\"></script>\n    <script src=\"{{ asset('plugins/select2/i18n/es.js') }}\" type=\"text/javascript\"></script>\n    <!-- bootstrap datepicker -->\n    <script src=\"{{ asset('plugins/datepicker/bootstrap-datepicker.js') }}\"></script>\n    <script src=\"{{ asset('plugins/datepicker/locales/bootstrap-datepicker.es.js') }}\"></script>   \n    <!-- bootstrap time picker -->\n    <script src=\"{{ asset('plugins/timepicker/bootstrap-timepicker.min.js') }}\"></script>\n    <!-- date-range-picker -->\n    <script src=\"https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js\"></script>\n    <script src=\"{{ asset('plugins/daterangepicker/daterangepicker.js') }}\"></script>\n    <!-- iCheck 1.0.1 -->\n    <script src=\"{{ asset('plugins/iCheck/icheck.min.js') }}\"></script>\n\n    <!-- date-range-picker -->\n    \n    <script>\n\n    $(document).on(\"click\", \".open-modal\", function () {\n      var Url = $(this).data('url');\n      $(\".btnsi\").attr(\"href\",Url);\n     // $('#myModal').modal('show')\n    });\n\n     $(function () {\n      \n      @if(Route::currentRouteName() != 'historias.ocupacional.diagnosticos')\n        //Initialize Select2 Elements\n        $(\".select2\").select2();\n        @endif\n        $.fn.modal.Constructor.prototype.enforceFocus = function() {};\n         //Date picker\n       $('.datepicker').datepicker({\n          autoclose: true,\n          format: 'dd/mm/yyyy',\n          language: 'es'\n        });\n         $('input[type=\"checkbox\"].flat-red, input[type=\"radio\"].flat-red').iCheck({\n            checkboxClass: 'icheckbox_flat-green',\n            radioClass: 'iradio_flat-green'\n          });\n      });\n \n    </script>\n\n    @yield('javascript')\n\n    </body>\n@endsection",
-			"file": "/opt/lampp/htdocs/historiaclinica/resources/views/layouts/main.blade.php",
-			"file_size": 20332,
-			"file_write_time": 131235474872557942,
+			"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/ModulosController.php",
 			"settings":
 			{
-				"buffer_size": 13892,
+				"buffer_size": 4456,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/PerfilController.php",
+			"settings":
+			{
+				"buffer_size": 2024,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/PacientesController.php",
+			"settings":
+			{
+				"buffer_size": 17361,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -263,12 +278,22 @@
 	"expanded_folders":
 	[
 		"/opt/lampp/htdocs/historiaclinica",
-		"/opt/lampp/htdocs/historiaclinica/resources/lang/en",
-		"/opt/lampp/htdocs/historiaclinica/resources/lang/es"
+		"/opt/lampp/htdocs/historiaclinica/app",
+		"/opt/lampp/htdocs/historiaclinica/app/Http",
+		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers",
+		"/opt/lampp/htdocs/historiaclinica/resources/views",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/layouts"
 	],
 	"file_history":
 	[
+		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/EspecialidadesController.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/ArlsController.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/EmpresasController.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Examen_visual.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/UsersController.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/AfpsController.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/HistoriasController.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/layouts/main.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/CitasController.php",
 		"/opt/lampp/htdocs/historiaclinica/routes/web.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/ReportsController.php",
@@ -299,7 +324,6 @@
 		"/opt/lampp/htdocs/historiaclinica/app/Examen_altura.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/diagnosticos.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/layouts/app.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/layouts/main.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Tipo_examen_altura.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Condicion_altura.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/antecedente/traumatologicos.blade.php",
@@ -360,7 +384,6 @@
 		"/opt/lampp/htdocs/historiaclinica/database/seeds/ExamenVisualesTableSeeder.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_02_232557_create_ocupacional_actual_factor_riesgo_table.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Exploracion.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Examen_visual.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_181458_create_exploraciones_table.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_02_221415_create_examen_fisicos_table.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/users/create.blade.php",
@@ -390,12 +413,7 @@
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_180441_create_examen_visuales_table.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_180502_create_visuales_table.php",
 		"/opt/lampp/htdocs/historiaclinica/database/seeds/LateralidadesTableSeeder.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_181599_create_tipo_diagnosticos_table.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Tipo_diagnostico.php",
-		"/home/ender/Descargas/sql(1)",
-		"/home/ender/Descargas/sql",
-		"/opt/lampp/htdocs/historiaclinica/database/seeds/TurnosTableSeeder.php",
-		"/opt/lampp/htdocs/historiaclinica/database/seeds/ActividadesTableSeeder.php"
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_181599_create_tipo_diagnosticos_table.php"
 	],
 	"find":
 	{
@@ -563,24 +581,24 @@
 	"groups":
 	[
 		{
-			"selected": 1,
+			"selected": 3,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "/opt/lampp/htdocs/historiaclinica/app/Examen_visual.php",
+					"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/AfpsController.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 557,
+						"buffer_size": 2755,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								267,
-								267
+								2509,
+								2509
 							]
 						],
 						"settings":
@@ -590,19 +608,79 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 780.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/ModulosController.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4456,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2842,
+								2842
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 702.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/PerfilController.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2024,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1501,
+								1501
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 78.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 1,
-					"file": "/opt/lampp/htdocs/historiaclinica/resources/views/layouts/main.blade.php",
+					"buffer": 3,
+					"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/PacientesController.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 13892,
+						"buffer_size": 17361,
 						"regions":
 						{
 						},
@@ -616,11 +694,11 @@
 						"settings":
 						{
 							"syntax": "Packages/PHP/PHP.sublime-syntax",
-							"tab_size": 2,
+							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 3833.0,
+						"translation.y": 4758.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,

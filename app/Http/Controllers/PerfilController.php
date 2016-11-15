@@ -14,12 +14,22 @@ use Carbon\Carbon;
 
 class PerfilController extends Controller
 {
+     /**
+     * .
+     * Muestra el perfil
+     *
+     */
     public function index()
     {
         return	view('perfil');
     }
 
-     public function update(Request $request, $id)
+     /**
+     * .
+     * Edita el perfil
+     *  @param  $request con los datos del perfil
+     */
+    public function update(Request $request, $id)
     {
 		 $user	=	User::findOrFail($id);
          $validator = Validator::make($request->all(), [
@@ -27,22 +37,15 @@ class PerfilController extends Controller
             'imagen' => 'image',   
             'firma' => 'image',              
         ]);
-
-
         if ($validator->fails()) {
             flash(implode('<br>',$validator->errors()->all()), 'danger');
             return redirect()->route('perfil.index');
         }
-
-        
-
         if(!empty($request->password))
         {
             $user->password= bcrypt($request->password);
             $user->save();    
         }    
-		
-       
         if( $request->hasFile('imagen')){ 
             $imageName = $user->id . '.' . $request->file('imagen')->getClientOriginalExtension();
             Image::make($request->file('imagen'))->resize(null, 150, function ($constraint) {
@@ -51,7 +54,6 @@ class PerfilController extends Controller
             $user->imagen=$imageName;
             $user->save();
         }
-
         if( $request->hasFile('firma')){ 
             $imagefirma = $user->id . '.' . $request->file('firma')->getClientOriginalExtension();
             Image::make($request->file('firma'))->resize(null, 150, function ($constraint) {
