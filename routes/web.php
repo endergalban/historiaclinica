@@ -48,11 +48,13 @@ Route::group(['middleware' => 'roles','site'=>'citas'], function () {
 		Route::resource('citas','CitasController',['except' => ['delete','show']]);
 		Route::get('citas/{id}/destroy',['uses'=>'CitasController@destroy','as'=>'citas.destroy']);
   		Route::post('guardarcita', array('as'=> 'guardarcita', 'uses'=> 'CitasController@create'));
+  		Route::post('eliminarcita', array('as'=> 'eliminarcita', 'uses'=> 'CitasController@borrar'));
   		Route::get('api','CitasController@api');
 });
 
 /*Combos*/
 Route::group(['middleware' => 'roles','site'=>'all'], function () {
+
 	Route::get('/getDataDepartamantos/{id}',	function($id){	
         $dataDepartamantos= App\Departamento::all()->where('pais_id',$id);
 		return Response::json($dataDepartamantos);
@@ -62,7 +64,14 @@ Route::group(['middleware' => 'roles','site'=>'all'], function () {
         $dataMunicipios= App\Municipio::all()->where('departamento_id',$id);
 		return Response::json($dataMunicipios);
 	})->name('dataMunicipios');
+
+	Route::get('/getDataEspecialidades/{id}',	function($id){	
+        $dataEspecialidades= App\Medico::with('especialidades')->where('id',$id)->get();
+		return Response::json($dataEspecialidades);
+	})->name('getDataEspecialidades');
 });
+
+
 
 
 /*Especialidades*/
