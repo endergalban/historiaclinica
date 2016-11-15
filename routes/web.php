@@ -64,12 +64,11 @@ Route::group(['middleware' => 'roles','site'=>'all'], function () {
 		return Response::json($dataMunicipios);
 	})->name('dataMunicipios');
 
-<<<<<<< HEAD
 	Route::get('/getDataEspecialidades/{id}',	function($id){	
         $dataEspecialidades= App\Medico::with('especialidades')->where('id',$id)->get();
 		return Response::json($dataEspecialidades);
 	})->name('getDataEspecialidades');
-=======
+
 	Route::get('/getTipoDiagnostico/{descripcion?}',function($descripcion = ''){	
         $dataTipoDiagnosticos= App\Tipo_diagnostico::ofType($descripcion)->limit(15)->pluck('descripcion','id');
         $valid_tags=array();
@@ -78,7 +77,7 @@ Route::group(['middleware' => 'roles','site'=>'all'], function () {
         }
    		return Response::json($valid_tags);
 	})->name('dataTipoDiagnostico');
->>>>>>> origin/master
+
 });
 
 /*Descraga*/
