@@ -12,10 +12,7 @@ class TipoConsentimientosTableSeeder extends Seeder
      */
     public function run()
     {
-        $Tipo_consentimiento= New Tipo_consentimiento;
-        $Tipo_consentimiento->descripcion = 'N/A';
-        $Tipo_consentimiento->save();
-
+       
         $Tipo_consentimiento= New Tipo_consentimiento;
         $Tipo_consentimiento->descripcion = 'Examen médico SO';
         $Tipo_consentimiento->save();

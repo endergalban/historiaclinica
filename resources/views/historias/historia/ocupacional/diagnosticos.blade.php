@@ -33,14 +33,8 @@
 
                      <div class="form-group col-md-12">
                         <div class="form-group col-md-3">
-                            {!! Form::label('condicion','Condición') !!}
-                            {!! Form::select('condicion',[
-                                'N/A'=>'N/A',
-                                'Apto'=>'Apto',
-                                'No Apto'=>'No Apto',
-                                'Apto con Restricciones'=>'Apto con Restricciones',
-
-                            ], $combos['condicion'],['class' => 'form-control','style' => 'width: 100%']) !!}
+                            {!! Form::label('tipo_condicion_id','Condición') !!}
+                            {!! Form::select('tipo_condicion_id', $combos['tipo_condiciones'], $combos['tipo_condicion_id'],['class' => 'form-control','style' => 'width: 100%']) !!}
                         </div>
                     </div>
 

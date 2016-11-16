@@ -16,7 +16,7 @@ class CreateCondicionAlturasTable extends Migration
         Schema::create('condicion_alturas', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('historia_ocupacional_id')->unsigned();$table->foreign('historia_ocupacional_id')->references('id')->on('historia_ocupacionales')->onDelete('restrict');
-            $table->string('condicion',50);
+            $table->integer('tipo_condicion_id')->unsigned();$table->foreign('tipo_condicion_id')->references('id')->on('tipo_condiciones')->onDelete('restrict');
             $table->string('observacion',500);
             $table->softDeletes();
             $table->timestamps();

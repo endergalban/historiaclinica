@@ -68,8 +68,9 @@
                         <td class="text-center"> 
                             <a href="{{ route('reporte.consentimiento_informado',[$historia->id]) }}" target="_BLANK"><span class="label label-primary" >Consentimiento</span></a>
                             <a href="{{ route('reporte.certificado_ocupacional',[$historia->id]) }}" target="_BLANK"><span class="label label-primary" >Certificado</span></a>
-                                <a href="{{ route('reporte.historia',[$historia->id]) }}" target="_BLANK"><span class="label label-primary">Informe</span></a>
+                            <a href="{{ route('reporte.historia',[$historia->id]) }}" target="_BLANK"><span class="label label-primary">Informe</span></a>
                             <a href="{{ route('reporte.trabajo_altura',$historia->id ) }}" target="_BLANK" ><span class="label label-primary">Altura</span></a>
+                            <a href="{{ route('reporte.aptitud_laboral',[$historia->id]) }}" target="_BLANK"><span class="label label-primary" >Aptitud Laboral</span></a>
                         </td>                       
                         <td class="text-center">
                             <a href="{{ route('historias.ocupacional.edit',[$paciente->id,$historia->id]) }}" ><span class="label label-warning">Editar</span></a>
