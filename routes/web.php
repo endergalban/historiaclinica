@@ -112,6 +112,10 @@ Route::group(['middleware' => 'roles','site'=>'historias'], function () {
 	//DATOS DEL PACIENTE
 	Route::get('historias/{id}/ocupacional/{historia_ocupacional_id}/edit',['uses'=>'HistoriasController@ocupacional_edit','as'=>'historias.ocupacional.edit']);
 	Route::post('historias/{id}/ocupacional/{historia_ocupacional_id}/edit/store',['uses'=>'HistoriasController@ocupacional_edit_store','as'=>'historias.ocupacional.edit.store']);
+
+	//CONSENTIMIENTOS
+	Route::get('historias/{id}/ocupacional/{historia_ocupacional_id}/consentimientos',['uses'=>'HistoriasController@ocupacional_consentimientos','as'=>'historias.ocupacional.consentimientos']);
+	Route::post('historias/{id}/ocupacional/{historia_ocupacional_id}/consentimientos/store',['uses'=>'HistoriasController@ocupacional_consentimientos_store','as'=>'historias.ocupacional.consentimientos.store']);
 	
 	//ANTECEDENTES
 	Route::get('historias/{id}/ocupacional/{historia_ocupacional_id}/antecedentes',['uses'=>'HistoriasController@ocupacional_antecedentes','as'=>'historias.ocupacional.antecedentes']);
@@ -220,6 +224,7 @@ Route::group(['middleware' => 'roles','site'=>'all'], function () {
 	Route::get('reportes/{historia_ocupacional_id}/trabajo_altura',['uses'=>'ReportsController@trabajo_altura','as'=>'reporte.trabajo_altura']);
 	Route::get('reportes/{historia_ocupacional_id}/certificado_ocupacional',['uses'=>'ReportsController@certificado_ocupacional','as'=>'reporte.certificado_ocupacional']);
 	Route::get('reportes/{historia_ocupacional_id}/historia',['uses'=>'ReportsController@historia','as'=>'reporte.historia']);
+	Route::get('reportes/{historia_ocupacional_id}/consentimiento_informado',['uses'=>'ReportsController@consentimiento_informado','as'=>'reporte.consentimiento_informado']);
 });
 
 /*Usuarios*/

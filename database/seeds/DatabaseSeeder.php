@@ -39,5 +39,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TipoOrganosTableSeeder::class);
         $this->call(OrganosTableSeeder::class);
         $this->call(TipoExamenAlturasSeeder::class);
+        $this->call(TipoConsentimientosTableSeeder::class);
     }
 }

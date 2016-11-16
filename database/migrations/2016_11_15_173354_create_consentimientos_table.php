@@ -18,6 +18,7 @@ class CreateConsentimientosTable extends Migration
             $table->integer('historia_ocupacional_id')->unsigned();$table->foreign('historia_ocupacional_id')->references('id')->on('historia_ocupacionales')->onDelete('restrict');
             $table->integer('tipo_consentimiento_id')->unsigned();$table->foreign('tipo_consentimiento_id')->references('id')->on('tipo_consentimientos')->onDelete('restrict');
             $table->string('otro');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

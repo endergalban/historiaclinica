@@ -66,6 +66,7 @@
                         <td>{{ $historia->empresa }}</td>
                         <td>{{ $historia->tipo_examen->descripcion }}</td>
                         <td class="text-center"> 
+                            <a href="{{ route('reporte.consentimiento_informado',[$historia->id]) }}" target="_BLANK"><span class="label label-primary" >Consentimiento</span></a>
                             <a href="{{ route('reporte.certificado_ocupacional',[$historia->id]) }}" target="_BLANK"><span class="label label-primary" >Certificado</span></a>
                                 <a href="{{ route('reporte.historia',[$historia->id]) }}" target="_BLANK"><span class="label label-primary">Informe</span></a>
                             <a href="{{ route('reporte.trabajo_altura',$historia->id ) }}" target="_BLANK" ><span class="label label-primary">Altura</span></a>

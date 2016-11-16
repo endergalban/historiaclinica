@@ -58,6 +58,8 @@ use App\Traumatologico;
 use App\Condicion_altura;
 use App\Tipo_examen_altura;
 use App\Examen_altura;
+use App\Tipo_consentimiento;
+use App\Consentimiento;
 use Auth;
 
 
@@ -300,7 +302,6 @@ class HistoriasController extends Controller
             }
             $arrayfiles[]=['nombre'=>$nombre,'size'=>$this->formatBytes($size),'tipo'=> $tipo,'ruta'=> $file];
         }
- //  dd($arrayfiles);
         return  view('historias.historia.ocupacional.documentos')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional,'files' => $arrayfiles ]);
     }
     /**
@@ -418,6 +419,88 @@ class HistoriasController extends Controller
             return redirect()->route('historias.ocupacional.edit',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id]);
         }
     }
+
+    //CONSENTIMIENTOS
+     /**
+     * .
+     * Muestra los datos básicos de la historia ocupacional seleccionada
+     * @param $paciente_id,$historia_ocupacional_id
+     */
+    public function ocupacional_consentimientos($paciente_id,$historia_ocupacional_id)
+    {
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+        $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();
+        $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();
+
+        $combos=array();
+        $Tipo_consentimientos_query=Tipo_consentimiento::all()->sortBy('id');
+        $Tipo_consentimientos=array();
+        $otro='';
+        foreach ($Tipo_consentimientos_query as $Tipo_consentimiento) {
+
+            $Consentimiento=Consentimiento::where(['tipo_consentimiento_id' => $Tipo_consentimiento->id,'historia_ocupacional_id'=> $historia_ocupacional->id ])->first();
+            if(is_null($Consentimiento))
+            {
+                $valor=false;
+            }else{
+                $valor=true;
+                if($Tipo_consentimiento->descripcion=='Otros'){
+                    $otro=$Consentimiento->otro;
+                }
+            }
+           
+            $Tipo_consentimientos[]=['id' => $Tipo_consentimiento->id,'descripcion' =>$Tipo_consentimiento->descripcion, 'valor' =>$valor];
+        }
+
+
+        $combos=['Tipo_consentimientos' => $Tipo_consentimientos,'otro'=>$otro];
+
+      
+        return  view('historias.historia.ocupacional.consentimientos')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional,'combos'=>$combos]);
+    }
+
+    /**
+     * .
+     * Actualiza los datos básicos de la historia ocupacional seleccionada
+     * @param $request con los datos de actualización
+     */
+    public function ocupacional_consentimientos_store(Request $request)
+    {
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();
+        
+        $Tipo_consentimientos_query=Tipo_consentimiento::all()->sortBy('id');
+        foreach ($Tipo_consentimientos_query as $Tipo_consentimiento) {
+
+             $Consentimiento=Consentimiento::where(['tipo_consentimiento_id' => $Tipo_consentimiento->id,'historia_ocupacional_id'=> $historia_ocupacional->id ])->first();
+            if(isset($request[$Tipo_consentimiento->id])){
+                if(is_null($Consentimiento))
+                {
+                    $Consentimiento = new Consentimiento;   
+                    $Consentimiento->otro= $request->otro;
+                    $Consentimiento->historia_ocupacional()->associate($historia_ocupacional);
+                    $Consentimiento->tipo_consentimiento()->associate($request[$Tipo_consentimiento->id]);
+                    $Consentimiento->save();
+                
+                }else{
+                    if($Tipo_consentimiento->descripcion=='Otros')
+                    {
+                        $Consentimiento->otro= $request->otro;
+                        $Consentimiento->save();    
+                    }
+                }
+            }else{
+                if(!is_null($Consentimiento))
+                {
+                    $Consentimiento->delete();
+                }
+            }
+           
+        }
+
+        flash('La actualización se realizó de forma exitosa!', 'success');
+        return redirect()->route('historias.ocupacional.consentimientos',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id]);
+        
+    }   
 
     //OCUPACION ACTUAL
     /**

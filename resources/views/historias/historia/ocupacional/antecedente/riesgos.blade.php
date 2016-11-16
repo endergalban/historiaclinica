@@ -49,6 +49,8 @@
 
             <a href="{{ route('historias.ocupacional.edit',[$paciente->id,$historia_ocupacional->id]) }}" class="btn btn-default btn-sm ">Datos del Paciente</a>
 
+            <a href="{{ route('historias.ocupacional.consentimientos',[$paciente->id,$historia_ocupacional->id]) }}" class="btn btn-default btn-sm ">Consentimiento</a>
+
             <a href="{{ route('historias.ocupacional.actual',[$paciente->id,$historia_ocupacional->id]) }}" class="btn btn-default btn-sm ">Ocupación Actual</a>
 
             <a href="{{ route('historias.ocupacional.antecedentes',[$paciente->id,$historia_ocupacional->id]) }}" class="btn btn-default btn-sm ">Antecedentes</a>
@@ -59,7 +61,7 @@
 
             <a href="{{ route('historias.ocupacional.alturas',[$paciente->id,$historia_ocupacional->id]) }}" class="btn btn-default btn-sm ">Altura</a>
 
-            <a href="{{ route('historias.ocupacional.examenes',[$paciente->id,$historia_ocupacional->id]) }}" class="btn btn-default btn-sm ">Exámenes de Lab.</a>
+            <a href="{{ route('historias.ocupacional.examenes',[$paciente->id,$historia_ocupacional->id]) }}" class="btn btn-default btn-sm ">Exámenes</a>
 
             <a href="{{ route('historias.ocupacional.diagnosticos',[$paciente->id,$historia_ocupacional->id]) }}" class="btn 
             btn-default btn-sm ">Diagnóstico</a>
