@@ -60,6 +60,7 @@ use App\Tipo_examen_altura;
 use App\Examen_altura;
 use App\Tipo_consentimiento;
 use App\Consentimiento;
+use App\Tipo_condicion;
 use Auth;
 
 
@@ -255,15 +256,15 @@ class HistoriasController extends Controller
         $Examen_fisico->save();
 
         $Condicion_altura=new Condicion_altura;
-        $Condicion_altura->condicion= 'N/A';
         $Condicion_altura->observacion= '';
         $Condicion_altura->historia_ocupacional()->associate($historia_ocupacional);
+        $Condicion_altura->tipo_condicion()->associate(1);
         $Condicion_altura->save();
 
         $Condicion_diagnostico=new Condicion_diagnostico;
-        $Condicion_diagnostico->condicion= 'N/A';
         $Condicion_diagnostico->observacion= '';
         $Condicion_diagnostico->historia_ocupacional()->associate($historia_ocupacional);
+        $Condicion_diagnostico->tipo_condicion()->associate(1);
         $Condicion_diagnostico->save();
         return redirect()->route('historias.ocupacional.edit',[$medico_paciente->paciente_id,$historia_ocupacional->id]);
 
@@ -389,7 +390,7 @@ class HistoriasController extends Controller
         $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();
         
          $validator = Validator::make($request->all(), [
-            'tipo_examen_id' => 'required|exists:tipo_examenes,id',
+            'tipo_examen_id' => 'required|exists:tipo_examenes,id|not_in:1',
             'empresa' => 'required|string|max:100', 
             'empresa_id' => 'required|exists:empresas,id',
             'arl_id' => 'required|exists:arls,id',
@@ -406,7 +407,19 @@ class HistoriasController extends Controller
             $historia_ocupacional->empresa=$request->empresa;
             $historia_ocupacional->numeropersonascargo=$request->numeropersonascargo;
             $historia_ocupacional->numerohijos=$request->numerohijos;
-          
+            if($request->tipo_examen_id!=$historia_ocupacional->tipo_examen_id)
+            {
+
+                $Condicion_diagnostico = Condicion_diagnostico::where(['historia_ocupacional_id' => $historia_ocupacional->id])->first();
+                if(!is_null($Condicion_diagnostico))
+                {
+                    
+                    $Condicion_diagnostico->observacion= '';
+                    $Condicion_diagnostico->tipo_condicion()->associate(1);
+                    $Condicion_diagnostico->save();
+                }
+                
+            }
             $historia_ocupacional->tipo_examen()->associate($request->tipo_examen_id);
             $historia_ocupacional->escolaridad()->associate($request->escolaridad_id);
             $historia_ocupacional->empresa()->associate($request->empresa_id);
@@ -1377,17 +1390,20 @@ class HistoriasController extends Controller
         $combos=array();
         $tipo_examen_alturas = Tipo_examen_altura::orderby('id')->pluck('descripcion','id');
         $examen_alturas= Examen_altura::where(['historia_ocupacional_id' => $historia_ocupacional->id])->with('tipo_examen_altura')->orderBy('id')->get();
+
+        $tipo_condiciones= Tipo_condicion::where(['tipo_examen_id' =>6 ])->orderBy('id')->pluck('descripcion','id')->prepend('N/A','1');
+
         $Condicion_altura = Condicion_altura::where(['historia_ocupacional_id' => $historia_ocupacional->id])->first();
         if(!is_null($Condicion_altura))
         {
-            $condicion=$Condicion_altura->condicion;
+            $tipo_condicion_id=$Condicion_altura->tipo_condicion_id;
             $observacion=$Condicion_altura->observacion;
             
         }else{
-            $condicion='N/A';
+            $tipo_condicion_id=1;
             $observacion='';
         }
-        $combos=[ 'condicion' => $condicion, 'observacion' => $observacion,'tipo_examen_alturas' => $tipo_examen_alturas,'examen_alturas'=>$examen_alturas];
+        $combos=[ 'tipo_condicion_id' => $tipo_condicion_id, 'observacion' => $observacion,'tipo_examen_alturas' => $tipo_examen_alturas,'examen_alturas'=>$examen_alturas, 'tipo_condiciones'=>$tipo_condiciones];
 
         return  view('historias.historia.ocupacional.alturas')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional,'combos'=>$combos ]);
     }
@@ -1402,7 +1418,7 @@ class HistoriasController extends Controller
         $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();
 
         $validator = Validator::make($request->all(), [
-            'condicion' => 'required|string|max:50|not_in:N/A', 
+            'tipo_condicion_id' => 'required|exists:tipo_condiciones,id|not_in:1', 
             'observacion' => 'string|max:500',  
         ]);
 
@@ -1416,7 +1432,7 @@ class HistoriasController extends Controller
             {
                 $Condicion_altura=new Condicion_altura;
             }
-            $Condicion_altura->condicion= $request->condicion;
+            $Condicion_altura->tipo_condicion()->associate($request->tipo_condicion_id);
             $Condicion_altura->observacion= $request->observacion;
             $Condicion_altura->historia_ocupacional()->associate($historia_ocupacional);
             $Condicion_altura->save();
@@ -1547,16 +1563,18 @@ class HistoriasController extends Controller
         }
         $diagnosticos= Diagnostico::where(['historia_ocupacional_id' => $historia_ocupacional->id])->with('tipo_diagnostico')->orderBy('id')->get();
 
+        $tipo_condiciones= Tipo_condicion::where(['tipo_examen_id' => $historia_ocupacional->tipo_examen_id])->orderBy('id')->pluck('descripcion','id')->prepend('N/A','1');
+
         $Condicion_diagnostico = Condicion_diagnostico::where(['historia_ocupacional_id' => $historia_ocupacional->id])->first();
         if(!is_null($Condicion_diagnostico))
         {
-            $condicion=$Condicion_diagnostico->condicion;
             $observacion=$Condicion_diagnostico->observacion;
+            $tipo_condicion_id=$Condicion_diagnostico->tipo_condicion_id;
         }else{
-            $condicion='N/A';
+            $tipo_condicion_id=1;
             $observacion='';
         }
-        $combos=[ 'condicion' => $condicion, 'observacion' => $observacion,'tipo_diagnosticos' => $tipo_diagnosticos,'diagnosticos'=>$diagnosticos];
+        $combos=[ 'tipo_condicion_id'=>$tipo_condicion_id, 'observacion' => $observacion,'tipo_diagnosticos' => $tipo_diagnosticos,'diagnosticos'=>$diagnosticos,'tipo_condiciones'=> $tipo_condiciones];
 
         return  view('historias.historia.ocupacional.diagnosticos')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ocupacional'=>$historia_ocupacional,'combos'=>$combos ]);
     }
@@ -1569,7 +1587,7 @@ class HistoriasController extends Controller
     {
         $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();
         $validator = Validator::make($request->all(), [
-            'condicion' => 'required|string|max:50|not_in:N/A', 
+            'tipo_condicion_id' => 'required|exists:tipo_condiciones,id|not_in:1', 
             'observacion' => 'string|max:500',  
         ]);
 
@@ -1583,7 +1601,7 @@ class HistoriasController extends Controller
             {
                 $Condicion_diagnostico=new Condicion_diagnostico;
             }
-            $Condicion_diagnostico->condicion= $request->condicion;
+            $Condicion_diagnostico->tipo_condicion()->associate($request->tipo_condicion_id); 
             $Condicion_diagnostico->observacion= $request->observacion;
             $Condicion_diagnostico->historia_ocupacional()->associate($historia_ocupacional);
             $Condicion_diagnostico->save();

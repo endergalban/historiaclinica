@@ -228,6 +228,7 @@ Route::group(['middleware' => 'roles','site'=>'all'], function () {
 	Route::get('reportes/{historia_ocupacional_id}/certificado_ocupacional',['uses'=>'ReportsController@certificado_ocupacional','as'=>'reporte.certificado_ocupacional']);
 	Route::get('reportes/{historia_ocupacional_id}/historia',['uses'=>'ReportsController@historia','as'=>'reporte.historia']);
 	Route::get('reportes/{historia_ocupacional_id}/consentimiento_informado',['uses'=>'ReportsController@consentimiento_informado','as'=>'reporte.consentimiento_informado']);
+	Route::get('reportes/{historia_ocupacional_id}/aptitud_laboral',['uses'=>'ReportsController@aptitud_laboral','as'=>'reporte.aptitud_laboral']);
 });
 
 /*Usuarios*/

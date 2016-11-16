@@ -350,49 +350,18 @@ class ReportsController extends Controller
 		
 
 		$letra=9;
-		$fpdf->SetFont('Arial','',$letra-1);
-		$fpdf->Cell(25,$alto,'Fecha de Ingreso: ',1,0,'L',0);
-		$fpdf->Cell(15,$alto,utf8_decode('Día: ').$dia,1,0,'L',0);
-		$fpdf->Cell(15,$alto,'Mes: '.$mes,1,0,'L',0);
-		$fpdf->Cell(15,$alto,utf8_decode('Año: ').$anio,1,0,'L',0);
-		$fpdf->Cell(120,$alto,utf8_decode('Empresa: ').$empresa,1,0,'L',0);
+		$fpdf->SetFont('Arial','B',$letra);
+		$fpdf->Cell(30,$alto,'Fecha de Ingreso: ',1,0,'L',0);
+		$fpdf->Cell(100,$alto,utf8_decode('Empresa: '),1,0,'L',0);
+		$fpdf->Cell(60,$alto,utf8_decode('Tipo de Examen: '),1,0,'L',0);
 		$fpdf->Ln();
-
-		$Ingreso='';
-		$Egreso='';
-		$Reingreso='';
-		$Periodico='';
-		$Manipulador='';
-		$Altura='';
-		if($tipoexamen=='Ingreso')
-		{
-			$Ingreso='X';
-		}elseif($tipoexamen=='Egreso'){
-			$Egreso='X';
-		}elseif($tipoexamen=='Reingreso'){
-			$Reingreso='X';
-		}elseif($tipoexamen=='Periódico'){
-			$Periodico='X';
-		}elseif($tipoexamen=='Manipulador de alimentos'){
-			$Manipulador='X';
-		}elseif($tipoexamen=='Altura'){
-			$Altura='X';
-		}
-
 		$fpdf->SetFont('Arial','',$letra);
-		$fpdf->Cell(25,$alto,'Tipo de Examen ',1,0,'L',0);
-		$fpdf->Cell(22,$alto,'Ingreso',1,0,'C',0);
-		$fpdf->Cell(5,$alto,$Ingreso,1,0,'C',0);
-		$fpdf->Cell(22,$alto,'Egreso',1,0,'C',0);
-		$fpdf->Cell(5,$alto,$Egreso,1,0,'C',0);
-		$fpdf->Cell(22,$alto,'Reingreso',1,0,'C',0);
-		$fpdf->Cell(5,$alto,$Reingreso,1,0,'C',0);
-		$fpdf->Cell(22,$alto,utf8_decode('Periódico'),1,0,'C',0);
-		$fpdf->Cell(5,$alto,$Periodico,1,0,'C',0);
-		$fpdf->Cell(22,$alto,'Altura',1,0,'C',0);
-		$fpdf->Cell(5,$alto,$Altura,1,0,'C',0);
-		$fpdf->Cell(25,$alto,'M. Alimento',1,0,'C',0);
-		$fpdf->Cell(5,$alto,$Manipulador,1,0,'C',0);
+
+		$fpdf->Cell(10,$alto,$dia,1,0,'C',0);
+		$fpdf->Cell(10,$alto,$mes,1,0,'C',0);
+		$fpdf->Cell(10,$alto,$anio,1,0,'C',0);
+		$fpdf->Cell(100,$alto,$empresa,1,0,'L',0);
+		$fpdf->Cell(60,$alto,$tipoexamen,1,0,'C',0);
 
 		$fpdf->Ln($alto*2);
 
@@ -1152,9 +1121,9 @@ class ReportsController extends Controller
 		$fpdf->SetFont('Arial','B',$letra);
 		$fpdf->Cell(60,6,$condicion.' para Laborar',1,0,'C',0);
 		$fpdf->Ln();
-		$fpdf->SetFont('Arial','',$letra);
+		$fpdf->SetFont('Arial','',$letra-1);
 		$fpdf->Rect(10,$fpdf->GetY(),190,25,'D');
-		$fpdf->MultiCell(190,$alto-1,'Observaciones: '.$observacion,0,'J',0);
+		$fpdf->MultiCell(190,4,'Observaciones: '.utf8_decode($observacion),0,'J',0);
 		$fpdf->Ln($alto*5);
 		
 		$fpdf->MultiCell(190,$alto-1,utf8_decode('Certifico que todo lo registrado en la Historia Clínica es verídico, que no he omitido ninguna información sobre mi salud y puede ser confirmada.'),1,'J',0);
@@ -1223,7 +1192,7 @@ class ReportsController extends Controller
 	    $recomendaciones='';
 
 
-		$historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id])->with('arl')->with('afp')->with('empresa')->with('medico_paciente.paciente.user')->with('medico_paciente.medico.user')->with('ocupacional_actual')->with('condicion_diagnostico')->with('tipo_examen')->with('examen_fisico.lateralidad')->first();
+		$historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id])->with('arl')->with('afp')->with('empresa')->with('medico_paciente.paciente.user')->with('medico_paciente.medico.user')->with('ocupacional_actual')->with('condicion_diagnostico.tipo_condicion')->with('tipo_examen')->with('examen_fisico.lateralidad')->first();
 		if(!is_null($historia_ocupacional))
 		{
 
@@ -1262,7 +1231,7 @@ class ReportsController extends Controller
 	    	$fr=$historia_ocupacional->examen_fisico->fr;
 	    	$lateralidad=$historia_ocupacional->examen_fisico->lateralidad->descripcion;
 			$tipoexamen=utf8_decode($historia_ocupacional->tipo_examen->descripcion);
-			$condicion=$historia_ocupacional->condicion_diagnostico->condicion;
+			$condicion=$historia_ocupacional->condicion_diagnostico->tipo_condicion->descripcion;
 	    	$observacion=$historia_ocupacional->condicion_diagnostico->observacion;
 	    	
 	    	$medico=utf8_decode($historia_ocupacional->medico_paciente->medico->user->primerapellido.' '.$historia_ocupacional->medico_paciente->medico->user->primernombre);
@@ -1361,8 +1330,8 @@ class ReportsController extends Controller
 		$fpdf->Ln(8);
 		$fpdf->SetFont('Arial','B',8);
 		$fpdf->Cell(130,5,utf8_decode('CONCEPTO MÉDICO DE APTITUD  OCUPACIONAL'),1,0,'L',0);
-		$fpdf->SetFont('Arial','B',9);
-		$fpdf->Cell(60,5,$condicion.' para Laborar',1,0,'C',0);
+		$fpdf->SetFont('Arial','B',8);
+		$fpdf->Cell(60,5,$condicion.'',1,0,'C',0);
 		$fpdf->Ln();
 		$fpdf->SetFont('Arial','',8);
 		$fpdf->Rect(10,$fpdf->GetY(),190,15,'D');
@@ -1391,15 +1360,18 @@ class ReportsController extends Controller
 		{
 			$fpdf->Row(array('','',''));
 		}
+
+		$ancho_reco=$fpdf->GetY();
 		$fpdf->Ln();
 		$fpdf->SetFont('Arial','B',8);
 		$fpdf->Cell(190,5,utf8_decode('RECOMENDACIONES MÉDICO LABORAL'),1,0,'C',0);
 		$fpdf->Ln();
+
+
 		$fpdf->Rect(10,$fpdf->GetY(),190,25,'D');
 		$fpdf->SetFont('Arial','',8);
 		$fpdf->MultiCell(190,3,$recomendaciones,0,'J',0);
-
-		$fpdf->SetY(215);
+		$fpdf->SetY($ancho_reco+40);
 		$fpdf->SetFont('Arial','',7);
 		$fpdf->Rect(10,$fpdf->GetY()-2,190,22,'D');
 		$fpdf->MultiCell(190,3,utf8_decode('CONSIDERACIONES LEGALES RELATIVAS A LOS EXAMENES DE INGRESO: Las resoluciones 2346 de 2007 y 1818 de 2009 del Ministerio de la Protección Social actualmente Ministerios de Trabajo y de Salud y Protección Social reglamentan la práctica y contenido de las evaluaciones médicas ocupacionales. Se establece que la empresa solo puede conocer el CERTIFICADO MEDICO DE APTITUD del aspirante.  Los resultados de los exámenes se dan a conocer en el certificado con la autorización del aspirante. Los documentos completos de la Historia Clínica Ocupacional están  sometidos a reserva profesional y quedan bajo nuestra custodia según lo establecido en la Resolución 1918 de 2009. El trabajador puede obtener copia en el momento que lo requiera, entendiendo que hacen parte integral de su historial 
@@ -1465,7 +1437,7 @@ class ReportsController extends Controller
 	    $firmamedico='';
 	    $banner='';
 
-		$historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id])->with('arl')->with('afp')->with('empresa')->with('medico_paciente.paciente.user')->with('medico_paciente.medico.user')->with('ocupacional_actual')->with('examen_fisico.lateralidad')->with('condicion_altura')->first();
+		$historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id])->with('arl')->with('afp')->with('empresa')->with('medico_paciente.paciente.user')->with('medico_paciente.medico.user')->with('ocupacional_actual')->with('examen_fisico.lateralidad')->with('condicion_altura.tipo_condicion')->first();
 		if(!is_null($historia_ocupacional))
 		{
 
@@ -1500,7 +1472,7 @@ class ReportsController extends Controller
 	    	$fc=$historia_ocupacional->examen_fisico->fc;
 	    	$fr=$historia_ocupacional->examen_fisico->fr;
 	    	$lateralidad=$historia_ocupacional->examen_fisico->lateralidad->descripcion;
-	       	$condicion=$historia_ocupacional->condicion_altura->condicion;
+	       	$condicion=$historia_ocupacional->condicion_altura->tipo_condicion->descripcion;
 	    	$observacion=$historia_ocupacional->condicion_altura->observacion;
 	    	$medico=utf8_decode($historia_ocupacional->medico_paciente->medico->user->primerapellido.' '.$historia_ocupacional->medico_paciente->medico->user->primernombre);
 	    	$registro=utf8_decode($historia_ocupacional->medico_paciente->medico->registro);
@@ -1624,7 +1596,7 @@ class ReportsController extends Controller
 		$fpdf->Cell(190,5,utf8_decode('OBSERVACIONES'),1,0,'C',0);
 		$fpdf->Ln();
 		$fpdf->Rect(10,$fpdf->GetY(),190,35,'D');
-		$fpdf->MultiCell(190,4,$observacion,0,'J',0);
+		$fpdf->MultiCell(190,4,utf8_decode($observacion),0,'J',0);
 
 		$fpdf->SetY(265);
 		if(file_exists( public_path().'/images/firmas/'.$firmatrabajador) &&  $firmatrabajador!='' ){
@@ -1633,18 +1605,17 @@ class ReportsController extends Controller
 		if(file_exists( public_path().'/images/firmas/'.$firmamedico) &&  $firmamedico!='' ){
 			$fpdf->Image(asset('images/firmas/'.$firmamedico),35,252,45,15);
 		}
-
+		$fpdf->SetFont('Arial','',9);
 		$fpdf->Cell(95,3,'_______________________________',0,0,'C',0);
 		$fpdf->Cell(95,3,'_______________________________',0,0,'C',0);
 		
 		$fpdf->Ln();
-		$fpdf->Cell(95,3,$medico,0,0,'C',0);
-		$fpdf->Cell(95,3,$trabajador,0,0,'C',0);
+		$fpdf->Cell(95,5,$medico,0,0,'C',0);
+		$fpdf->Cell(95,5,$trabajador,0,0,'C',0);
 
 		$fpdf->Ln();
-		$fpdf->SetFont('Arial','',7);
+		$fpdf->SetFont('Arial','',9);
 		$fpdf->Cell(95,3,utf8_decode('Registro Médico ').$registro,0,0,'C',0);
-		$fpdf->SetFont('Arial','',8);
 		$fpdf->Cell(95,3,$cedula,0,0,'C',0);
     	$fpdf->Output();
         exit;
@@ -1913,4 +1884,280 @@ class ReportsController extends Controller
 
 	}
 
+//--------------CONCEPTO DE APTITUD LABORAL----------------//
+	public function aptitud_laboral($historia_ocupacional_id)
+	{
+		$dia='';
+    	$mes='';
+    	$anio='';
+    	$trabajador='';
+    	$empresa='';
+    	$cedula='';
+    	$cargo='';
+    	$edad='';
+    	$eps='';
+    	$afp='';
+    	$arl='';
+    	$municipio='';
+    	$firmatrabajador='';
+    	$tipoexamen='';
+
+    	$peso='';
+    	$talla='';
+    	$imc='';
+    	$ta='';
+    	$fc='';
+    	$fr='';
+    	$lateralidad='';
+    	$condicion='';
+	    $observacion='';
+	    $medico='';
+	    $registro='';
+	    $firmamedico='';
+	    $banner='';
+	    $recomendaciones='';
+
+
+		$historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id])->with('arl')->with('afp')->with('empresa')->with('medico_paciente.paciente.user')->with('medico_paciente.medico.user')->with('ocupacional_actual')->with('condicion_diagnostico.tipo_condicion')->with('tipo_examen')->with('examen_fisico.lateralidad')->first();
+		if(!is_null($historia_ocupacional))
+		{
+
+			$dia=utf8_decode($historia_ocupacional->created_at->format('d'));
+			$mes=utf8_decode($historia_ocupacional->created_at->format('m'));
+			$anio=utf8_decode($historia_ocupacional->created_at->format('Y'));
+			$trabajador=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->primerapellido.' '.$historia_ocupacional->medico_paciente->paciente->user->primernombre);
+			$empresa=utf8_decode($historia_ocupacional->empresa);
+			$cedula=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->tipodocumento.' '.$historia_ocupacional->medico_paciente->paciente->user->numerodocumento);
+			$cargo=utf8_decode($historia_ocupacional->ocupacional_actual->cargoactual);
+			$edad=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->fechanacimiento->diff(Carbon::now())->format('%y años'));
+			$firmatrabajador=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->firma);
+			$query_eps = Empresa::findOrFail($historia_ocupacional->empresa_id);if(!is_null($query_eps)){ $eps=utf8_decode($query_eps->descripcion);}else{$eps='N/A';}
+
+			$afp=utf8_decode($historia_ocupacional->afp->descripcion);
+			$arl=utf8_decode($historia_ocupacional->arl->descripcion);
+
+			$municipio=$historia_ocupacional->medico_paciente->paciente->municipio_id;
+			if($municipio==0){
+				$municipio='N/A';
+			}else{
+				$municipio_residencia = municipio::findOrFail($municipio);
+				if(!is_null($municipio_residencia))
+				{
+					$municipio=utf8_decode($municipio_residencia->descripcion);
+				}else{
+					$municipio='N/A';
+				}
+			}
+
+			$peso=$historia_ocupacional->examen_fisico->peso;
+	    	$talla=$historia_ocupacional->examen_fisico->talla;
+	    	$imc=$historia_ocupacional->examen_fisico->imc;
+	    	$ta=$historia_ocupacional->examen_fisico->ta;
+	    	$fc=$historia_ocupacional->examen_fisico->fc;
+	    	$fr=$historia_ocupacional->examen_fisico->fr;
+	    	$lateralidad=$historia_ocupacional->examen_fisico->lateralidad->descripcion;
+			$tipoexamen=utf8_decode($historia_ocupacional->tipo_examen->descripcion);
+			$condicion=$historia_ocupacional->condicion_diagnostico->tipo_condicion->descripcion;
+	    	$observacion=$historia_ocupacional->condicion_diagnostico->observacion;
+	    	
+	    	$medico=utf8_decode($historia_ocupacional->medico_paciente->medico->user->primerapellido.' '.$historia_ocupacional->medico_paciente->medico->user->primernombre);
+	    	$registro=utf8_decode($historia_ocupacional->medico_paciente->medico->registro);
+	    	$firmamedico=utf8_decode($historia_ocupacional->medico_paciente->medico->user->firma);
+	    	$banner=utf8_decode($historia_ocupacional->medico_paciente->medico->banner);
+	    	$recomendaciones=utf8_decode($historia_ocupacional->recomendaciones);
+		}
+
+		$fpdf = new PDF();
+        $fpdf->AddPage();
+        $fpdf->SetTextColor(0,0,0);
+		$fpdf->SetFillColor(255,255,255);
+
+        if(file_exists( public_path().'/images/banner/'.$banner) &&  $banner!='' ){
+			$fpdf->Image(asset('images/banner/'.$banner),10,8,190,30);
+		}
+
+        $fpdf->AliasNbPages();
+        $fpdf->SetY(40);
+		$fpdf->SetTitle("Certificado Laboral");
+		$fpdf->SetFont('Arial','B',10);
+		$fpdf->Cell(190,6,'CONCEPTO DE APTITUD LABORAL',1,0,'C',0);
+		$fpdf->Ln();
+
+		$fpdf->SetFont('Arial','',8);
+		$fpdf->Cell(40,5,'FECHA: ',1,0,'L',0);
+		$fpdf->Cell(30,5,'DIA: '.$dia,1,0,'L',0);
+		$fpdf->Cell(30,5,'MES: '.$mes,1,0,'L',0);
+		$fpdf->Cell(30,5,utf8_decode('AÑO: ').$anio,1,0,'L',0);
+		$fpdf->Cell(5,5,'',0,0,'L',0);
+		$fpdf->Cell(55,5,'TIPO DE EXAMEN:',1,0,'L',0);
+
+		$fpdf->Ln();
+		$fpdf->Cell(40,5,'EMPRESA: ',1,0,'L',0);
+		$fpdf->Cell(90,5,$empresa,1,0,'L',0);
+		$fpdf->Cell(5,5,'',0,0,'L',0);
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Cell(55,5,$tipoexamen,1,0,'C',0);
+		$fpdf->SetFont('Arial','',8);
+
+		$fpdf->Ln();
+		$fpdf->Cell(40,5,'TRABAJADOR: ',1,0,'L',0);
+		$fpdf->Cell(90,5,$trabajador,1,0,'L',0);
+
+		$fpdf->Ln();
+		$fpdf->Cell(40,5,'CEDULA: ',1,0,'L',0);
+		$fpdf->Cell(90,5,$cedula,1,0,'L',0);
+		$fpdf->Cell(5,5,'',0,0,'L',0);
+		$fpdf->Cell(25,5,'PESO: ',1,0,'L',0);
+		$fpdf->Cell(30,5,$peso,1,0,'C',0);
+
+		$fpdf->Ln();
+		$fpdf->Cell(40,5,'CARGO: ',1,0,'L',0);
+		$fpdf->Cell(90,5,$cargo,1,0,'L',0);
+		$fpdf->Cell(5,5,'',0,0,'L',0);
+		$fpdf->Cell(25,5,'TALLA:',1,0,'L',0);
+		$fpdf->Cell(30,5,$talla,1,0,'C',0);
+		
+		$fpdf->Ln();
+		$fpdf->Cell(40,5,'EDAD: ',1,0,'L',0);
+		$fpdf->Cell(90,5,$edad,1,0,'L',0);
+		$fpdf->Cell(5,5,'',0,0,'L',0);
+		$fpdf->Cell(25,5,'IMC:',1,0,'L',0);
+		$fpdf->Cell(30,5,$imc,1,0,'C',0);
+	
+		$fpdf->Ln();
+		$fpdf->Cell(40,5,'EPS: ',1,0,'L',0);
+		$fpdf->Cell(90,5,$eps,1,0,'L',0);
+		$fpdf->Cell(5,5,'',0,0,'L',0);
+		$fpdf->Cell(25,5,'TA:',1,0,'L',0);
+		$fpdf->Cell(30,5,$ta,1,0,'C',0);
+
+		$fpdf->Ln();
+		$fpdf->Cell(40,5,'AFP: ',1,0,'L',0);
+		$fpdf->Cell(90,5,$afp,1,0,'L',0);
+		$fpdf->Cell(5,5,'',0,0,'L',0);
+		$fpdf->Cell(25,5,'FC:',1,0,'L',0);
+		$fpdf->Cell(30,5,$fc,1,0,'C',0);
+	
+		$fpdf->Ln();
+		$fpdf->Cell(40,5,'ARL: ',1,0,'L',0);
+		$fpdf->Cell(90,5,$arl,1,0,'L',0);
+		$fpdf->Cell(5,5,'',0,0,'L',0);
+		$fpdf->Cell(25,5,'FR:',1,0,'L',0);
+		$fpdf->Cell(30,5,$fr,1,0,'C',0);
+	
+		$fpdf->Ln();
+		$fpdf->Cell(40,5,'MUNICIPIO RESIDENCIA: ',1,0,'L',0);
+		$fpdf->Cell(90,5,$municipio,1,0,'L',0);
+		$fpdf->Cell(5,5,'',0,0,'L',0);
+		$fpdf->Cell(25,5,'LATERALIDAD:',1,0,'L',0);
+		$fpdf->Cell(30,5,$lateralidad,1,0,'C',0);
+		
+
+		$fpdf->Ln(8);
+		$fpdf->SetFont('Arial','B',8);
+		$fpdf->Cell(130,5,utf8_decode('CONCEPTO EXAMEN '.strtoupper($tipoexamen)),1,0,'L',0);
+		$fpdf->SetFont('Arial','B',8);
+		$fpdf->Cell(60,5,$condicion.'',1,0,'C',0);
+		$fpdf->Ln();
+		$fpdf->SetFont('Arial','',8);
+		$fpdf->Rect(10,$fpdf->GetY(),190,15,'D');
+		$fpdf->MultiCell(190,3,utf8_decode(''.$observacion),0,'J',0);
+
+		$fpdf->SetY(124);
+		$fpdf->SetFont('Arial','B',8);
+		$fpdf->Cell(190,6,utf8_decode('A QUIEN SE LE REALIZARON LOS SIGUIENTES EXAMENES'),1,0,'C',0);
+		$fpdf->Ln();
+
+	
+
+		
+		
+		$ancho=63.33;
+		$fpdf->SetFont('Arial','',8);
+		$fpdf->Cell($ancho,5,utf8_decode('Examen Médico SO'),1,0,'L',0);
+		$i=1;
+		$Visual= Visual::where(['historia_ocupacional_id' => $historia_ocupacional->id])->orderBy('id')->get();
+		if($Visual->count()>0){
+			$fpdf->Cell($ancho,5,utf8_decode('Visiomtría'),1,0,'L',0);
+			$i=2;
+		}	
+
+		$Traumatologicos = Traumatologico::whereHas('antecedente_ocupacional', function ($query) use ($historia_ocupacional_id){
+			    $query->where([	'historia_ocupacional_id' => $historia_ocupacional_id]);
+		})->with('lesion')->limit(5)->get();
+
+		$Tipo_organos= Tipo_organo::whereHas('organos.exploraciones', function ($query) use ($historia_ocupacional_id){
+			    $query->where([	'exploraciones.historia_ocupacional_id' => $historia_ocupacional_id]);
+		})->orderBy('id')->get();
+
+		foreach($Tipo_organos as $Tipo_organo){
+			
+			if($i%3==0){
+				$fpdf->Ln();	
+			}
+			$fpdf->Cell($ancho,5,utf8_decode($Tipo_organo->descripcion),1,0,'L',0);
+			$i=$i+1;
+			
+		}
+
+		$Examen_laboratorios= Examen_laboratorio::where(['historia_ocupacional_id' => $historia_ocupacional->id])->orderBy('id')->get();
+		foreach($Examen_laboratorios as $Examen_laboratorio){
+			
+			if($i%3==0){
+				$fpdf->Ln();	
+			}
+			$fpdf->Cell($ancho,5,utf8_decode($Examen_laboratorio->examen),1,0,'L',0);
+			$i=$i+1;
+			
+		}
+
+		for($i=$i;$i<24;$i++)
+		{
+			
+			if($i%3==0){
+				$fpdf->Ln();	
+			}
+			$fpdf->Cell($ancho,5,utf8_decode(''),1,0,'L',0);
+		}
+
+		$fpdf->Ln();
+		$ancho_reco=$fpdf->GetY();
+		$fpdf->Ln();
+		$fpdf->SetFont('Arial','B',8);
+		$fpdf->Cell(190,5,utf8_decode('RECOMENDACIONES MÉDICO LABORAL'),1,0,'C',0);
+		$fpdf->Ln();
+		$fpdf->Rect(10,$fpdf->GetY(),190,25,'D');
+		$fpdf->SetFont('Arial','',8);
+		$fpdf->MultiCell(190,3,$recomendaciones,0,'J',0);
+
+		$fpdf->SetY($ancho_reco+40);
+/*		$fpdf->SetFont('Arial','',7);
+		$fpdf->Rect(10,$fpdf->GetY()-2,190,22,'D');
+		$fpdf->MultiCell(190,3,utf8_decode('CONSIDERACIONES LEGALES RELATIVAS A LOS EXAMENES DE INGRESO: Las resoluciones 2346 de 2007 y 1818 de 2009 del Ministerio de la Protección Social actualmente Ministerios de Trabajo y de Salud y Protección Social reglamentan la práctica y contenido de las evaluaciones médicas ocupacionales. Se establece que la empresa solo puede conocer el CERTIFICADO MEDICO DE APTITUD del aspirante.  Los resultados de los exámenes se dan a conocer en el certificado con la autorización del aspirante. Los documentos completos de la Historia Clínica Ocupacional están  sometidos a reserva profesional y quedan bajo nuestra custodia según lo establecido en la Resolución 1918 de 2009. El trabajador puede obtener copia en el momento que lo requiera, entendiendo que hacen parte integral de su historial 
+			NOTA: Bajo la gravedad del juramento afirmo que toda la información anteriormente suministrada es correcta y que no he ocultado nada sobre mi historia de salud.'),0,'J',0);
+*/
+
+		$fpdf->SetY(245);
+		if(file_exists( public_path().'/images/firmas/'.$firmatrabajador) &&  $firmatrabajador!='' ){
+			$fpdf->Image(asset('images/firmas/'.$firmatrabajador),130,242,45,15);
+		}
+		if(file_exists( public_path().'/images/firmas/'.$firmamedico) &&  $firmamedico!='' ){
+			$fpdf->Image(asset('images/firmas/'.$firmamedico),35,242,45,15);
+		}
+		$fpdf->SetFont('Arial','',9);
+
+		$fpdf->Cell(95,3,'_______________________________',0,0,'C',0);
+		$fpdf->Cell(95,3,'_______________________________',0,0,'C',0);
+		
+		$fpdf->Ln();
+		$fpdf->Cell(95,5,$medico,0,0,'C',0);
+		$fpdf->Cell(95,5,$trabajador,0,0,'C',0);
+
+		$fpdf->Ln();
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Cell(95,3,utf8_decode('Registro Médico ').$registro,0,0,'C',0);
+		$fpdf->Cell(95,3,$cedula,0,0,'C',0);
+    	$fpdf->Output();
+        exit;
+	}
 }
