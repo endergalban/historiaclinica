@@ -6,6 +6,7 @@ use App\Role;
 use App\Municipio;
 use Carbon\Carbon;
 use App\Medico;
+use App\Paciente;
 use App\Asistente;
 
 
@@ -21,6 +22,8 @@ class UsersTableSeeder extends Seeder
         $role_administrador = Role::where(['descripcion'=>'administrador'])->first();
     	$role_medico = Role::where(['descripcion'=>'medico'])->first();
     	$role_asistente = Role::where(['descripcion'=>'asistente'])->first();
+        $role_paciente = Role::where(['descripcion'=>'paciente'])->first();
+
     	$municipio = Municipio::where(['descripcion'=>'Maracaibo'])->first();
         
         $user= new User;
@@ -119,6 +122,36 @@ class UsersTableSeeder extends Seeder
         $medico->registro = '';
         $medico->banner = '';
         $medico->save();
+
+        $user= new User;
+        $user->email = 'gerardox@hotmail.com';
+        $user->tipodocumento = 'TI';
+        $user->numerodocumento = '24381947';
+        $user->primernombre = 'Gerardo';
+        $user->segundonombre = 'Gabriel';
+        $user->primerapellido = 'Gonzalez';
+        $user->segundoapellido = 'Borregales';
+        $user->fechanacimiento = Carbon::now();
+        $user->genero = 'Maculino';
+        $user->estadocivil = 'Soltero';
+        $user->municipio()->associate($municipio);
+        $user->direccion = 'Maracaibo';
+        $user->ocupacion = '';
+        $user->telefono = '058424000000';
+        $user->firma = '';
+        $user->imagen = 'avatar.png';
+        $user->activo = true;
+        $user->password = bcrypt('123456');
+        $user->save();
+        $user->roles()->attach($role_medico);
+
+        $paciente = new Paciente;
+        $paciente->user()->associate($role_paciente);
+        $paciente->empresa_id=1;
+        $paciente->arl_id=1;
+        $paciente->afp_id=1;
+        $paciente->municipio_id=1;
+        $paciente->save();
 
        
     }
