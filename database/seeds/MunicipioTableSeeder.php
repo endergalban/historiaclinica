@@ -38,5 +38,101 @@ class MunicipioTableSeeder extends Seeder
         $municipio->descripcion = 'Merida';
         $municipio->departamento()->associate($departamento);
         $municipio->save();
+/* MUNICIPIOS DE COLOMBIA */
+        $departamento = Departamento::where([ 'descripcion' => 'Bogota D.C.' ])->first();
+        $municipio= New Municipio;
+        $municipio->descripcion = 'Bogota D.C.';
+        $municipio->departamento()->associate($departamento);
+        $municipio->save();
+
+        $departamento = Departamento::where([ 'descripcion' => 'Cundinamarca' ])->first();
+        $municipio= New Municipio;
+        $municipio->descripcion = 'Almeidas';
+        $municipio->departamento()->associate($departamento);
+        $municipio->save();
+
+        $departamento = Departamento::where([ 'descripcion' => 'Cundinamarca' ])->first();
+        $municipio= New Municipio;
+        $municipio->descripcion = 'Alto Magdalena';
+        $municipio->departamento()->associate($departamento);
+        $municipio->save();
+
+        $departamento = Departamento::where([ 'descripcion' => 'Cundinamarca' ])->first();
+        $municipio= New Municipio;
+        $municipio->descripcion = 'Bajo Magdalena';
+        $municipio->departamento()->associate($departamento);
+        $municipio->save();
+
+        $departamento = Departamento::where([ 'descripcion' => 'Cundinamarca' ])->first();
+        $municipio= New Municipio;
+        $municipio->descripcion = 'Gualivá';
+        $municipio->departamento()->associate($departamento);
+        $municipio->save();
+
+        $departamento = Departamento::where([ 'descripcion' => 'Cundinamarca' ])->first();
+        $municipio= New Municipio;
+        $municipio->descripcion = 'Guavio';
+        $municipio->departamento()->associate($departamento);
+        $municipio->save();
+
+        $departamento = Departamento::where([ 'descripcion' => 'Cundinamarca' ])->first();
+        $municipio= New Municipio;
+        $municipio->descripcion = 'Magdalena Centro';
+        $municipio->departamento()->associate($departamento);
+        $municipio->save();
+
+        $departamento = Departamento::where([ 'descripcion' => 'Cundinamarca' ])->first();
+        $municipio= New Municipio;
+        $municipio->descripcion = 'Medina';
+        $municipio->departamento()->associate($departamento);
+        $municipio->save();
+
+        $departamento = Departamento::where([ 'descripcion' => 'Cundinamarca' ])->first();
+        $municipio= New Municipio;
+        $municipio->descripcion = 'Oriente';
+        $municipio->departamento()->associate($departamento);
+        $municipio->save();
+
+        $departamento = Departamento::where([ 'descripcion' => 'Cundinamarca' ])->first();
+        $municipio= New Municipio;
+        $municipio->descripcion = 'Rionegro';
+        $municipio->departamento()->associate($departamento);
+        $municipio->save();
+
+        $departamento = Departamento::where([ 'descripcion' => 'Cundinamarca' ])->first();
+        $municipio= New Municipio;
+        $municipio->descripcion = 'Sabana Centro';
+        $municipio->departamento()->associate($departamento);
+        $municipio->save();
+
+        $departamento = Departamento::where([ 'descripcion' => 'Cundinamarca' ])->first();
+        $municipio= New Municipio;
+        $municipio->descripcion = 'Sabana Occidente';
+        $municipio->departamento()->associate($departamento);
+        $municipio->save();
+
+        $departamento = Departamento::where([ 'descripcion' => 'Cundinamarca' ])->first();
+        $municipio= New Municipio;
+        $municipio->descripcion = 'Soacha';
+        $municipio->departamento()->associate($departamento);
+        $municipio->save();
+
+        $departamento = Departamento::where([ 'descripcion' => 'Cundinamarca' ])->first();
+        $municipio= New Municipio;
+        $municipio->descripcion = 'Sumapaz';
+        $municipio->departamento()->associate($departamento);
+        $municipio->save();
+
+        $departamento = Departamento::where([ 'descripcion' => 'Cundinamarca' ])->first();
+        $municipio= New Municipio;
+        $municipio->descripcion = 'Tequendama';
+        $municipio->departamento()->associate($departamento);
+        $municipio->save();
+
+        $departamento = Departamento::where([ 'descripcion' => 'Cundinamarca' ])->first();
+        $municipio= New Municipio;
+        $municipio->descripcion = 'Ubaté';
+        $municipio->departamento()->associate($departamento);
+        $municipio->save();
     }
 }

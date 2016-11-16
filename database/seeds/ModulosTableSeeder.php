@@ -112,6 +112,15 @@ class ModulosTableSeeder extends Seeder
         $modulo->visible = 1;
         $modulo->save();
         $modulo->roles()->attach($role_asistente);
+
+        $modulo= new Modulo;
+        $modulo->orden = 20;
+        $modulo->icono = 'fa-book';
+        $modulo->descripcion = 'Citas';
+        $modulo->site = 'citas';
+        $modulo->visible = 1;
+        $modulo->save();
+        $modulo->roles()->attach($role_administrador);
     
         
 

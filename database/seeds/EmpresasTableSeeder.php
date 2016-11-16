@@ -17,7 +17,20 @@ class EmpresasTableSeeder extends Seeder
         $empresa->save();
 
         $empresa= New Empresa;
-    	$empresa->descripcion = 'Empresa 2';
+    	$empresa->descripcion = 'CAFESALUD';
 		$empresa->save();
+
+        $empresa= New Empresa;
+        $empresa->descripcion = 'CALISALUD';
+        $empresa->save();
+
+        $empresa= New Empresa;
+        $empresa->descripcion = 'COLMEDICA';
+        $empresa->save();
+
+
+        $empresa= New Empresa;
+        $empresa->descripcion = 'CRUZ BLANCA';
+        $empresa->save();
     }
 }
