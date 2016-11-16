@@ -18,21 +18,24 @@ use App\Asistente;
 
 class AsistentesController extends Controller
 {
-     
+     /**
+     * .
+     * Muestra los asistentes del sistema
+     * @param  $request->search  para filtro de resultado
+     */
     public function index(Request $request)
     {
         $users=User::ofType($request->search)->has('asistente')->orderby('numerodocumento','ASC')->paginate(15);
         return  view('asistentes.index')->with(['users'=>$users ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     /**
+     * .
+     * Configura el formulario para la creación de asistente
+     * 
      */
     public function create()
     {
-       
        
         $querymedicos=User::has('medico')->orderby('tipodocumento','ASC')->get();
         $paises=Pais::all()->sortBy('descripcion')->pluck('descripcion', 'id')->prepend('Seleccione una opción', 0);
@@ -42,7 +45,6 @@ class AsistentesController extends Controller
         }else{
             $departamentos=['0'=>'Seleccione una opción'];
         }
-
         if(old('departamento_id'))
         {
             $municipios=Municipio::where('departamento_id',old('departamento_id'))->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id')->prepend('Seleccione una opción', 0);
@@ -58,10 +60,9 @@ class AsistentesController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * .
+     * Registra un asistente en el sistema
+     *  @param  $request con los datos del asistente
      */
     public function store(Request $request)
     {
@@ -91,11 +92,7 @@ class AsistentesController extends Controller
             flash(implode('<br>',$validator->errors()->all()), 'danger');
             return redirect()->route('asistentes.create')->withInput();
         }
-
-
         $municipio_id = Municipio::where(['id'=>$request->municipio_id])->first();
-      
-
         $user= new User;
         $user->email                  = $request->email;
         $user->password               = bcrypt('123456');
@@ -116,8 +113,6 @@ class AsistentesController extends Controller
         $user->save();
         $currentrole = Role::where(['id'=>3])->first();
         $user->roles()->attach($currentrole);
-       
-
         if( $request->hasFile('imagen')){ 
             $imageName = $user->id . '.' . $request->file('imagen')->getClientOriginalExtension();
             Image::make($request->file('imagen'))->resize(null, 150, function ($constraint) {
@@ -126,7 +121,6 @@ class AsistentesController extends Controller
             $user->imagen=$imageName;
             $user->save();
         }
-
         if( $request->hasFile('firma')){ 
             $imagefirma = $user->id . '.' . $request->file('firma')->getClientOriginalExtension();
             Image::make($request->file('firma'))->resize(null, 150, function ($constraint) {
@@ -135,11 +129,9 @@ class AsistentesController extends Controller
             $user->firma=$imagefirma;
             $user->save();
         }
-
         $asistente = new Asistente;
         $asistente->user()->associate($user);
         $asistente->save();
-
         if($request->medicos){
             foreach($request->medicos as $medico){
 
@@ -149,17 +141,14 @@ class AsistentesController extends Controller
                 }
             }
         }
-
-
         flash('Se ha registrado '.$user->primernombre.' '.$user->primerapellido.' de forma exitosa!', 'success');
         return redirect()->route('asistentes.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     /**
+     * .
+     * Muestra los datos de un asistente en el sistema
+     *  @param  $id del asistente
      */
     public function show($id)
     {
@@ -168,29 +157,20 @@ class AsistentesController extends Controller
          //Nacimiento
         $departamentos=Departamento::where('pais_id',$user->municipio->departamento->pais->id)->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
         $municipios=Municipio::where('departamento_id',$user->municipio->departamento->id)->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id');
-
         $querymedicos=User::has('medico')->orderby('tipodocumento','ASC')->get();
-        
         $medicos=array();
         foreach ($querymedicos as $medico) {
             $medicos[$medico->medico->id]=$medico->tipodocumento.' '.$medico->numerodocumento.' '.$medico->primerapellido.' '.$medico->primernombre;
         }
-        
         $asistente_medico=Asistente::find($user->asistente->id)->medicos()->pluck('medico_id')->toArray();
-
         return  view('asistentes.show')->with(['user' => $user,'paises' => $paises,'departamentos' => $departamentos,'municipios' => $municipios,'medicos'=>$medicos,'asistente_medico'=>$asistente_medico  ]);
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * .
+     * Muestra los datos de un asistente en el sistema para su edición
+     *  @param  $id del asistente
      */
-
-    
-
-
     public function edit($id)
     {
        
@@ -211,12 +191,10 @@ class AsistentesController extends Controller
         return  view('asistentes.edit')->with(['user' => $user,'paises' => $paises,'departamentos' => $departamentos,'municipios' => $municipios,'medicos'=>$medicos,'asistente_medico'=>$asistente_medico ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+   /**
+     * .
+     * Edita los datos de un usuario 
+     *  @param  $request con los datos del asistente 
      */
     public function update(Request $request, $id)
     {
@@ -253,8 +231,6 @@ class AsistentesController extends Controller
         }
 
         $municipio_id = Municipio::where(['id'=>$request->municipio_id])->first();
-
-
         $user->email                  = $request->email;
         $user->tipodocumento          = $request->tipodocumento;          
         $user->numerodocumento        = $request->numerodocumento;
@@ -271,7 +247,6 @@ class AsistentesController extends Controller
         $user->telefono               = $request->telefono;
         $user->activo                 = $request->activo;
         $user->save();
-
         if( $request->hasFile('imagen')){ 
             $imageName = $user->id . '.' . $request->file('imagen')->getClientOriginalExtension();
             Image::make($request->file('imagen'))->resize(null, 150, function ($constraint) {
@@ -301,19 +276,14 @@ class AsistentesController extends Controller
                 }
             }
         }
-
-        
-      
-
         flash('Edición realizada de forma exitosa!', 'success');
         return redirect()->route('asistentes.index');
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * .
+     * Elimina un asistente 
+     *  @param  $id del asistente 
      */
     public function destroy($id)
     {

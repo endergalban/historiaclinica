@@ -54,6 +54,7 @@
                         <th>Fecha</th>
                         <th>Empresa</th>
                         <th>Tipo de Examen</th>
+                        <th class="text-center">Descargas</th>
                         <th class="text-center">Acción</th>
                     </tr>
                 </thead>
@@ -64,10 +65,13 @@
                         <td>{{ date("d/m/Y", strtotime($historia->created_at))  }}</td>
                         <td>{{ $historia->empresa }}</td>
                         <td>{{ $historia->tipo_examen->descripcion }}</td>
-                        
-                        <td class="text-center">
+                        <td class="text-center"> 
+                            <a href="{{ route('reporte.consentimiento_informado',[$historia->id]) }}" target="_BLANK"><span class="label label-primary" >Consentimiento</span></a>
                             <a href="{{ route('reporte.certificado_ocupacional',[$historia->id]) }}" target="_BLANK"><span class="label label-primary" >Certificado</span></a>
-                            <a href="{{ route('reporte.historia',[$historia->id]) }}" target="_BLANK"><span class="label label-primary">Informe</span></a>
+                                <a href="{{ route('reporte.historia',[$historia->id]) }}" target="_BLANK"><span class="label label-primary">Informe</span></a>
+                            <a href="{{ route('reporte.trabajo_altura',$historia->id ) }}" target="_BLANK" ><span class="label label-primary">Altura</span></a>
+                        </td>                       
+                        <td class="text-center">
                             <a href="{{ route('historias.ocupacional.edit',[$paciente->id,$historia->id]) }}" ><span class="label label-warning">Editar</span></a>
                             <a href="{{ route('historias.ocupacional.documentos',[$paciente->id,$historia->id]) }}" ><span class="label bg-purple">Documentos</span></a>
                             <a data-toggle="modal" data-url="{{ route('historias.destroy_ocupacional',[$paciente->id,$medico->id , $historia->id ]) }}" class="open-modal" href="#myAlert"><span class="label label-danger">Eliminar</span></a>

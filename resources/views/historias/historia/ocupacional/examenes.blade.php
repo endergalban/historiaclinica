@@ -3,13 +3,13 @@
 @section('content-header')
     <h1>
         Historias
-        <small>Exámenes de Laboratorio</small>
+        <small>Exámenes</small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('home') }}"><i class="fa fa-home"></i> Escritorio</a></li>
         <li><a href="{{ route('historias.index') }}">Historias</a></li>
         <li><a href="{{ route('historias.historia',[$paciente->id,'ocupacional',$medico->id]) }}">Historia Ocupacional</a></li>
-        <li class="active">Exámenes de Laboratorio</li>
+        <li class="active">Exámenes</li>
     </ol>
 @endsection
 
@@ -18,7 +18,7 @@
 
     <div class="box box-default">
         <div class="box-header with-border">
-            <h3 class="box-title">Exámenes de Laboratorio</h3>
+            <h3 class="box-title">Exámenes</h3>
             <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
             </div>
@@ -55,7 +55,7 @@
                 </div>
                 <div class="col-md-12">
                     <div class="box-footer">
-                        <button type="button" data-toggle="modal" href="#myAlert2" class="btn btn-primary btn-sm open-modal">Agregar Examen de Laboratorio</button>
+                        <button type="button" data-toggle="modal" href="#myAlert2" class="btn btn-primary btn-sm open-modal">Agregar Examen</button>
                     </div>
                 </div>
             </div>
@@ -68,7 +68,7 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Agregando Examen de Laboratorio</h4>
+                    <h4 class="modal-title">Agregando Examen</h4>
                 </div>
                 {!! Form::open(['class' => '','method' => 'POST','route' => ['historias.ocupacional.examenes.store',$paciente->id,$historia_ocupacional->id],'role' => 'form']) !!}
                  {!! Form::hidden('historia_ocupacional_id', $historia_ocupacional->id) !!}

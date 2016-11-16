@@ -24,6 +24,8 @@ class TipoExamenesTableSeeder extends Seeder
     	$tipo_examen->descripcion = 'Reingreso';
 		$tipo_examen->save();$tipo_examen= New Tipo_examen;
     	$tipo_examen->descripcion = 'Altura';
+        $tipo_examen->save();$tipo_examen= New Tipo_examen;
+        $tipo_examen->descripcion = 'Especial';
 		$tipo_examen->save();$tipo_examen= New Tipo_examen;
     	$tipo_examen->descripcion = 'Manipulador de alimentos';
 		$tipo_examen->save();
