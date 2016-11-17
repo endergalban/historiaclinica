@@ -42,12 +42,9 @@
               </div>
               <!-- /btn-group -->
               <div class="input-group">
-                @if(is_array($medicos))
-                  {!! Form::select('medico_id',$medicos,0,['class' => 'form-control select2','style' => 'width: 100%','id' => 'medico_id' ]) !!}
-                @else
-                  {!! Form::hidden('medico_id',$medicos,['id'=>'medico_id']) !!}
-                @endif
-                {!! Form::select('especialidad_id',$especialidades, old('especialidad_id'),['class' => 'form-control select2','style' => 'width: 100%','id' => 'especialidad_id']) !!}
+               {!! Form::select('medico_id',$medicos,0,['class' => 'form-control select2','style' => 'width: 100%','id' => 'medico_id' ]) !!}
+                
+               {!! Form::select('especialidad_id',$especialidades, old('especialidad_id'),['class' => 'form-control select2','style' => 'width: 100%','id' => 'especialidad_id']) !!}
 
                 {!! Form::select('pacientes[]',$pacientes,null,['id' => 'new-event', 'class' => 'form-control select2','style' => 'width: 100%','placeholder' => 'Seleccione el Paciente' ]) !!}
                 {!! Form::text('fechainicio',null,['class'=>'form-control pull-right', 'id'=>'fechainicio']) !!}

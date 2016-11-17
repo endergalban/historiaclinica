@@ -8,6 +8,9 @@ use Carbon\Carbon;
 use App\Medico;
 use App\Paciente;
 use App\Asistente;
+use App\Arl;
+use App\Afp;
+USE App\Empresa;
 
 
 class UsersTableSeeder extends Seeder
@@ -25,6 +28,9 @@ class UsersTableSeeder extends Seeder
         $role_paciente = Role::where(['descripcion'=>'paciente'])->first();
 
     	$municipio = Municipio::where(['descripcion'=>'Maracaibo'])->first();
+        $empresa = Empresa::where(['descripcion'=>"CRUZ BLANCA"])->first();
+        $arl = Arl::where(['descripcion'=>"ALR SURA"])->first();
+        $afp = Afp::where(['descripcion'=>"FONDO NACIONAL DE AHORRO"])->first();        
         
         $user= new User;
         $user->email = 'endergalban@gmail.com';
@@ -71,6 +77,29 @@ class UsersTableSeeder extends Seeder
         $user->roles()->attach($role_administrador);
 
         $user= new User;
+        $user->email = 'alvaromonsalve@yahoo.com.co';
+        $user->tipodocumento = 'TI';
+        $user->numerodocumento = '11223344';
+        $user->primernombre = 'Alvaro';
+        $user->segundonombre = '';
+        $user->primerapellido = 'Monsalve';
+        $user->segundoapellido = '';
+        $user->fechanacimiento = Carbon::now();
+        $user->genero = 'Masculino';
+        $user->estadocivil = 'Soltero';
+        $user->municipio()->associate($municipio);
+        $user->direccion = 'Bogota';
+        $user->ocupacion = 'Ingeniero';
+        $user->telefono = '00573126688172';
+        $user->firma = '';
+        $user->imagen = '';
+        $user->activo = true;
+        $user->password = bcrypt('123456');
+        $user->save();
+        $user->roles()->attach($role_administrador);
+
+
+        $user= new User;
         $user->email = 'marllyg27@hotmail.com';
         $user->tipodocumento = 'TI';
         $user->numerodocumento = '16780894';
@@ -104,7 +133,7 @@ class UsersTableSeeder extends Seeder
         $user->primerapellido = 'Galban';
         $user->segundoapellido = '';
         $user->fechanacimiento = Carbon::now();
-        $user->genero = 'Maculino';
+        $user->genero = 'Masculino';
         $user->estadocivil = 'Casado';
         $user->municipio()->associate($municipio);
         $user->direccion = 'Maracaibo';
@@ -122,20 +151,20 @@ class UsersTableSeeder extends Seeder
         $medico->registro = '';
         $medico->banner = '';
         $medico->save();
-
+        
         $user= new User;
-        $user->email = 'gerardox@hotmail.com';
+        $user->email = 'paciente@hotmail.com';
         $user->tipodocumento = 'TI';
-        $user->numerodocumento = '24381947';
-        $user->primernombre = 'Gerardo';
-        $user->segundonombre = 'Gabriel';
-        $user->primerapellido = 'Gonzalez';
-        $user->segundoapellido = 'Borregales';
+        $user->numerodocumento = '122334566';
+        $user->primernombre = 'Jose';
+        $user->segundonombre = '';
+        $user->primerapellido = 'Paciente';
+        $user->segundoapellido = '';
         $user->fechanacimiento = Carbon::now();
-        $user->genero = 'Maculino';
-        $user->estadocivil = 'Soltero';
+        $user->genero = 'Masculino';
+        $user->estadocivil = 'Divorciado';
         $user->municipio()->associate($municipio);
-        $user->direccion = 'Maracaibo';
+        $user->direccion = 'Avenida 12';
         $user->ocupacion = '';
         $user->telefono = '058424000000';
         $user->firma = '';
@@ -143,16 +172,76 @@ class UsersTableSeeder extends Seeder
         $user->activo = true;
         $user->password = bcrypt('123456');
         $user->save();
-        $user->roles()->attach($role_medico);
+        $user->roles()->attach($role_paciente);
 
         $paciente = new Paciente;
-        $paciente->user()->associate($role_paciente);
-        $paciente->empresa_id=1;
-        $paciente->arl_id=1;
-        $paciente->afp_id=1;
-        $paciente->municipio_id=1;
+        $paciente->user()->associate($user);
+        $paciente->empresa()->associate($empresa);
+        $paciente->arl()->associate($arl);
+        $paciente->afp()->associate($afp);
+        $paciente->municipio()->associate($municipio);
         $paciente->save();
 
+        $user= new User;
+        $user->email = 'paciente2@hotmail.com';
+        $user->tipodocumento = 'TI';
+        $user->numerodocumento = '6655442231';
+        $user->primernombre = 'Maria';
+        $user->segundonombre = '';
+        $user->primerapellido = 'Paciente';
+        $user->segundoapellido = '';
+        $user->fechanacimiento = Carbon::now();
+        $user->genero = 'Femenino';
+        $user->estadocivil = 'Soltero';
+        $user->municipio()->associate($municipio);
+        $user->direccion = 'Avenida 15';
+        $user->ocupacion = '';
+        $user->telefono = '058424000001';
+        $user->firma = '';
+        $user->imagen = 'avatar.png';
+        $user->activo = true;
+        $user->password = bcrypt('123456');
+        $user->save();
+        $user->roles()->attach($role_paciente);
+
+        $paciente = new Paciente;
+        $paciente->user()->associate($user);
+        $paciente->empresa()->associate($empresa);
+        $paciente->arl()->associate($arl);
+        $paciente->afp()->associate($afp);
+        $paciente->municipio()->associate($municipio);
+        $paciente->save();
+        
+        $user= new User;
+        $user->email = 'paciente3@hotmail.com';
+        $user->tipodocumento = 'CC';
+        $user->numerodocumento = '9988244125';
+        $user->primernombre = 'Carlos';
+        $user->segundonombre = '';
+        $user->primerapellido = 'Paciente';
+        $user->segundoapellido = '';
+        $user->fechanacimiento = Carbon::now();
+        $user->genero = 'Masculino';
+        $user->estadocivil = 'Soltero';
+        $user->municipio()->associate($municipio);
+        $user->direccion = 'Avenida 15';
+        $user->ocupacion = '';
+        $user->telefono = '058424000001';
+        $user->firma = '';
+        $user->imagen = 'avatar.png';
+        $user->activo = true;
+        $user->password = bcrypt('123456');
+        $user->save();
+        $user->roles()->attach( $role_paciente);
+
+        $paciente = new Paciente;
+        $paciente->user()->associate($user);
+        $paciente->empresa()->associate($empresa);
+        $paciente->arl()->associate($arl);
+        $paciente->afp()->associate($afp);
+        $paciente->municipio()->associate($municipio);
+        $paciente->save();
        
+
     }
 }

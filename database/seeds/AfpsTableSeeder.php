@@ -17,7 +17,21 @@ class AfpsTableSeeder extends Seeder
         $afp->save();
 
     	$afp= New Afp;
-    	$afp->descripcion = 'AFP';
+    	$afp->descripcion = 'FONDO NACIONAL DE AHORRO';
 		$afp->save();
+
+        $afp= New Afp;
+        $afp->descripcion = 'COLFONDOS PENSIONES Y CESANTIAS';
+        $afp->save();
+
+        $afp= New Afp;
+        $afp->descripcion = 'PORVENIR S.A';
+        $afp->save();
+
+        $afp= New Afp;
+        $afp->descripcion = 'OLD MUTUAL';
+        $afp->save();
+
+
     }
 }

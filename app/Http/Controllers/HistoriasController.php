@@ -136,9 +136,9 @@ class HistoriasController extends Controller
         if($especialidad_id=='ocupacional'){
              $especialidad_id=1;
         }elseif($especialidad_id=='ginecologia'){
-            $especialidad_id=2;
-        }elseif($especialidad_id=='pediatria'){
             $especialidad_id=3;
+        }elseif($especialidad_id=='pediatria'){
+            $especialidad_id=2;
         }
         $medico_paciente = Medico_paciente::where(['paciente_id' => $paciente_id,'especialidad_id' => $especialidad_id,'medico_id' => $medico_id] )->first();
         $paciente = Paciente::where(['id'=>$paciente_id])->with('user')->first();
@@ -154,10 +154,10 @@ class HistoriasController extends Controller
         $historias=Historia_ocupacional::with('tipo_examen')->where('medico_paciente_id',$medico_paciente->id)->get();
         if($especialidad_id==1){
             return view('historias.historia.ocupacional.index')->with(['medico' => $medico,'paciente' => $paciente,'medico_paciente' => $medico_paciente,'historias' => $historias]);
-        }elseif($especialidad_id==2){
+        }elseif($especialidad_id==3){
             echo "Ginecologia";
 
-        }elseif($especialidad_id==3){
+        }elseif($especialidad_id==2){
 
             echo "Pediatria";
         }

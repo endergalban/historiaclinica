@@ -27,7 +27,20 @@ class CitasController extends Controller
         $users=User::ofType($request->search)->has('paciente')->orderby('numerodocumento','ASC')->paginate(15);
         $role = User::find(Auth::user()->id)->roles()->pluck('descripcion');
 
-        if($role->contains('medico')){
+        if($role->contains('administrador')){
+          
+            $querymedicos=User::has('medico')->with('medico');
+            if($querymedicos->count()==0){
+
+                flash('No existen médicos registrados en el sistema!', 'danger');
+                return redirect()->route('home');
+               
+            }else{
+                foreach ($querymedicos->get() as $medico) {
+                    $medicos[$medico->medico->id]=$medico->tipodocumento.' '.$medico->numerodocumento.' '.$medico->primerapellido.' '.$medico->primernombre;
+                }
+            }
+        }elseif($role->contains('medico')){
             $medico=Medico::has('user')->where('user_id',Auth::user()->id)->first();
             $medicos=$medico->id;
 
@@ -39,9 +52,6 @@ class CitasController extends Controller
                 flash('No estas asignado(a) a ningún médico dentro del sistema!', 'danger');
                 return redirect()->route('home');
 
-            }elseif($querymedicos->count()==1){
-                $medicos=$querymedicos->first()->id;
-              
             }else{
                 foreach ($querymedicos->with('user')->get() as $medico) {
                     $medicos[$medico->id]=$medico->user->tipodocumento.' '.$medico->user->numerodocumento
@@ -49,24 +59,6 @@ class CitasController extends Controller
                 }
             }
          
-        }elseif($role->contains('administrador')){
-          
-            $querymedicos=Medico::with('user.roles');
-            if($querymedicos->count()==0){
-
-                flash('No existen médicos registrados en el sistema!', 'danger');
-                return redirect()->route('home');
-               
-            }elseif($querymedicos->count()==1){
-
-                $medicos=$querymedicos->first()->id;
-
-            }else{
-                
-                foreach ($querymedicos->get() as $medico) {
-                    $medicos[$medico->id]=$medico->user->tipodocumento.' '.$medico->user->numerodocumento.' '.$medico->user->primerapellido.' '.$medico->user->primernombre;
-                }
-            }
         }else{
             flash('No tiene permiso de entrar a esta área, por favor contacte al administrador!', 'danger');
             return redirect()->route('home');
@@ -75,13 +67,12 @@ class CitasController extends Controller
        //$especialidades=['0'=>'Seleccione una opción'];
         
 
-        $queryespecialidades=Medico::with('especialidades')->where('id',1);
-        $i=0;
+        $queryespecialidades=Medico::with('especialidades')->where('id',$querymedicos->first()->medico->id);
+          $i=0;
         foreach ($queryespecialidades->get() as $especialidad) {
                     $especialidades[$especialidad->especialidades[$i]->id]=$especialidad->especialidades[$i]->descripcion;
                     $i++;
                 }
-                
        return view('citas.index')->with(['pacientes' => $pacientes, 'users'=>$users,'medicos'=>$medicos,'especialidades'=>$especialidades]);
        }
 

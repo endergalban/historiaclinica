@@ -471,7 +471,7 @@ class ReportsController extends Controller
 
 		$fpdf->SetFont('Arial','',$letra);
 		$fpdf->SetWidths(array(20,20,50,50,50));
-		$fpdf->SetAligns(array('C','C','C','C','C'));
+		$fpdf->SetAligns(array('C','C','L','L','L'));
 		$fpdf->Row(array('No Hijos','A. Cargo','EPS','ARL','AFP'));
 		$fpdf->SetFont('Arial','',$letra-1);
 		$fpdf->Row(array($numerohijos,$numeropersonascargo,$eps,$arl,$afp));
@@ -481,7 +481,7 @@ class ReportsController extends Controller
 		$fpdf->SetWidths(array(100,60,30));
 		$fpdf->SetAligns(array('L','C','C'));
 		$fpdf->Row(array('Dirección','Ciudad','Teléfono'));
-		$fpdf->SetFont('Arial','',$letra);
+		$fpdf->SetFont('Arial','',$letra-1);
 		$fpdf->Row(array($direccion,$municipio,$telefono));
 		
 
@@ -993,17 +993,19 @@ class ReportsController extends Controller
 		}
 		$fpdf->SetY($fpdf->GetY()+$alto_columna);
 		$fpdf->Ln();
+		$fpdf->SetFont('Arial','B',$letra);
+		$fpdf->Cell(190,$alto,utf8_decode('Observaciones'),1,0,'C',0);
+		$fpdf->Ln();
+		$fpdf->SetFont('Arial','',$letra-1);
+		$texto=implode('; ', $array_observaciones);
+		$fpdf->MultiCell(190,$alto-1,utf8_decode($texto),1,'J',0);
+		
+
+
 		$Visuales = Visual::where(['historia_ocupacional_id' => $historia_ocupacional->id ])->with('examen_visual.ojo')->with('examen_visual.tipo_examen_visual')->get();
 		if($Visuales->count()){
-			$fpdf->SetFont('Arial','B',$letra);
-			$fpdf->Cell(190,$alto,utf8_decode('Observaciones'),1,0,'C',0);
-			$fpdf->Ln();
-			$fpdf->SetFont('Arial','',$letra-1);
-			$texto=implode('; ', $array_observaciones);
-			$fpdf->MultiCell(190,$alto-1,utf8_decode($texto),1,'J',0);
-
+			
 			$fpdf->CheckPageBreak($alto*2+38);
-		
 			$fpdf->SetFont('Arial','B',$letra);
 			$fpdf->Cell(190,$alto,utf8_decode('Prediagnóstico Visual'),1,0,'C',0);
 			$fpdf->Ln();
@@ -1370,7 +1372,7 @@ class ReportsController extends Controller
 
 		$fpdf->Rect(10,$fpdf->GetY(),190,25,'D');
 		$fpdf->SetFont('Arial','',8);
-		$fpdf->MultiCell(190,3,$recomendaciones,0,'J',0);
+		$fpdf->MultiCell(190,4,$recomendaciones,0,'J',0);
 		$fpdf->SetY($ancho_reco+40);
 		$fpdf->SetFont('Arial','',7);
 		$fpdf->Rect(10,$fpdf->GetY()-2,190,22,'D');
@@ -2128,7 +2130,7 @@ class ReportsController extends Controller
 		$fpdf->Ln();
 		$fpdf->Rect(10,$fpdf->GetY(),190,25,'D');
 		$fpdf->SetFont('Arial','',8);
-		$fpdf->MultiCell(190,3,$recomendaciones,0,'J',0);
+		$fpdf->MultiCell(190,4,$recomendaciones,0,'J',0);
 
 		$fpdf->SetY($ancho_reco+40);
 /*		$fpdf->SetFont('Arial','',7);

@@ -4,6 +4,18 @@
 		"selected_items":
 		[
 			[
+				"strto",
+				"strtoupper"
+			],
+			[
+				"tipo",
+				"tipo_condicion_id"
+			],
+			[
+				"Tipo",
+				"Tipo_condicion"
+			],
+			[
 				"primer",
 				"primernombre"
 			],
@@ -14,14 +26,6 @@
 			[
 				"his",
 				"historia_ocupacional"
-			],
-			[
-				"Tipo",
-				"Tipo_consentimiento"
-			],
-			[
-				"tipo",
-				"tipo_consentimiento"
 			],
 			[
 				"label",
@@ -220,10 +224,19 @@
 	"buffers":
 	[
 		{
-			"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/ReportsController.php",
+			"file": "/opt/lampp/htdocs/historiaclinica/resources/views/historias/index.blade.php",
 			"settings":
 			{
-				"buffer_size": 68383,
+				"buffer_size": 3099,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/opt/lampp/htdocs/historiaclinica/database/seeds/UsersTableSeeder.php",
+			"settings":
+			{
+				"buffer_size": 8724,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -232,16 +245,16 @@
 			"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/HistoriasController.php",
 			"settings":
 			{
-				"buffer_size": 84514,
+				"buffer_size": 85678,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "/opt/lampp/htdocs/historiaclinica/routes/web.php",
+			"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/ReportsController.php",
 			"settings":
 			{
-				"buffer_size": 17245,
+				"buffer_size": 78095,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -288,32 +301,44 @@
 		"/opt/lampp/htdocs/historiaclinica/app",
 		"/opt/lampp/htdocs/historiaclinica/app/Http",
 		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations",
+		"/opt/lampp/htdocs/historiaclinica/database",
 		"/opt/lampp/htdocs/historiaclinica/database/seeds",
 		"/opt/lampp/htdocs/historiaclinica/resources",
 		"/opt/lampp/htdocs/historiaclinica/resources/views",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/pacientes",
-		"/opt/lampp/htdocs/historiaclinica/routes"
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional"
 	],
 	"file_history":
 	[
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/consentimientos.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/routes/web.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/index.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/database/seeds/EmpresasTableSeeder.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/ReportsController.php",
+		"/opt/lampp/htdocs/historiaclinica/database/seeds/UsersTableSeeder.php",
+		"/opt/lampp/htdocs/historiaclinica/database/seeds/DatabaseSeeder.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/HistoriasController.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/diagnosticos.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/alturas.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/database/seeds/TipoConsentimientosTableSeeder.php",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_15_173354_create_consentimientos_table.php",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/Documento sin título",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_09_140037_create_tipo_condiciones_table.php",
+		"/opt/lampp/htdocs/historiaclinica/database/seeds/TipoCondicionesTableSeeder.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Condicion_diagnostico.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Condicion_altura.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Tipo_condicion.php",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_10_174815_create_condicion_diagnosticos_table.php",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_10_174834_create_condicion_alturas_table.php",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_16_140037_create_tipo_condiciones_table.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/consentimientos.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/antecedente/riesgos.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/antecedente/traumatologicos.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/examenes.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/cabecera.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/HistoriasController.php",
-		"/opt/lampp/htdocs/historiaclinica/routes/web.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Consentimiento.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_15_173354_create_consentimientos_table.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_15_173326_create_tipo_consentimientos_table.php",
 		"/opt/lampp/htdocs/historiaclinica/database/seeds/TipoExamenesTableSeeder.php",
-		"/opt/lampp/htdocs/historiaclinica/database/seeds/TipoConsentimientosTableSeeder.php",
-		"/opt/lampp/htdocs/historiaclinica/database/seeds/DatabaseSeeder.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Tipo_consentimiento.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Medico_paciente.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Especialidad.php",
@@ -324,12 +349,10 @@
 		"/opt/lampp/htdocs/historiaclinica/app/Paciente.php",
 		"/opt/lampp/htdocs/ordenarDataNotas/primero.csv",
 		"/opt/lampp/htdocs/ordenarDataNotas/alumnos.csv",
-		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/ReportsController.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/AsistentesController.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/PacientesController.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/MedicosController.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/documentos.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/diagnosticos.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/actual.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/Controller.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/PerfilController.php",
@@ -357,7 +380,6 @@
 		"/opt/lampp/htdocs/transerca/pages/pdf/reporte_facturas_mensual.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_23_144837_create_modulos_table.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Historia_ocupacional.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/alturas.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/app/User.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/modulos/edit.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/modulos/create.blade.php",
@@ -368,12 +390,8 @@
 		"/opt/lampp/htdocs/historiaclinica/app/Examen_altura.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/layouts/app.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Tipo_examen_altura.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Condicion_altura.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Condicion_diagnostico.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_181600_create_diagnosticos_table.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Examen_fisico.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_10_174815_create_condicion_diagnosticos_table.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_10_174834_create_condicion_alturas_table.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_10_174858_create_tipo_examen_alturas_table.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_10_174906_create_examen_alturas_table.php",
 		"/opt/lampp/htdocs/historiaclinica/database/seeds/TipoExamenAlturasSeeder.php",
@@ -420,14 +438,7 @@
 		"/opt/lampp/htdocs/historiaclinica/app/Exploracion.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_181458_create_exploraciones_table.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_02_221415_create_examen_fisicos_table.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/users/create.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/users/edit.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/home.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_29_010159_create_examen_labortatorios_table.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Examen_laboratorio.php",
-		"/home/ender/Escritorio/cie10.sql",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_181617_create_historia_ocupacional_diagnostico_table.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Antecedente_ocupacional.php"
+		"/opt/lampp/htdocs/historiaclinica/resources/views/users/create.blade.php"
 	],
 	"find":
 	{
@@ -445,6 +456,15 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			" $$user",
+			"Paciente",
+			"Cell",
+			"L",
+			"SetFillColor",
+			"LC",
+			"exists",
+			"diagnos",
+			"diagno",
 			"consentimi",
 			"conset",
 			"labora",
@@ -563,16 +583,7 @@
 			"data",
 			"diagnosticos",
 			"antecedentes",
-			"ocupacional_antecedentes_store",
-			"antecedentes",
-			"ocupacional_antecedentes_store",
-			"antecedentes",
-			"resultado",
-			"          '",
-			"'tipo_examen_id' => 'required|exists:tipo_examenes,id',\n            'empresa' => 'required|string|max:100', \n            'empresa_id' => 'required|exists:empresas,id',\n            'arl_id' => 'required|exists:arls,id',\n            'afp_id' => 'required|exists:afps,id',\n            'escolaridad_id' => 'required|exists:escolaridades,id',  \n            'numerohijos' => 'required|integer|max:20',\n            'numerohijos' => 'required|integer|max:100',",
-			"antecedentes",
-			"edit",
-			"paciente"
+			"ocupacional_antecedentes_store"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -596,24 +607,24 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 2,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/ReportsController.php",
+					"file": "/opt/lampp/htdocs/historiaclinica/resources/views/historias/index.blade.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 68383,
+						"buffer_size": 3099,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								66521,
-								66521
+								2648,
+								2648
 							]
 						],
 						"settings":
@@ -622,27 +633,27 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 24500.0,
+						"translation.y": 273.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/HistoriasController.php",
-					"semi_transient": true,
+					"file": "/opt/lampp/htdocs/historiaclinica/database/seeds/UsersTableSeeder.php",
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 84514,
+						"buffer_size": 8724,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								19523,
-								19523
+								5754,
+								5754
 							]
 						],
 						"settings":
@@ -652,27 +663,57 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 5536.0,
+						"translation.y": 1911.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
 					"buffer": 2,
-					"file": "/opt/lampp/htdocs/historiaclinica/routes/web.php",
+					"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/HistoriasController.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 17245,
+						"buffer_size": 85678,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								16366,
-								16366
+								4689,
+								4689
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1389.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/ReportsController.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 78095,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								17918,
+								17918
 							]
 						],
 						"settings":
@@ -681,10 +722,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 3237.0,
+						"translation.y": 6953.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 3,
 					"type": "text"
 				}
 			]

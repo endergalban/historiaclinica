@@ -64,7 +64,6 @@ Route::group(['middleware' => 'roles','site'=>'all'], function () {
 		return Response::json($dataMunicipios);
 	})->name('dataMunicipios');
 
-
 	Route::get('/getDataEspecialidades/{id}',	function($id){	
         $dataEspecialidades= App\Medico::with('especialidades')->where('id',$id)->get();
 		return Response::json($dataEspecialidades);

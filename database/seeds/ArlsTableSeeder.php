@@ -17,7 +17,19 @@ class ArlsTableSeeder extends Seeder
         $arl->save();
 
         $arl= New Arl;
-    	$arl->descripcion = 'ARL';
+    	$arl->descripcion = 'ALR SURA';
 		$arl->save();
+
+        $arl= New Arl;
+        $arl->descripcion = 'SEGUROS BOLIVAR S.A';
+        $arl->save();
+
+        $arl= New Arl;
+        $arl->descripcion = 'LIBERTY SEGUROS S.A.';
+        $arl->save();
+
+        $arl= New Arl;
+        $arl->descripcion = 'MAPFRE COLOMBIA VIDA SEGUROS S.A.';
+        $arl->save();
     }
 }
