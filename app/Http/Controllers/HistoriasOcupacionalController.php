@@ -194,13 +194,13 @@ class HistoriasOcupacionalController extends Controller
         $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();
        
 
-        $files = Storage::disk('public')->files($historia_ocupacional_id);
+        $files = Storage::disk('ocupacional')->files($historia_ocupacional_id);
         $arrayfiles=array();
         foreach ($files as $file ) {
             
-            $nombre= pathinfo(storage_path('app/public/'.$historia_ocupacional_id).$file, PATHINFO_BASENAME);
-            $size = Storage::disk('public')->getSize($file);    
-            $tipo =pathinfo(storage_path('app/public/'.$historia_ocupacional_id).$file, PATHINFO_EXTENSION);
+            $nombre= pathinfo(storage_path('app/public/ocupacional/'.$historia_ocupacional_id).$file, PATHINFO_BASENAME);
+            $size = Storage::disk('ocupacional')->getSize($file);    
+            $tipo =pathinfo(storage_path('app/public/ocupacional/'.$historia_ocupacional_id).$file, PATHINFO_EXTENSION);
             if($tipo=='pdf')
             {
                 $tipo='fa-file-pdf-o';
@@ -236,7 +236,7 @@ class HistoriasOcupacionalController extends Controller
             return redirect()->route('historias.ocupacional.documentos',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id]);
         }else{
             $file = $request->file('documento');
-            Storage::disk('public')->putFileAs($historia_ocupacional->id, $file,$file->getClientOriginalName());
+            Storage::disk('ocupacional')->putFileAs($historia_ocupacional->id, $file,$file->getClientOriginalName());
          
             flash('El documento se guardo de forma exitosa!', 'success');
             return redirect()->route('historias.ocupacional.documentos',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id]);
@@ -251,7 +251,7 @@ class HistoriasOcupacionalController extends Controller
     public function ocupacional_documentos_destroy($paciente_id,$historia_ocupacional_id,$documento)
     {
         $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
-        Storage::disk('public')->delete(Crypt::decrypt($documento));
+        Storage::disk('ocupacional')->delete(Crypt::decrypt($documento));
         flash('El registro se ha eliminado de forma exitosa!', 'danger');
         return redirect()->route('historias.ocupacional.documentos',[$historia_ocupacional->medico_paciente->paciente->id,$historia_ocupacional->id]);
 

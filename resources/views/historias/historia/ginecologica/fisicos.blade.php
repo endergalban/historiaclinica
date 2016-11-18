@@ -8,7 +8,7 @@
     <ol class="breadcrumb">
         <li><a href="{{ route('home') }}"><i class="fa fa-home"></i> Escritorio</a></li>
         <li><a href="{{ route('historias.index') }}">Historias</a></li>
-        <li><a href="{{ route('historias.historia',[$paciente->id,'ginecologica',$medico->id]) }}">Exploración Física</a></li>
+        <li><a href="{{ route('historias.historia',[$paciente->id,'ginecologica',$medico->id]) }}">Historia Ginecológica</a></li>
         <li class="active">Exploración Física</li>
     </ol>
 @endsection

@@ -130,12 +130,12 @@ class HistoriasGinecologicaController extends Controller
         $medico = Medico::where(['id'=> $Historia_ginecologica->medico_paciente->medico_id])->with('user')->first();
        
 
-        $files = Storage::disk('public/ginecologia')->files($historia_ginecologica_id);
+        $files = Storage::disk('ginecologia')->files($historia_ginecologica_id);
         $arrayfiles=array();
         foreach ($files as $file ) {
             
             $nombre= pathinfo(storage_path('app/public/ginecologia'.$historia_ginecologica_id).$file, PATHINFO_BASENAME);
-            $size = Storage::disk('public/ginecologia')->getSize($file);    
+            $size = Storage::disk('ginecologia')->getSize($file);    
             $tipo =pathinfo(storage_path('app/public/ginecologia'.$historia_ginecologica_id).$file, PATHINFO_EXTENSION);
             if($tipo=='pdf')
             {
@@ -172,7 +172,7 @@ class HistoriasGinecologicaController extends Controller
             return redirect()->route('historias.ginecologica.documentos',[$Historia_ginecologica->medico_paciente->paciente_id,$Historia_ginecologica->id]);
         }else{
             $file = $request->file('documento');
-            Storage::disk('public/ginecologia')->putFileAs($Historia_ginecologica->id, $file,$file->getClientOriginalName());
+            Storage::disk('ginecologia')->putFileAs($Historia_ginecologica->id, $file,$file->getClientOriginalName());
          
             flash('El documento se guardo de forma exitosa!', 'success');
             return redirect()->route('historias.ginecologica.documentos',[$Historia_ginecologica->medico_paciente->paciente_id,$Historia_ginecologica->id]);
@@ -187,7 +187,7 @@ class HistoriasGinecologicaController extends Controller
     public function ginecologica_documentos_destroy($paciente_id,$historia_ginecologica_id,$documento)
     {
         $Historia_ginecologica = Historia_ginecologica::where(['id' => $historia_ginecologica_id] )->with('medico_paciente')->first();
-        Storage::disk('public/ginecologia')->delete(Crypt::decrypt($documento));
+        Storage::disk('ginecologia')->delete(Crypt::decrypt($documento));
         flash('El registro se ha eliminado de forma exitosa!', 'danger');
         return redirect()->route('historias.ginecologica.documentos',[$Historia_ginecologica->medico_paciente->paciente->id,$Historia_ginecologica->id]);
 

@@ -54,6 +54,18 @@ return [
             'visibility' => 'public',
         ],
 
+        'ocupacional' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/ocupacional'),
+            'visibility' => 'public',
+        ],
+
+        'ginecologia' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/ginecologia'),
+            'visibility' => 'public',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => 'your-key',
