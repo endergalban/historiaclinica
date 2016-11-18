@@ -3,12 +3,12 @@
 @section('content-header')
     <h1>
         Historias
-        <small>Historia ocupacional del paciente</small>
+        <small>Historia ginecológica del paciente</small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('home') }}"><i class="fa fa-home"></i> Escritorio</a></li>
         <li><a href="{{ route('historias.index') }}">Historias</a></li>
-        <li class="active">Historia ocupacional del paciente</li>
+        <li class="active">Historia Ginecológica del paciente</li>
     </ol>
 @endsection
 
@@ -38,7 +38,7 @@
 
     <div class="box box-default">
         <div class="box-header with-border">
-            <h3 class="box-title">Historias Ocupacionales</h3>
+            <h3 class="box-title">Historias Ginecológicas</h3>
             <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
             </div>
@@ -52,33 +52,27 @@
                     <tr class="text-center">
                         <th>Nro. Historia</th>
                         <th>Fecha</th>
-                        <th>Empresa</th>
-                        <th>Tipo de Examen</th>
+                        
                         <th class="text-center">Acción</th>
                         <th class="text-center">Descargas</th>
                         
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach( $historia_ocupacionales as $historia )
+                    @foreach( $historia_ginecologicas as $historia )
                     <tr>
-                        <td>HO-{{ str_pad($historia->id, 8, "0", STR_PAD_LEFT) }}</td>
+                        <td>HG-{{ str_pad($historia->id, 8, "0", STR_PAD_LEFT) }}</td>
                         <td>{{ date("d/m/Y", strtotime($historia->created_at))  }}</td>
-                        <td>{{ $historia->empresa }}</td>
-                        <td>{{ $historia->tipo_examen->descripcion }}</td>
+                       
                                              
                         <td class="text-center">
-                            <a href="{{ route('historias.ocupacional.edit',[$paciente->id,$historia->id]) }}" ><span class="label label-warning">Editar</span></a>
-                            <a href="{{ route('historias.ocupacional.documentos',[$paciente->id,$historia->id]) }}" ><span class="label bg-purple">Documentos</span></a>
-                            <a data-toggle="modal" data-url="{{ route('historias.destroy_ocupacional',[$paciente->id,$medico->id , $historia->id ]) }}" class="open-modal" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
+                            <a href="{{ route('historias.ginecologica.edit',[$paciente->id,$historia->id]) }}" ><span class="label label-warning">Editar</span></a>
+                            <a href="{{ route('historias.ginecologica.documentos',[$paciente->id,$historia->id]) }}" ><span class="label bg-purple">Documentos</span></a>
+                            <a data-toggle="modal" data-url="{{ route('historias.destroy_ginecologica',[$paciente->id,$medico->id , $historia->id ]) }}" class="open-modal" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
 
                         </td>
                          <td class="text-right"> 
-                            <a href="{{ route('reporte.consentimiento_informado',[$historia->id]) }}" target="_BLANK"><span class="label label-primary" >Consentimiento</span></a>
-                            <a href="{{ route('reporte.certificado_ocupacional',[$historia->id]) }}" target="_BLANK"><span class="label label-primary" >Certificado</span></a>
-                            <a href="{{ route('reporte.historia',[$historia->id]) }}" target="_BLANK"><span class="label label-primary">Historia</span></a>
-                            <a href="{{ route('reporte.trabajo_altura',$historia->id ) }}" target="_BLANK" ><span class="label label-primary">Altura</span></a>
-                            <a href="{{ route('reporte.aptitud_laboral',[$historia->id]) }}" target="_BLANK"><span class="label label-primary" >Aptitud Laboral</span></a>
+                       
                         </td> 
                     </tr>
                     @endforeach
@@ -87,8 +81,8 @@
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
-            <a class="btn btn-default btn-sm pull-right open-modal" data-toggle="modal" data-url="{{ route('historias.ocupacional.create',[$paciente->id,$medico_paciente->id]) }}" href="#myAlert" >Crear Nueva Historia Ocupacional</a>
-             Total: {{ $historia_ocupacionales->count() }}
+            <a class="btn btn-default btn-sm pull-right open-modal" data-toggle="modal" data-url="{{ route('historias.ginecologica.create',[$paciente->id,$medico_paciente->id]) }}" href="#myAlert" >Crear Nueva Historia Ginecológica</a>
+             Total: {{ $historia_ginecologicas->count() }}
         </div>
     </div>
 

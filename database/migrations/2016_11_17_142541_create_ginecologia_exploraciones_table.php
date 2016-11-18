@@ -16,12 +16,12 @@ class CreateGinecologiaExploracionesTable extends Migration
         Schema::create('ginecologia_exploraciones', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('historia_ginecologica_id')->unsigned(); $table->foreign('historia_ginecologica_id')->references('id')->on('historia_ginecologicas')->onDelete('restrict');
-            $table->float('peso');
-            $table->float('talla');
-            $table->float('imc');
+            $table->string('pa');
             $table->string('ta');
             $table->string('fc');
             $table->string('fr');
+            $table->float('peso');
+            $table->float('talla');
             $table->string('otros');
             $table->string('aspectogeneral');
             $table->softDeletes();

@@ -8,14 +8,14 @@
     <ol class="breadcrumb">
         <li><a href="{{ route('home') }}"><i class="fa fa-home"></i> Escritorio</a></li>
         <li><a href="{{ route('historias.index') }}">Historias</a></li>
-        <li><a href="{{ route('historias.historia',[$paciente->id,'ocupacional',$medico->id]) }}">Historia Ocupacional</a></li>
+        <li><a href="{{ route('historias.historia',[$paciente->id,'ginecologica',$medico->id]) }}">Historia Ginecológica</a></li>
         <li class="active">Recomendaciones</li>
     </ol>
 @endsection
 
 @section('content')
     
-    @include('historias/historia/ocupacional/cabecera')
+    @include('historias/historia/ginecologica/cabecera')
 
 <!--**************** RECOMENDACIONES**********************-->
 
@@ -30,14 +30,14 @@
         <div class="box-body">
             @include('flash::message')
             <div class="row">
-                 {!! Form::open(['class' => '','method' => 'POST','route' => ['historias.ocupacional.recomendaciones.store',$paciente->id,$historia_ocupacional->id],'role' => 'form']) !!}
-                 {!! Form::hidden('historia_ocupacional_id', $historia_ocupacional->id) !!}
+                 {!! Form::open(['class' => '','method' => 'POST','route' => ['historias.ginecologica.recomendaciones.store',$paciente->id,$historia_ginecologica->id],'role' => 'form']) !!}
+                 {!! Form::hidden('historia_ginecologica_id', $historia_ginecologica->id) !!}
                 <div class="col-md-12">
                    
 
                     <div class="form-group col-md-12">
                  
-                        {!! Form::textarea('recomendaciones',$historia_ocupacional->recomendaciones,['placeholder' => 'Recomendaciones y observaciones','class'=>'form-control','rows'=>'6']) !!}
+                        {!! Form::textarea('recomendaciones',$historia_ginecologica->recomendaciones,['placeholder' => 'Recomendaciones y observaciones','class'=>'form-control','rows'=>'6']) !!}
                     </div>
                 </div>
 

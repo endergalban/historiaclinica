@@ -63,7 +63,7 @@
 									<a  data-url="{{ route('historias.historia',[$user->paciente->id,'pediatria']) }}" class="open-modal2" href="#"><span class="label bg-teal">Pediatría</span></a>
 
 									@if( $user->genero=='Femenino')
-										<a data-url="{{ route('historias.historia',[$user->paciente->id,'ginecologia']) }}" class="open-modal2" href="#"><span class="label bg-maroon">Ginecología</span></a>
+										<a data-url="{{ route('historias.historia',[$user->paciente->id,'ginecologica']) }}" class="open-modal2" href="#"><span class="label bg-maroon">Ginecología</span></a>
 									@endif
 									
 									</td>
@@ -87,7 +87,7 @@
 <script>
 
 $(document).on("click", ".open-modal2", function () {
-       window.location.href = $(this).data('url')+'/'+ $('#medico_id').val();
+       window.location.href = $(this).data('url')+'/'+ $('#medico_id').val()+'';
 });
 </script>
 

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGinecologiaIncapacidadesTable extends Migration
+class CreateGinecologiaMedicamentosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,11 @@ class CreateGinecologiaIncapacidadesTable extends Migration
      */
     public function up()
     {
-        Schema::create('ginecologia_incapacidades', function (Blueprint $table) {
+        Schema::create('ginecologia_medicamentos', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('historia_ginecologica_id')->unsigned(); $table->foreign('historia_ginecologica_id')->references('id')->on('historia_ginecologicas')->onDelete('restrict');
-            $table->date('fechainicial');
-            $table->date('fechafinal');
-            $table->text('observacion');
+            $table->string('descripcion');
+            $table->string('dosis');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -31,6 +30,6 @@ class CreateGinecologiaIncapacidadesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ginecologia_incapacidades');
+        Schema::dropIfExists('ginecologia_medicamentos');
     }
 }

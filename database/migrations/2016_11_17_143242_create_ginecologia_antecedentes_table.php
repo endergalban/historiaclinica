@@ -15,7 +15,7 @@ class CreateGinecologiaAntecedentesTable extends Migration
     {
         Schema::create('ginecologia_antecedentes', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('historia_ginecologica_id')->unsigned(); $table->foreign('historia_ginecologica_id')->references('id')->on('historia_ginecologicas')->onDelete('restrict');
+            $table->integer('medico_paciente_id')->unsigned(); $table->foreign('medico_paciente_id')->references('id')->on('medico_pacientes')->onDelete('restrict');
             $table->text('alergias');
             $table->text('ingresos');
             $table->text('traumatismos');
@@ -25,6 +25,7 @@ class CreateGinecologiaAntecedentesTable extends Migration
             $table->boolean('dm');
             $table->text('otros');
             $table->text('habitos');
+            $table->text('situacion');
             $table->text('familiares');
             $table->softDeletes();
             $table->timestamps();

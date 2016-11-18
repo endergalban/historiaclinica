@@ -13,7 +13,7 @@ class Ginecologia_diagnostico extends Model
 
     protected $fillable = [
 		'historia_ginecologica_id','tipo_diagnostico_id','concepto',
-	]
+	];
 
 	protected $dates = ['deleted_at'];
 

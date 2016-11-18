@@ -241,7 +241,7 @@ class ReportsController extends Controller
     	$condicion='';
     	$observacion='';
 
-    	$historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id])->with('arl')->with('afp')->with('empresa')->with('medico_paciente.paciente.user.municipio')->with('medico_paciente.medico.user')->with('ocupacional_actual')->with('condicion_diagnostico')->with('tipo_examen')->with('examen_fisico.lateralidad')->first();
+    	$historia_ocupacional = Historia_ocupacional::where('id',$historia_ocupacional_id)->with('arl')->with('afp')->with('empresa')->with('medico_paciente.paciente.user.municipio')->with('medico_paciente.medico.user')->with('ocupacional_actual')->with('condicion_diagnostico')->with('tipo_examen')->with('examen_fisico.lateralidad')->first();
 		if(!is_null($historia_ocupacional))
 		{
 			$dia=utf8_decode($historia_ocupacional->created_at->format('d'));
@@ -253,9 +253,12 @@ class ReportsController extends Controller
 			$anion=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->fechanacimiento->format('Y'));
 			$genero=$historia_ocupacional->medico_paciente->paciente->user->genero;
 			$estadocivil=$historia_ocupacional->medico_paciente->paciente->user->estadocivil;
-			$escolaridad_query=Escolaridad::findOrFail($historia_ocupacional->escolaridad_id);$escolaridad=$escolaridad_query->descripcion;
-			$query_turno = Turno::findOrFail($historia_ocupacional->ocupacional_actual->turno_id);if(!is_null($query_turno)){ $turno=$query_turno->descripcion;}else{$turno='N/A';}
-			$query_actividad = Actividad::findOrFail($historia_ocupacional->ocupacional_actual->actividad_id);if(!is_null($query_actividad)){ $actividad=$query_actividad->descripcion;}else{$actividad='N/A';}
+			$escolaridad_query=Escolaridad::where('id',$historia_ocupacional->escolaridad_id)->first();
+			$escolaridad=$escolaridad_query->descripcion;
+			$query_turno = Turno::where('id',$historia_ocupacional->ocupacional_actual->turno_id)->first();
+			if(!is_null($query_turno)){ $turno=$query_turno->descripcion;}else{$turno='N/A';}
+			$query_actividad = Actividad::where('id',$historia_ocupacional->ocupacional_actual->actividad_id)->first();
+			if(!is_null($query_actividad)){ $actividad=$query_actividad->descripcion;}else{$actividad='N/A';}
 			$trabajador=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->primerapellido.' '.$historia_ocupacional->medico_paciente->paciente->user->segundoapellido.' '.$historia_ocupacional->medico_paciente->paciente->user->primernombre.' '.$historia_ocupacional->medico_paciente->paciente->user->segundonombre);
 			$direccion=$historia_ocupacional->medico_paciente->paciente->user->direccion;
 			$telefono=$historia_ocupacional->medico_paciente->paciente->user->telefono;
@@ -264,7 +267,8 @@ class ReportsController extends Controller
 			$cargo=utf8_decode($historia_ocupacional->ocupacional_actual->cargoactual);
 			$edad=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->fechanacimiento->diff(Carbon::now())->format('%y'));
 			$firmatrabajador=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->firma);
-			$query_eps = Empresa::findOrFail($historia_ocupacional->empresa_id);if(!is_null($query_eps)){ $eps=utf8_decode($query_eps->descripcion);}else{$eps='N/A';}
+			$query_eps = Empresa::where('id',$historia_ocupacional->empresa_id)->first();
+			if(!is_null($query_eps)){ $eps=utf8_decode($query_eps->descripcion);}else{$eps='N/A';}
 
 			$afp=utf8_decode($historia_ocupacional->afp->descripcion);
 			$arl=utf8_decode($historia_ocupacional->arl->descripcion);
@@ -275,7 +279,7 @@ class ReportsController extends Controller
 			if($municipio==0){
 				$municipio='N/A';
 			}else{
-				$municipio_residencia = municipio::findOrFail($municipio);
+				$municipio_residencia = municipio::where('id',$municipio)->first();
 				if(!is_null($municipio_residencia))
 				{
 					$municipio=$municipio_residencia->descripcion;
@@ -1194,7 +1198,7 @@ class ReportsController extends Controller
 	    $recomendaciones='';
 
 
-		$historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id])->with('arl')->with('afp')->with('empresa')->with('medico_paciente.paciente.user')->with('medico_paciente.medico.user')->with('ocupacional_actual')->with('condicion_diagnostico.tipo_condicion')->with('tipo_examen')->with('examen_fisico.lateralidad')->first();
+		$historia_ocupacional = Historia_ocupacional::where('id',$historia_ocupacional_id)->with('arl')->with('afp')->with('empresa')->with('medico_paciente.paciente.user')->with('medico_paciente.medico.user')->with('ocupacional_actual')->with('condicion_diagnostico.tipo_condicion')->with('tipo_examen')->with('examen_fisico.lateralidad')->first();
 		if(!is_null($historia_ocupacional))
 		{
 
@@ -1207,7 +1211,8 @@ class ReportsController extends Controller
 			$cargo=utf8_decode($historia_ocupacional->ocupacional_actual->cargoactual);
 			$edad=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->fechanacimiento->diff(Carbon::now())->format('%y años'));
 			$firmatrabajador=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->firma);
-			$query_eps = Empresa::findOrFail($historia_ocupacional->empresa_id);if(!is_null($query_eps)){ $eps=utf8_decode($query_eps->descripcion);}else{$eps='N/A';}
+			$query_eps = Empresa::where('id',$historia_ocupacional->empresa_id)->first();
+			if(!is_null($query_eps)){ $eps=utf8_decode($query_eps->descripcion);}else{$eps='N/A';}
 
 			$afp=utf8_decode($historia_ocupacional->afp->descripcion);
 			$arl=utf8_decode($historia_ocupacional->arl->descripcion);
@@ -1216,7 +1221,7 @@ class ReportsController extends Controller
 			if($municipio==0){
 				$municipio='N/A';
 			}else{
-				$municipio_residencia = municipio::findOrFail($municipio);
+				$municipio_residencia = municipio::where('id',$municipio)->first();
 				if(!is_null($municipio_residencia))
 				{
 					$municipio=utf8_decode($municipio_residencia->descripcion);
@@ -1439,7 +1444,7 @@ class ReportsController extends Controller
 	    $firmamedico='';
 	    $banner='';
 
-		$historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id])->with('arl')->with('afp')->with('empresa')->with('medico_paciente.paciente.user')->with('medico_paciente.medico.user')->with('ocupacional_actual')->with('examen_fisico.lateralidad')->with('condicion_altura.tipo_condicion')->first();
+		$historia_ocupacional = Historia_ocupacional::where('id',$historia_ocupacional_id)->with('arl')->with('afp')->with('empresa')->with('medico_paciente.paciente.user')->with('medico_paciente.medico.user')->with('ocupacional_actual')->with('examen_fisico.lateralidad')->with('condicion_altura.tipo_condicion')->first();
 		if(!is_null($historia_ocupacional))
 		{
 
@@ -1452,14 +1457,14 @@ class ReportsController extends Controller
 			$cargo=utf8_decode($historia_ocupacional->ocupacional_actual->cargoactual);
 			$edad=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->fechanacimiento->diff(Carbon::now())->format('%y años'));
 			$firmatrabajador=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->firma);
-			$query_eps = Empresa::findOrFail($historia_ocupacional->empresa_id);if(!is_null($query_eps)){ $eps=utf8_decode($query_eps->descripcion);}else{$eps='N/A';}
+			$query_eps = Empresa::where('id',$historia_ocupacional->empresa_id)->first();if(!is_null($query_eps)){ $eps=utf8_decode($query_eps->descripcion);}else{$eps='N/A';}
 			$afp=utf8_decode($historia_ocupacional->afp->descripcion);
 			$arl=utf8_decode($historia_ocupacional->arl->descripcion);
 			$municipio=$historia_ocupacional->medico_paciente->paciente->municipio_id;
 			if($municipio==0){
 				$municipio='N/A';
 			}else{
-				$municipio_residencia = municipio::findOrFail($municipio);
+				$municipio_residencia = municipio::where('id',$municipio)->first();;
 				if(!is_null($municipio_residencia))
 				{
 					$municipio=utf8_decode($municipio_residencia->descripcion);
@@ -1658,7 +1663,7 @@ class ReportsController extends Controller
 	    $recomendaciones='';
 
 
-		$historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id])->with('arl')->with('afp')->with('empresa')->with('medico_paciente.paciente.user')->with('medico_paciente.medico.user')->with('ocupacional_actual')->with('condicion_diagnostico')->with('tipo_examen')->with('examen_fisico.lateralidad')->first();
+		$historia_ocupacional = Historia_ocupacional::where('id',$historia_ocupacional_id)->with('arl')->with('afp')->with('empresa')->with('medico_paciente.paciente.user')->with('medico_paciente.medico.user')->with('ocupacional_actual')->with('condicion_diagnostico')->with('tipo_examen')->with('examen_fisico.lateralidad')->first();
 		if(!is_null($historia_ocupacional))
 		{
 
@@ -1675,7 +1680,8 @@ class ReportsController extends Controller
 			$cargo=utf8_decode($historia_ocupacional->ocupacional_actual->cargoactual);
 			$edad=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->fechanacimiento->diff(Carbon::now())->format('%y años'));
 			$firmatrabajador=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->firma);
-			$query_eps = Empresa::findOrFail($historia_ocupacional->empresa_id);if(!is_null($query_eps)){ $eps=utf8_decode($query_eps->descripcion);}else{$eps='N/A';}
+			$query_eps = Empresa::where('id',$historia_ocupacional->empresa_id)->first();
+			if(!is_null($query_eps)){ $eps=utf8_decode($query_eps->descripcion);}else{$eps='N/A';}
 
 			$afp=utf8_decode($historia_ocupacional->afp->descripcion);
 			$arl=utf8_decode($historia_ocupacional->arl->descripcion);
@@ -1684,7 +1690,7 @@ class ReportsController extends Controller
 			if($municipio==0){
 				$municipio='N/A';
 			}else{
-				$municipio_residencia = municipio::findOrFail($municipio);
+				$municipio_residencia = municipio::where('id',$municipio)->first();
 				if(!is_null($municipio_residencia))
 				{
 					$municipio=utf8_decode($municipio_residencia->descripcion);
@@ -1920,7 +1926,7 @@ class ReportsController extends Controller
 	    $recomendaciones='';
 
 
-		$historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id])->with('arl')->with('afp')->with('empresa')->with('medico_paciente.paciente.user')->with('medico_paciente.medico.user')->with('ocupacional_actual')->with('condicion_diagnostico.tipo_condicion')->with('tipo_examen')->with('examen_fisico.lateralidad')->first();
+		$historia_ocupacional = Historia_ocupacional::where('id',$historia_ocupacional_id)->with('arl')->with('afp')->with('empresa')->with('medico_paciente.paciente.user')->with('medico_paciente.medico.user')->with('ocupacional_actual')->with('condicion_diagnostico.tipo_condicion')->with('tipo_examen')->with('examen_fisico.lateralidad')->first();
 		if(!is_null($historia_ocupacional))
 		{
 
@@ -1933,7 +1939,7 @@ class ReportsController extends Controller
 			$cargo=utf8_decode($historia_ocupacional->ocupacional_actual->cargoactual);
 			$edad=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->fechanacimiento->diff(Carbon::now())->format('%y años'));
 			$firmatrabajador=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->firma);
-			$query_eps = Empresa::findOrFail($historia_ocupacional->empresa_id);if(!is_null($query_eps)){ $eps=utf8_decode($query_eps->descripcion);}else{$eps='N/A';}
+			$query_eps = Empresa::where('id',$historia_ocupacional->empresa_id)->first();if(!is_null($query_eps)){ $eps=utf8_decode($query_eps->descripcion);}else{$eps='N/A';}
 
 			$afp=utf8_decode($historia_ocupacional->afp->descripcion);
 			$arl=utf8_decode($historia_ocupacional->arl->descripcion);
@@ -1942,7 +1948,7 @@ class ReportsController extends Controller
 			if($municipio==0){
 				$municipio='N/A';
 			}else{
-				$municipio_residencia = municipio::findOrFail($municipio);
+				$municipio_residencia = municipio::where('id',$municipio)->first();	
 				if(!is_null($municipio_residencia))
 				{
 					$municipio=utf8_decode($municipio_residencia->descripcion);

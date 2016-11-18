@@ -12,12 +12,12 @@ class Ginecologia_antecedente extends Model
     protected $table='ginecologia_antecedentes';
 
     protected $fillable = [
-		'historia_ginecologica_id', 'alergias', 'ingresos', 'traumatismos', 'tratamientos', 'hta', 'displidemia', 'dm', 'otros', 'habitos', 'familiares',
-		]
+		'medico_paciente_id', 'alergias', 'ingresos', 'traumatismos', 'tratamientos', 'hta', 'displidemia', 'dm', 'otros', 'habitos', 'familiares','situacion',
+		];
 	protected $dates = ['deleted_at'];
 
-	public function historia_ginecologica()
+	public function medico_paciente()
     {
-        return $this->belongsTo('App\Historia_ginecologica','historia_ginecologica_id');
+        return $this->belongsTo('App\Medico_paciente','medico_paciente_id');
     }
 }

@@ -13,7 +13,7 @@ class Ginecologia_exploracion_inicial extends Model
 
     protected $fillable = [
 		'historia_ginecologica_id','semanaamenorrea', 'sacogestacional', 'formasaco', 'visualizacionembrion', 'numeroembriones', 'actividadmotora', 'actividadcardiaca', 'longitud', 'corionanterior', 'corionposterior', 'corioncervix', 'ecocardiagrama', 'observaciones',
-	]
+	];
 
 	protected $dates = ['deleted_at'];
 

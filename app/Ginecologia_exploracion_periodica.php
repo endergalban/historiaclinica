@@ -13,7 +13,7 @@ class Ginecologia_exploracion_periodica extends Model
 
     protected $fillable = [
 		'historia_ginecologica_id','ginecologia_exploracion_periodo_id','peso','semanaamenorrea', 'situacionfetal', 'dorso', 'dbp', 'lf', 'pabdominal', 'actividadmotora', 'actividadcardiaca', 'actividadrespiratoria', 'semanaecografia', 'corionanterior', 'localizacion', 'madurez', 'liquidovolumen', 'liquidoobservaciones', 
-	]
+	];
 
 	protected $dates = ['deleted_at'];
 

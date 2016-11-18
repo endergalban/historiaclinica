@@ -478,10 +478,12 @@
 
      $(function () {
       
-      @if(Route::currentRouteName() != 'historias.ocupacional.diagnosticos')
+      @if((Route::currentRouteName() == 'historias.ocupacional.diagnosticos') || (Route::currentRouteName() == 'historias.ginecologica.diagnosticos'))
+        //No Initialize Select2 Elements
+      @else
         //Initialize Select2 Elements
         $(".select2").select2();
-        @endif
+      @endif
         $.fn.modal.Constructor.prototype.enforceFocus = function() {};
          //Date picker
        $('.datepicker').datepicker({

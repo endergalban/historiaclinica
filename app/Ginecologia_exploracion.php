@@ -9,11 +9,11 @@ class Ginecologia_exploracion extends Model
 {
 	use SoftDeletes;
 	
-    protected $table='historia_ginecologicas';
+    protected $table='ginecologia_exploraciones';
 
     protected $fillable = [
-		'historia_ginecologica_id','peso','talla','imc','ta','fc','fr','otros','aspectogeneral',
-	]
+		'historia_ginecologica_id','peso','talla','pa','ta','fc','fr','otros','aspectogeneral',
+	];
 
 	protected $dates = ['deleted_at'];
 

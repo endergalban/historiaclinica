@@ -5,14 +5,14 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Historia_ginecologia extends Model
+class Historia_ginecologica extends Model
 {
     use SoftDeletes;
 	
     protected $table='historia_ginecologicas';
 
     protected $fillable = [
-        'medico_paciente_id','motivo_consulta', 'enfermedad_actual', 'pruebas', 'analisis', 'medicamentos', 'procedimientos', 'recomendaciones', 
+        'medico_paciente_id','motivo_consulta', 'enfermedad_actual', 'informe', 'analisis', 'procedimientos', 'recomendaciones', 
         ];
     protected $dates = ['deleted_at'];
 

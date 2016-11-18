@@ -12,12 +12,12 @@ class Ginecologia_ginecobstetrico extends Model
     protected $table='ginecologia_ginecobstetricos';
 
     protected $fillable = [
-		'historia_ginecologica_id','gestante', 'fum', 'seguridad', 'cesareas', 'partos', 'abortos', 'gestaciones', 'fpp',
-		 ]
+		'medico_paciente_id','gestante', 'fum', 'seguridad', 'cesarias', 'partos', 'abortos', 'gestaciones', 'fpp',
+		 ];
 	protected $dates = ['deleted_at','fum','fpp'];
 
-	public function historia_ginecologica()
+	public function medico_paciente()
     {
-        return $this->belongsTo('App\Historia_ginecologica','historia_ginecologica_id');
+        return $this->belongsTo('App\Medico_paciente','medico_paciente_id');
     }
 }

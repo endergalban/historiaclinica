@@ -15,11 +15,11 @@ class CreateGinecologiaGinecobstetricosTable extends Migration
     {
         Schema::create('ginecologia_ginecobstetricos', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('historia_ginecologica_id')->unsigned(); $table->foreign('historia_ginecologica_id')->references('id')->on('historia_ginecologicas')->onDelete('restrict');
+            $table->integer('medico_paciente_id')->unsigned(); $table->foreign('medico_paciente_id')->references('id')->on('medico_pacientes')->onDelete('restrict');
             $table->boolean('gestante');
             $table->date('fum');
             $table->boolean('seguridad');
-            $table->integer('cesareas');
+            $table->integer('cesarias');
             $table->integer('partos');
             $table->integer('abortos');
             $table->integer('gestaciones');

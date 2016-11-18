@@ -37,6 +37,21 @@ class Medico_paciente extends Model
     {
         return $this->hasMany('App\Citas','medico_paciente_id');
     }
+
+    public function historia_ginecologicas()
+    {
+        return $this->hasMany('App\Historia_ginecologica','medico_paciente_id');
+    }
+
+    public function ginecologia_ginecobstetrico()
+    {
+        return $this->hasMany('App\Ginecologia_ginecobstetrico','medico_paciente_id');
+    }
+
+    public function ginecologia_antecedentes()
+    {
+        return $this->hasMany('App\Ginecologia_antecedentes','medico_paciente_id');
+    }
     
 
 	public function scopeOfType($query, $type){
