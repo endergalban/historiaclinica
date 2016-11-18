@@ -151,7 +151,7 @@ class HistoriasGinecologicaController extends Controller
             }
             $arrayfiles[]=['nombre'=>$nombre,'size'=>$this->formatBytes($size),'tipo'=> $tipo,'ruta'=> $file];
         }
-        return  view('historias.historia.ginecologica.documentos')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ginecologica'=>$historia_ginecologica,'files' => $arrayfiles ]);
+        return  view('historias.historia.ginecologica.documentos')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ginecologica'=>$Historia_ginecologica,'files' => $arrayfiles ]);
     }
     /**
      * .
