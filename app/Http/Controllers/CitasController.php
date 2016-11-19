@@ -11,6 +11,7 @@ use App\Paciente;
 use App\Medico;
 use App\Especialidad;
 use App\Medico_paciente;
+use App\Asistente;
 use Auth;
 
 class CitasController extends Controller
@@ -19,62 +20,46 @@ class CitasController extends Controller
     {
 
         
-        $querypacientes=Paciente::with('user')->get();
+        $querypacientes=Paciente::has('user')->with('user')->get();
         $pacientes = array();
         foreach ($querypacientes as $paciente) {
             $pacientes[$paciente->id]=$paciente->user->numerodocumento.' - '.$paciente->user->primernombre.' '.$paciente->user->primerapellido;
         }
         $users=User::ofType($request->search)->has('paciente')->orderby('numerodocumento','ASC')->paginate(15);
         $role = User::find(Auth::user()->id)->roles()->pluck('descripcion');
-
+        $medicos=array();
         if($role->contains('administrador')){
-          
-            $querymedicos=User::has('medico')->with('medico');
-            if($querymedicos->count()==0){
+           
+            $query_medicos=User::has('medico')->with('medico.especialidades')->get();
 
-                flash('No existen médicos registrados en el sistema!', 'danger');
-                return redirect()->route('home');
-               
-            }else{
-                foreach ($querymedicos->get() as $medico) {
-                    $medicos[$medico->medico->id]=$medico->tipodocumento.' '.$medico->numerodocumento.' '.$medico->primerapellido.' '.$medico->primernombre;
-                }
-            }
         }elseif($role->contains('medico')){
-            $medico=Medico::has('user')->where('user_id',Auth::user()->id)->first();
-            $medicos=$medico->id;
+           
+           $query_medicos=User::has('medico')->where('id',Auth::user()->id)->with('medico.especialidades')->get(); 
 
         }elseif($role->contains('asistente')){
-
             $Asistente=Asistente::where(['user_id'=>Auth::user()->id])->first();
-            $querymedicos = Asistente::find($Asistente->id)->medicos();
-            if($querymedicos->count()==0){
-                flash('No estas asignado(a) a ningún médico dentro del sistema!', 'danger');
-                return redirect()->route('home');
-
-            }else{
-                foreach ($querymedicos->with('user')->get() as $medico) {
-                    $medicos[$medico->id]=$medico->user->tipodocumento.' '.$medico->user->numerodocumento
-                    .' '.$medico->user->primerapellido.' '.$medico->user->primernombre;
-                }
-            }
+            $asistente_id = $Asistente->id;
+            $query_medicos = User::wherehas('medico.asistentes',function ($query) use ($asistente_id){
+                $query->where([ 'asistente_id' => $asistente_id]);
+            })->with('medico.especialidades')->get();
          
         }else{
             flash('No tiene permiso de entrar a esta área, por favor contacte al administrador!', 'danger');
             return redirect()->route('home');
         }
-       //$especialidades=Especialidad::where('especialidad_id',$medicos['id'])->orderBy('descripcion', 'ASC')->pluck('descripcion', 'id')->prepend('Seleccione una opción', 0);
-       //$especialidades=['0'=>'Seleccione una opción'];
-        
+        $medicos=array();
+        $medicos[0]='Seleccione el Médico';
 
-        $queryespecialidades=Medico::with('especialidades')->where('id',$querymedicos->first()->medico->id);
-          $i=0;
-        foreach ($queryespecialidades->get() as $especialidad) {
-                    $especialidades[$especialidad->especialidades[$i]->id]=$especialidad->especialidades[$i]->descripcion;
-                    $i++;
-                }
-       return view('citas.index')->with(['pacientes' => $pacientes, 'users'=>$users,'medicos'=>$medicos,'especialidades'=>$especialidades]);
-       }
+        foreach ($query_medicos as $medico ) {
+            
+            $medicos[$medico->medico->id]=$medico->primernombre.' '.$medico->primerapellido;
+
+        }
+        
+         $especialidades[0]='Seleccione la Especialidad';
+       
+        return view('citas.index')->with(['pacientes' => $pacientes, 'users'=>$users,'medicos'=>$medicos,'especialidades'=>$especialidades]);
+   }
 
     public function create(){
 

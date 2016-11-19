@@ -66,10 +66,15 @@
                        
                                              
                         <td class="text-center">
-                            <a href="{{ route('historias.ginecologica.edit',[$paciente->id,$historia->id]) }}" ><span class="label label-warning">Editar</span></a>
-                            <a href="{{ route('historias.ginecologica.documentos',[$paciente->id,$historia->id]) }}" ><span class="label bg-purple">Documentos</span></a>
-                            <a data-toggle="modal" data-url="{{ route('historias.destroy_ginecologica',[$paciente->id,$medico->id , $historia->id ]) }}" class="open-modal" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
-
+                            @if($historia->activa==1 and  $acciones==true))
+                                <a href="{{ route('historias.ginecologica.edit',[$paciente->id,$historia->id]) }}" ><span class="label label-warning">Editar</span></a>
+                                <a href="{{ route('historias.ginecologica.documentos',[$paciente->id,$historia->id]) }}" ><span class="label bg-purple">Documentos</span></a>
+                                <a data-toggle="modal" data-url="{{ route('historias.destroy_ginecologica',[$paciente->id,$medico->id , $historia->id ]) }}" class="open-modal" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
+                            @else
+                                <a href="#" ><span class="label label-default">Editar</span></a>
+                                <a href="#" ><span class="label label-default">Documentos</span></a>
+                                <a href="#" ><span class="label label-default">Eliminar</span></a>
+                            @endif
                         </td>
                          <td class="text-right"> 
                        
@@ -81,7 +86,9 @@
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
-            <a class="btn btn-default btn-sm pull-right open-modal" data-toggle="modal" data-url="{{ route('historias.ginecologica.create',[$paciente->id,$medico_paciente->id]) }}" href="#myAlert" >Crear Nueva Historia Ginecológica</a>
+            @if($acciones==true)
+                <a class="btn btn-default btn-sm pull-right open-modal" data-toggle="modal" data-url="{{ route('historias.ginecologica.create',[$paciente->id,$medico_paciente->id]) }}" href="#myAlert" >Crear Nueva Historia Ginecológica</a>
+            @endif
              Total: {{ $historia_ginecologicas->count() }}
         </div>
     </div>

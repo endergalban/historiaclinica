@@ -68,10 +68,15 @@
                         <td>{{ $historia->tipo_examen->descripcion }}</td>
                                              
                         <td class="text-center">
-                            <a href="{{ route('historias.ocupacional.edit',[$paciente->id,$historia->id]) }}" ><span class="label label-warning">Editar</span></a>
-                            <a href="{{ route('historias.ocupacional.documentos',[$paciente->id,$historia->id]) }}" ><span class="label bg-purple">Documentos</span></a>
-                            <a data-toggle="modal" data-url="{{ route('historias.destroy_ocupacional',[$paciente->id,$medico->id , $historia->id ]) }}" class="open-modal" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
-
+                            @if($historia->activa==1 and $acciones==true)
+                                <a href="{{ route('historias.ocupacional.edit',[$paciente->id,$historia->id]) }}" ><span class="label label-warning">Editar</span></a>
+                                 <a href="{{ route('historias.ocupacional.documentos',[$paciente->id,$historia->id]) }}" ><span class="label bg-purple">Documentos</span></a>
+                                 <a data-toggle="modal" data-url="{{ route('historias.destroy_ocupacional',[$paciente->id,$medico->id , $historia->id ]) }}" class="open-modal" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
+                            @else
+                                <a href="#" ><span class="label label-default">Editar</span></a>
+                                <a href="#" ><span class="label label-default">Documentos</span></a>
+                                <a href="#" ><span class="label label-default">Eliminar</span></a>
+                            @endif
                         </td>
                          <td class="text-right"> 
                             <a href="{{ route('reporte.consentimiento_informado',[$historia->id]) }}" target="_BLANK"><span class="label label-primary" >Consentimiento</span></a>
@@ -87,7 +92,9 @@
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
-            <a class="btn btn-default btn-sm pull-right open-modal" data-toggle="modal" data-url="{{ route('historias.ocupacional.create',[$paciente->id,$medico_paciente->id]) }}" href="#myAlert" >Crear Nueva Historia Ocupacional</a>
+            @if($acciones==true)
+                <a class="btn btn-default btn-sm pull-right open-modal" data-toggle="modal" data-url="{{ route('historias.ocupacional.create',[$paciente->id,$medico_paciente->id]) }}" href="#myAlert" >Crear Nueva Historia Ocupacional</a>
+            @endif
              Total: {{ $historia_ocupacionales->count() }}
         </div>
     </div>

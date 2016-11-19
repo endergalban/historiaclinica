@@ -13,7 +13,15 @@ class TipoCondicionesTableSeeder extends Seeder
      */
     public function run()
     {
-
+    	
+		$Tipo_examen = Tipo_examen::where(['descripcion'=>'N/A'])->first();
+    	if(!is_null($Tipo_examen))
+    	{
+    		$Tipo_condicion= New Tipo_condicion;
+	    	$Tipo_condicion->descripcion = 'N/A';
+	        $Tipo_condicion->tipo_examen()->associate($Tipo_examen);
+			$Tipo_condicion->save();
+    	}
     	$Tipo_examen = Tipo_examen::where(['descripcion'=>'Ingreso'])->first();
     	if(!is_null($Tipo_examen))
     	{

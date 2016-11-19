@@ -30,10 +30,13 @@ class HistoriasGinecologicaController extends Controller
     public function index($paciente_id,$medico_paciente_id)
     {
     	$medico_paciente=Medico_paciente::where('id',$medico_paciente_id)->first();
-      	$historia_ginecologicas=Historia_ginecologica::where('medico_paciente_id',$medico_paciente->id)->get();
+      	$historia_ginecologicas=Historia_ginecologica::where('medico_paciente_id',$medico_paciente->id)->orderby('id','DESC')->get();
 		$paciente=Paciente::where('id',$medico_paciente->paciente_id)->with('user')->first();
 		$medico=Medico::where('id',$medico_paciente->medico_id)->with('user')->first();
-        return view('historias.historia.ginecologica.index')->with(['medico' => $medico,'paciente' => $paciente,'medico_paciente' => $medico_paciente,'historia_ginecologicas' => $historia_ginecologicas]);
+        if(Auth::user()->roles()->get()->whereIn('id',[1,2])->count()==0)
+        {$acciones=false;}else{$acciones=true;}    
+
+        return view('historias.historia.ginecologica.index')->with(['medico' => $medico,'paciente' => $paciente,'medico_paciente' => $medico_paciente,'historia_ginecologicas' => $historia_ginecologicas,'acciones'=>$acciones]);
     }
 
       /**
@@ -76,7 +79,7 @@ class HistoriasGinecologicaController extends Controller
 			$Ginecologia_ginecobstetrico->fpp=Carbon::now();
 			$Ginecologia_ginecobstetrico->save();
 		}
-
+        Historia_ginecologica::where('medico_paciente_id', '=', $medico_paciente_id)->update(['activa' => 0]);
         $Historia_ginecologica= new Historia_ginecologica;
         $Historia_ginecologica->motivo_consulta='';
         $Historia_ginecologica->enfermedad_actual='';
@@ -85,6 +88,7 @@ class HistoriasGinecologicaController extends Controller
         $Historia_ginecologica->procedimientos='';
         $Historia_ginecologica->recomendaciones='';
         $Historia_ginecologica->medico_paciente()->associate($medico_paciente);
+        $Historia_ginecologica->activa=1;
         $Historia_ginecologica->save();
 
         $Ginecologia_exploracion=new Ginecologia_exploracion;
@@ -109,7 +113,10 @@ class HistoriasGinecologicaController extends Controller
      */
     public function destroy_ginecologica($paciente_id,$medico_id,$historia_ginecologica_id)
     {
-        $Historia_ginecologica = Historia_ginecologica::where('id',$historia_ginecologica_id)->with('medico_paciente')->first();
+        $Historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
+        if(is_null($Historia_ginecologica)){
+            abort(404);
+        }
         $Historia_ginecologica->delete();
 
         flash('La historia ginecológica se ha eliminado de forma exitosa!', 'danger');
@@ -125,7 +132,10 @@ class HistoriasGinecologicaController extends Controller
      */
     public function ginecologica_documentos($paciente_id,$historia_ginecologica_id)
     {
-        $Historia_ginecologica = Historia_ginecologica::where(['id' => $historia_ginecologica_id] )->with('medico_paciente')->first();
+        $Historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
+        if(is_null($Historia_ginecologica)){
+            abort(404);
+        }
         $paciente = Paciente::where(['id'=> $Historia_ginecologica->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $Historia_ginecologica->medico_paciente->medico_id])->with('user')->first();
        
@@ -186,7 +196,10 @@ class HistoriasGinecologicaController extends Controller
      */
     public function ginecologica_documentos_destroy($paciente_id,$historia_ginecologica_id,$documento)
     {
-        $Historia_ginecologica = Historia_ginecologica::where(['id' => $historia_ginecologica_id] )->with('medico_paciente')->first();
+        $Historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
+        if(is_null($Historia_ginecologica)){
+            abort(404);
+        }
         Storage::disk('ginecologia')->delete(Crypt::decrypt($documento));
         flash('El registro se ha eliminado de forma exitosa!', 'danger');
         return redirect()->route('historias.ginecologica.documentos',[$Historia_ginecologica->medico_paciente->paciente->id,$Historia_ginecologica->id]);
@@ -201,7 +214,10 @@ class HistoriasGinecologicaController extends Controller
      */
     public function ginecologica_antecedentes($paciente_id,$historia_ginecologica_id)
     {
-        $Historia_ginecologica = Historia_ginecologica::where(['id' => $historia_ginecologica_id] )->with('medico_paciente')->first();
+        $Historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
+        if(is_null($Historia_ginecologica)){
+            abort(404);
+        }
         $paciente = Paciente::where(['id'=> $Historia_ginecologica->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $Historia_ginecologica->medico_paciente->medico_id])->with('user')->first();
 
@@ -308,7 +324,10 @@ class HistoriasGinecologicaController extends Controller
      */
     public function ginecologica_ginecobstetrica($paciente_id,$historia_ginecologica_id)
     {
-        $Historia_ginecologica = Historia_ginecologica::where(['id' => $historia_ginecologica_id] )->with('medico_paciente')->first();
+        $Historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
+        if(is_null($Historia_ginecologica)){
+            abort(404);
+        }
         $paciente = Paciente::where(['id'=> $Historia_ginecologica->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $Historia_ginecologica->medico_paciente->medico_id])->with('user')->first();
 
@@ -401,7 +420,10 @@ class HistoriasGinecologicaController extends Controller
      */
     public function ginecologica_edit($paciente_id,$historia_ginecologica_id)
     {
-        $Historia_ginecologica = Historia_ginecologica::where(['id' => $historia_ginecologica_id] )->with('medico_paciente')->first();
+        $Historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
+        if(is_null($Historia_ginecologica)){
+            abort(404);
+        }
         $paciente = Paciente::where(['id'=> $Historia_ginecologica->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $Historia_ginecologica->medico_paciente->medico_id])->with('user')->first();
 
@@ -455,7 +477,10 @@ class HistoriasGinecologicaController extends Controller
      */
     public function ginecologica_fisicos($paciente_id,$historia_ginecologica_id)
     {
-        $historia_ginecologica = Historia_ginecologica::where(['id' => $historia_ginecologica_id] )->with('medico_paciente')->first();
+        $historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
+        if(is_null($historia_ginecologica)){
+            abort(404);
+        }
         $paciente = Paciente::where(['id'=> $historia_ginecologica->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $historia_ginecologica->medico_paciente->medico_id])->with('user')->first();
         $datos=array();
@@ -545,7 +570,10 @@ class HistoriasGinecologicaController extends Controller
      */
     public function ginecologica_diagnosticos($paciente_id,$historia_ginecologica_id)
     {
-        $historia_ginecologica = Historia_ginecologica::where(['id' => $historia_ginecologica_id] )->with('medico_paciente')->first();
+        $historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
+        if(is_null($historia_ginecologica)){
+            abort(404);
+        }
         $paciente = Paciente::where(['id'=> $historia_ginecologica->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $historia_ginecologica->medico_paciente->medico_id])->with('user')->first();
 
@@ -597,7 +625,10 @@ class HistoriasGinecologicaController extends Controller
      */
     public function ginecologica_diagnosticos_destroy($paciente_id,$historia_ginecologica_id,$diagnostico_id)
     {
-        $historia_ginecologica = Historia_ginecologica::where(['id' => $historia_ginecologica_id] )->with('medico_paciente')->first();
+        $historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
+        if(is_null($historia_ginecologica)){
+            abort(404);
+        }
         $Ginecologia_diagnostico = Ginecologia_diagnostico::findOrFail($diagnostico_id);
         $Ginecologia_diagnostico->delete();
         flash('El registro se ha eliminado de forma exitosa!', 'danger');
@@ -613,7 +644,10 @@ class HistoriasGinecologicaController extends Controller
      */
     public function ginecologica_procedimientos($paciente_id,$historia_ginecologica_id)
     {
-        $historia_ginecologica = Historia_ginecologica::where(['id' => $historia_ginecologica_id] )->with('medico_paciente')->first();
+        $historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
+        if(is_null($historia_ginecologica)){
+            abort(404);
+        }
         $paciente = Paciente::where(['id'=> $historia_ginecologica->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $historia_ginecologica->medico_paciente->medico_id])->with('user')->first();
 
@@ -656,7 +690,10 @@ class HistoriasGinecologicaController extends Controller
      */
     public function ginecologica_recomendaciones($paciente_id,$historia_ginecologica_id)
     {
-        $historia_ginecologica = Historia_ginecologica::where(['id' => $historia_ginecologica_id] )->with('medico_paciente')->first();
+        $historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
+        if(is_null($historia_ginecologica)){
+            abort(404);
+        }
         $paciente = Paciente::where(['id'=> $historia_ginecologica->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $historia_ginecologica->medico_paciente->medico_id])->with('user')->first();
 
@@ -697,7 +734,10 @@ class HistoriasGinecologicaController extends Controller
      */
     public function ginecologica_incapacidad($paciente_id,$historia_ginecologica_id)
     {
-        $Historia_ginecologica = Historia_ginecologica::where(['id' => $historia_ginecologica_id] )->with('medico_paciente')->first();
+        $Historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
+        if(is_null($Historia_ginecologica)){
+            abort(404);
+        }
         $paciente = Paciente::where(['id'=> $Historia_ginecologica->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $Historia_ginecologica->medico_paciente->medico_id])->with('user')->first();
 

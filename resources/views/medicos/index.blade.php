@@ -45,7 +45,7 @@
 								@foreach( $users as $user )
 								<tr>
 									<td>{{ $user->tipodocumento.' '.$user->numerodocumento }}</td>
-									<td>{{ $user->primerapellido.' '.$user->primernombre }}</td>
+									<td>{{ $user->primernombre.' '.$user->primerapellido }}</td>
 									<td>{{ $user->email }}</td>
 									<td></td>
 									<td class="text-center">

@@ -44,7 +44,7 @@
 								@foreach( $users as $user )
 								<tr>
 									<td>{{ $user->tipodocumento.' '.$user->numerodocumento }}</td>
-									<td>{{ $user->primerapellido.' '.$user->primernombre }}</td>
+									<td>{{ $user->primernombre.' '.$user->primerapellido }}</td>
 									<td>{{ $user->email }}</td>
 									<td class="text-center">
 										<a href="{{ route('asistentes.show',$user->id) }}"><span class="label label-primary">Mostrar</span></a>

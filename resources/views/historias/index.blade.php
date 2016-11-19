@@ -3,7 +3,7 @@
 @section('content-header')
      <h1>
         Historias
-        <small>Registros almacenados</small>
+        <small>Pacientes almacenados</small>
       </h1>
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-home"></i> Escritorio</a></li>
@@ -14,16 +14,14 @@
 @section('content')
    <div class="row">
         <div class="col-xs-12">
+         @include('flash::message')
          	<div class="box">
+
          		 <div class="box-header">
 					{!! Form::open(['method' => 'GET','route' => ['historias.index'],'role' => 'form','class' => '']) !!}
 					<div class="box-tools ">
 						<div class="form-group col-md-4">
-						@if(is_array($medicos))
-							{!! Form::select('medico_id',$medicos,0,['class' => 'form-control select2','style' => 'width: 100%','data-placeholder' => 'Seleccione','id' => 'medico_id' ]) !!}
-						@else
-							{!! Form::hidden('medico_id',$medicos,['id'=>'medico_id']) !!}
-						@endif
+						
 						</div>
 						<div class="input-group input-group-sm pull-right" style="width: 250px;">
 						
@@ -37,16 +35,19 @@
 					</div>
 					{!! Form::close() !!}
 				</div>
+
 	            <!-- /.box-header -->
 	            <div class="box-body table-responsive">
-	           		@include('flash::message')
+	           	
 	              	<table id="example2" class="table table-bordered table-hover">
 				 		<thead>
 							<tr >
 								<th>Identificación</th>
 								<th>Nombre</th>
-								<th class="text-center">Fecha de Nacimiento</th>
-								<th class="text-center">Historia</th>
+								<th class="text-center">Edad</th>
+								<th class="text-center">Teléfono</th>
+								<th class="text-center">Email</th>
+								<th class="text-center">Seleccionar</th>
 							</tr>
 				   		</thead>
 						  	<tbody>
@@ -54,18 +55,12 @@
 
 								<tr>
 									<td>{{ $user->tipodocumento.' '.$user->numerodocumento }}</td>
-									<td>{{ $user->primerapellido.' '.$user->primernombre }}</td>
-									<td class="text-center">{{ date("d/m/Y", strtotime($user->fechanacimiento)) }}</td>
-						
-									<td class="text-left">
-									<a  data-url="{{ route('historias.historia',[$user->paciente->id,'ocupacional']) }}" class="open-modal2" href="#"><span class="label bg-navy">Ocupacional</span></a>
-									
-									<a  data-url="{{ route('historias.historia',[$user->paciente->id,'pediatria']) }}" class="open-modal2" href="#"><span class="label bg-teal">Pediatría</span></a>
-
-									@if( $user->genero=='Femenino')
-										<a data-url="{{ route('historias.historia',[$user->paciente->id,'ginecologica']) }}" class="open-modal2" href="#"><span class="label bg-maroon">Ginecología</span></a>
-									@endif
-									
+									<td>{{ $user->primernombre.' '.$user->primerapellido }}</td>
+									<td class="text-center">{{ $user->fechanacimiento->diff(Carbon\Carbon::now())->format('%y') }} año(s)</td>
+									<td class="text-center">{{ $user->telefono }}</td>
+									<td class="text-center">{{ $user->email }}</td>
+									<td class="text-center">
+										<a  href="{{ route('historias.medicos',[$user->paciente->id]) }}"><i class="fa fa-search" ></i></a>
 									</td>
 								</tr>
 								@endforeach
@@ -80,15 +75,4 @@
 
 
      
-@endsection
-
-
-@section('javascript')
-<script>
-
-$(document).on("click", ".open-modal2", function () {
-       window.location.href = $(this).data('url')+'/'+ $('#medico_id').val()+'';
-});
-</script>
-
 @endsection

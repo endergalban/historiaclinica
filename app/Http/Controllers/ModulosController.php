@@ -130,9 +130,14 @@ class ModulosController extends Controller
      */
     public function destroy($id){
 
-    	$modulo= Modulo::finOrFail($id);
+    	$modulo= Modulo::where('id',$id)->first();
+        if(is_null($modulo))
+        {
+            abort(404);
+        }
     	$modulo->delete();
-    	flash('El modulo '.$modulo->descipcion.' se ha eliminado de forma exitosa!', 'danger');
-    	return view('modulos.index')->with(['modulos' => $modulos]);
+
+    	flash('El modulo se ha eliminado de forma exitosa!', 'danger');
+    	return redirect()->route('modulos.index');
     }
 }

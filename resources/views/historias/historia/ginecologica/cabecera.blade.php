@@ -26,27 +26,63 @@
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
             </div>
 
-            
-            <a href="{{ route('historias.ginecologica.antecedentes',[$paciente->id,$historia_ginecologica->id]) }}" class="btn btn-default btn-sm ">Antecedentes Generales</a>
+            @if(Route::currentRouteName() == 'historias.ginecologica.antecedentes')
+                <a href="{{ route('historias.ginecologica.antecedentes',[$paciente->id,$historia_ginecologica->id]) }}" class="btn btn-primary btn-sm ">Antecedentes Generales</a>
+            @else
+                <a href="{{ route('historias.ginecologica.antecedentes',[$paciente->id,$historia_ginecologica->id]) }}" class="btn btn-default btn-sm ">Antecedentes Generales</a>
+            @endif
 
-            <a href="{{ route('historias.ginecologica.ginecobstetrica',[$paciente->id,$historia_ginecologica->id]) }}" class="btn btn-default btn-sm ">Ginecobstétrica</a>
+            @if(Route::currentRouteName() == 'historias.ginecologica.ginecobstetrica')
+                <a href="{{ route('historias.ginecologica.ginecobstetrica',[$paciente->id,$historia_ginecologica->id]) }}" class="btn btn-primary btn-sm ">Ginecobstétrica</a>
+            @else
+                <a href="{{ route('historias.ginecologica.ginecobstetrica',[$paciente->id,$historia_ginecologica->id]) }}" class="btn btn-default btn-sm ">Ginecobstétrica</a>
+            @endif
 
-            <a href="{{ route('historias.ginecologica.edit',[$paciente->id,$historia_ginecologica->id]) }}" class="btn btn-default btn-sm ">Datos de la Consulta</a>
+            @if(Route::currentRouteName() == 'historias.ginecologica.edit')
+                <a href="{{ route('historias.ginecologica.edit',[$paciente->id,$historia_ginecologica->id]) }}" class="btn btn-primary btn-sm ">Datos de la Consulta</a>
+            @else
+                <a href="{{ route('historias.ginecologica.edit',[$paciente->id,$historia_ginecologica->id]) }}" class="btn btn-default btn-sm ">Datos de la Consulta</a>
+            @endif
 
-            <a href="{{ route('historias.ginecologica.fisicos',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
+            @if(Route::currentRouteName() == 'historias.ginecologica.fisicos')
+                <a href="{{ route('historias.ginecologica.fisicos',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
+            btn-primary btn-sm ">Exploración Física</a>
+            @else
+                <a href="{{ route('historias.ginecologica.fisicos',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
             btn-default btn-sm ">Exploración Física</a>
+            @endif
 
-            <a href="{{ route('historias.ginecologica.diagnosticos',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
+            @if(Route::currentRouteName() == 'historias.ginecologica.diagnosticos')
+                <a href="{{ route('historias.ginecologica.diagnosticos',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
+            btn-primary btn-sm ">Diagnóstico</a>
+            @else
+                <a href="{{ route('historias.ginecologica.diagnosticos',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
             btn-default btn-sm ">Diagnóstico</a>
+            @endif
 
-            <a href="{{ route('historias.ginecologica.procedimientos',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
+            @if(Route::currentRouteName() == 'historias.ginecologica.procedimientos')
+                <a href="{{ route('historias.ginecologica.procedimientos',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
+            btn-primary btn-sm ">Análisis y Procedimientos</a>
+            @else
+                <a href="{{ route('historias.ginecologica.procedimientos',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
             btn-default btn-sm ">Análisis y Procedimientos</a>
+            @endif
 
-            <a href="{{ route('historias.ginecologica.recomendaciones',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
+            @if(Route::currentRouteName() == 'historias.ginecologica.recomendaciones')
+                <a href="{{ route('historias.ginecologica.recomendaciones',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
+            btn-primary btn-sm ">Recomendaciones</a>
+            @else
+                <a href="{{ route('historias.ginecologica.recomendaciones',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
             btn-default btn-sm ">Recomendaciones</a>
+            @endif
 
-            <a href="{{ route('historias.ginecologica.incapacidad',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
+            @if(Route::currentRouteName() == 'historias.ginecologica.Incapacidad')
+                <a href="{{ route('historias.ginecologica.incapacidad',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
+            btn-primary btn-sm ">Incapacidad</a>
+            @else
+                <a href="{{ route('historias.ginecologica.incapacidad',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
             btn-default btn-sm ">Incapacidad</a>
+            @endif
             
         </div>
     </div>

@@ -12,7 +12,7 @@ class Historia_ocupacional extends Model
     protected $table='historia_ocupacionales';
 
     protected $fillable = [
-        'medico_paciente_id','escolaridad_id','tipo_examen_id','numerohijos','numeropersonascargo','arl_id','afp_id','empresa_id','empresa','recomendaciones',
+        'medico_paciente_id','escolaridad_id','tipo_examen_id','numerohijos','numeropersonascargo','arl_id','afp_id','empresa_id','empresa','recomendaciones','activa',
     ];
 
     protected $dates = ['deleted_at'];

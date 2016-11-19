@@ -34,8 +34,32 @@ class UsersController extends Controller
     public function index(Request $request)
     {
 		$users=User::ofType($request->search)->with('roles')->orderby('numerodocumento','ASC')->paginate(15);
-        $roles=Role::all()->pluck('descripcion', 'id');
-        return	view('users.index')->with(['users'=>$users,'roles'=>$roles]);
+        return	view('users.index')->with(['users'=>$users]);
+    }
+
+    /**
+     * .
+     * Muestra los usuarios eliminados
+     * @param  $request->search  para filtro de resultado
+     */
+
+    public function reciclaje(Request $request)
+    {
+        $users=User::onlyTrashed()->ofType($request->search)->with('roles')->orderby('numerodocumento','ASC')->paginate(15);
+        return  view('users.reciclaje')->with(['users'=>$users]);
+    }
+
+    /**
+     * .
+     * Restaurar un usuario 
+     *  @param  $id del usuario 
+     */
+    public function restaurar($id)
+    {
+        $user = User::onlyTrashed()->findOrFail($id);
+        $user->restore();
+        flash('El usuario '.$user->primernombre.' '.$user->primerapellido.' se ha restaurado de forma exitosa!', 'success');
+        return redirect()->route('users.index');
     }
 
      /**

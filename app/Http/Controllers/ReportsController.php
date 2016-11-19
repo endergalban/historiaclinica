@@ -1175,6 +1175,13 @@ class ReportsController extends Controller
     	$cedula='';
     	$cargo='';
     	$edad='';
+    	$ocupacion='';
+    	$estadocivil='';
+    	$genero='';
+    	$fechanacimiento='';
+		$telefono='';
+		$direccion='';
+
     	$eps='';
     	$afp='';
     	$arl='';
@@ -1202,21 +1209,19 @@ class ReportsController extends Controller
 		if(!is_null($historia_ocupacional))
 		{
 
-			$dia=utf8_decode($historia_ocupacional->created_at->format('d'));
-			$mes=utf8_decode($historia_ocupacional->created_at->format('m'));
-			$anio=utf8_decode($historia_ocupacional->created_at->format('Y'));
-			$trabajador=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->primerapellido.' '.$historia_ocupacional->medico_paciente->paciente->user->primernombre);
-			$empresa=utf8_decode($historia_ocupacional->empresa);
-			$cedula=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->tipodocumento.' '.$historia_ocupacional->medico_paciente->paciente->user->numerodocumento);
-			$cargo=utf8_decode($historia_ocupacional->ocupacional_actual->cargoactual);
-			$edad=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->fechanacimiento->diff(Carbon::now())->format('%y años'));
-			$firmatrabajador=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->firma);
-			$query_eps = Empresa::where('id',$historia_ocupacional->empresa_id)->first();
-			if(!is_null($query_eps)){ $eps=utf8_decode($query_eps->descripcion);}else{$eps='N/A';}
-
-			$afp=utf8_decode($historia_ocupacional->afp->descripcion);
-			$arl=utf8_decode($historia_ocupacional->arl->descripcion);
-
+			$dia=$historia_ocupacional->created_at->format('d');
+			$mes=$historia_ocupacional->created_at->format('m');
+			$anio=$historia_ocupacional->created_at->format('Y');
+			$trabajador=$historia_ocupacional->medico_paciente->paciente->user->primerapellido.' '.$historia_ocupacional->medico_paciente->paciente->user->primernombre;
+			$empresa=$historia_ocupacional->empresa;
+			$cedula=$historia_ocupacional->medico_paciente->paciente->user->tipodocumento.' '.$historia_ocupacional->medico_paciente->paciente->user->numerodocumento;
+			$ocupacion=$historia_ocupacional->medico_paciente->paciente->user->ocupacion;
+			$estadocivil=$historia_ocupacional->medico_paciente->paciente->user->estadocivil;
+			$fechanacimiento=$historia_ocupacional->medico_paciente->paciente->user->fechanacimiento->format('d/m/Y');
+			$edad=$historia_ocupacional->medico_paciente->paciente->user->fechanacimiento->diff(Carbon::now())->format('%y años');
+			$genero=$historia_ocupacional->medico_paciente->paciente->user->genero;
+			$telefono=$historia_ocupacional->medico_paciente->paciente->user->telefono;
+			$direccion=$historia_ocupacional->medico_paciente->paciente->user->direccion;
 			$municipio=$historia_ocupacional->medico_paciente->paciente->municipio_id;
 			if($municipio==0){
 				$municipio='N/A';
@@ -1224,11 +1229,21 @@ class ReportsController extends Controller
 				$municipio_residencia = municipio::where('id',$municipio)->first();
 				if(!is_null($municipio_residencia))
 				{
-					$municipio=utf8_decode($municipio_residencia->descripcion);
+					$municipio=$municipio_residencia->descripcion;
 				}else{
 					$municipio='N/A';
 				}
 			}
+
+			$cargo=$historia_ocupacional->ocupacional_actual->cargoactual;
+			$firmatrabajador=$historia_ocupacional->medico_paciente->paciente->user->firma;
+			$query_eps = Empresa::where('id',$historia_ocupacional->empresa_id)->first();
+			if(!is_null($query_eps)){ $eps=utf8_decode($query_eps->descripcion);}else{$eps='N/A';}
+
+			$afp=$historia_ocupacional->afp->descripcion;
+			$arl=$historia_ocupacional->arl->descripcion;
+
+			
 
 			$peso=$historia_ocupacional->examen_fisico->peso;
 	    	$talla=$historia_ocupacional->examen_fisico->talla;
@@ -1264,87 +1279,72 @@ class ReportsController extends Controller
 		$fpdf->Cell(190,6,'CERTIFICADO DE APTITUD LABORAL',1,0,'C',0);
 		$fpdf->Ln();
 
-		$fpdf->SetFont('Arial','',8);
-		$fpdf->Cell(40,5,'FECHA: ',1,0,'L',0);
-		$fpdf->Cell(30,5,'DIA: '.$dia,1,0,'L',0);
-		$fpdf->Cell(30,5,'MES: '.$mes,1,0,'L',0);
-		$fpdf->Cell(30,5,utf8_decode('AÑO: ').$anio,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(55,5,'TIPO DE CERTIFICADO:',1,0,'L',0);
 
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'EMPRESA: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$empresa,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
 		$fpdf->SetFont('Arial','B',9);
-		$fpdf->Cell(55,5,$tipoexamen,1,0,'C',0);
-		$fpdf->SetFont('Arial','',8);
-
+		$fpdf->Cell(190,5,'Datos Personales ',1,0,'C',0);
 		$fpdf->Ln();
-		$fpdf->Cell(40,5,'TRABAJADOR: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$trabajador,1,0,'L',0);
 
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'CEDULA: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$cedula,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'PESO: ',1,0,'L',0);
-		$fpdf->Cell(30,5,$peso,1,0,'C',0);
+		$fpdf->SetWidths(array(100,55,35));
+		$fpdf->SetAligns(array('L','C','C'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Nombre y Apellido','Documento','Edad'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($trabajador,$cedula,$edad));
 
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'CARGO: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$cargo,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'TALLA:',1,0,'L',0);
-		$fpdf->Cell(30,5,$talla,1,0,'C',0);
+
+		$fpdf->SetWidths(array(30,30,30,100));
+		$fpdf->SetAligns(array('C','C','C','C'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Fecha Nac.','Genero','Estado Civil','Ocupacion'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($fechanacimiento,$genero,$estadocivil,$ocupacion));
+
+
 		
+		$fpdf->SetWidths(array(30,60,100));
+		$fpdf->SetAligns(array('C','C','L'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Teléfono','Ciudad','Dirección'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($telefono,$municipio,$direccion));
+
+
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Cell(190,5,'Datos Ocupacionales ',1,0,'C',0);
 		$fpdf->Ln();
-		$fpdf->Cell(40,5,'EDAD: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$edad,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'IMC:',1,0,'L',0);
-		$fpdf->Cell(30,5,$imc,1,0,'C',0);
-	
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'EPS: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$eps,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'TA:',1,0,'L',0);
-		$fpdf->Cell(30,5,$ta,1,0,'C',0);
+
+		$fpdf->SetWidths(array(120,70));
+		$fpdf->SetAligns(array('L','C'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Empresa','Cargo'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($empresa,$cargo));
+
+		$fpdf->SetWidths(array(63.3,63.3,63.3));
+		$fpdf->SetAligns(array('L','L','L'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('AFP','ARL','EPS'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($afp,$arl,$eps));
 
 		$fpdf->Ln();
-		$fpdf->Cell(40,5,'AFP: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$afp,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'FC:',1,0,'L',0);
-		$fpdf->Cell(30,5,$fc,1,0,'C',0);
-	
+		$fpdf->SetFont('Arial','B',8);
+		$fpdf->Cell(190,5,utf8_decode('CONCEPTO MÉDICO DE APTITUD  OCUPACIONAL'),1,0,'C',0);
 		$fpdf->Ln();
-		$fpdf->Cell(40,5,'ARL: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$arl,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'FR:',1,0,'L',0);
-		$fpdf->Cell(30,5,$fr,1,0,'C',0);
-	
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'MUNICIPIO RESIDENCIA: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$municipio,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'LATERALIDAD:',1,0,'L',0);
-		$fpdf->Cell(30,5,$lateralidad,1,0,'C',0);
-		
 
-		$fpdf->Ln(8);
-		$fpdf->SetFont('Arial','B',8);
-		$fpdf->Cell(130,5,utf8_decode('CONCEPTO MÉDICO DE APTITUD  OCUPACIONAL'),1,0,'L',0);
-		$fpdf->SetFont('Arial','B',8);
-		$fpdf->Cell(60,5,$condicion.'',1,0,'C',0);
-		$fpdf->Ln();
+		$fpdf->SetWidths(array(75,40,75));
+		$fpdf->SetAligns(array('L','C','C'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Tipo de Certificado','Fecha','Condición'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($tipoexamen,$dia.'/'.$mes.'/'.$anio,$condicion));
+
+		$alto=$fpdf->GetY()+20;
 		$fpdf->SetFont('Arial','',8);
 		$fpdf->Rect(10,$fpdf->GetY(),190,15,'D');
-		$fpdf->MultiCell(190,3,utf8_decode(''.$observacion),0,'J',0);
+		$fpdf->MultiCell(190,4,utf8_decode(''.$observacion),0,'J',0);
 
-		$fpdf->SetY(124);
+		$fpdf->SetY($alto);
 		$fpdf->SetFont('Arial','B',8);
 		$fpdf->Cell(190,6,utf8_decode('AYUDAS DIAGNÓSTICAS'),1,0,'C',0);
 
@@ -1375,10 +1375,10 @@ class ReportsController extends Controller
 		$fpdf->Ln();
 
 
-		$fpdf->Rect(10,$fpdf->GetY(),190,25,'D');
+		$fpdf->Rect(10,$fpdf->GetY(),190,20,'D');
 		$fpdf->SetFont('Arial','',8);
 		$fpdf->MultiCell(190,4,$recomendaciones,0,'J',0);
-		$fpdf->SetY($ancho_reco+40);
+		$fpdf->SetY($ancho_reco+35);
 		$fpdf->SetFont('Arial','',7);
 		$fpdf->Rect(10,$fpdf->GetY()-2,190,22,'D');
 		$fpdf->MultiCell(190,3,utf8_decode('CONSIDERACIONES LEGALES RELATIVAS A LOS EXAMENES DE INGRESO: Las resoluciones 2346 de 2007 y 1818 de 2009 del Ministerio de la Protección Social actualmente Ministerios de Trabajo y de Salud y Protección Social reglamentan la práctica y contenido de las evaluaciones médicas ocupacionales. Se establece que la empresa solo puede conocer el CERTIFICADO MEDICO DE APTITUD del aspirante.  Los resultados de los exámenes se dan a conocer en el certificado con la autorización del aspirante. Los documentos completos de la Historia Clínica Ocupacional están  sometidos a reserva profesional y quedan bajo nuestra custodia según lo establecido en la Resolución 1918 de 2009. El trabajador puede obtener copia en el momento que lo requiera, entendiendo que hacen parte integral de su historial 
@@ -1392,19 +1392,18 @@ class ReportsController extends Controller
 		if(file_exists( public_path().'/images/firmas/'.$firmamedico) &&  $firmamedico!='' ){
 			$fpdf->Image(asset('images/firmas/'.$firmamedico),35,252,45,15);
 		}
-		$fpdf->SetFont('Arial','',8);
+		$fpdf->SetFont('Arial','',9);
 
 		$fpdf->Cell(95,3,'_______________________________',0,0,'C',0);
 		$fpdf->Cell(95,3,'_______________________________',0,0,'C',0);
 		
 		$fpdf->Ln();
-		$fpdf->Cell(95,3,$medico,0,0,'C',0);
-		$fpdf->Cell(95,3,$trabajador,0,0,'C',0);
+		$fpdf->Cell(95,5,$medico,0,0,'C',0);
+		$fpdf->Cell(95,5,$trabajador,0,0,'C',0);
 
 		$fpdf->Ln();
-		$fpdf->SetFont('Arial','',8);
+		$fpdf->SetFont('Arial','',9);
 		$fpdf->Cell(95,3,utf8_decode('Registro Médico ').$registro,0,0,'C',0);
-		$fpdf->SetFont('Arial','',8);
 		$fpdf->Cell(95,3,$cedula,0,0,'C',0);
     	$fpdf->Output();
         exit;
@@ -1424,11 +1423,19 @@ class ReportsController extends Controller
     	$cedula='';
     	$cargo='';
     	$edad='';
+    	$ocupacion='';
+    	$estadocivil='';
+    	$genero='';
+    	$fechanacimiento='';
+		$telefono='';
+		$direccion='';
+
     	$eps='';
     	$afp='';
     	$arl='';
     	$municipio='';
     	$firmatrabajador='';
+    	$tipoexamen='';
 
     	$peso='';
     	$talla='';
@@ -1448,30 +1455,39 @@ class ReportsController extends Controller
 		if(!is_null($historia_ocupacional))
 		{
 
-			$dia=utf8_decode($historia_ocupacional->created_at->format('d'));
-			$mes=utf8_decode($historia_ocupacional->created_at->format('m'));
-			$anio=utf8_decode($historia_ocupacional->created_at->format('Y'));
-			$trabajador=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->primerapellido.' '.$historia_ocupacional->medico_paciente->paciente->user->primernombre);
-			$empresa=utf8_decode($historia_ocupacional->empresa);
-			$cedula=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->tipodocumento.' '.$historia_ocupacional->medico_paciente->paciente->user->numerodocumento);
-			$cargo=utf8_decode($historia_ocupacional->ocupacional_actual->cargoactual);
-			$edad=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->fechanacimiento->diff(Carbon::now())->format('%y años'));
-			$firmatrabajador=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->firma);
-			$query_eps = Empresa::where('id',$historia_ocupacional->empresa_id)->first();if(!is_null($query_eps)){ $eps=utf8_decode($query_eps->descripcion);}else{$eps='N/A';}
-			$afp=utf8_decode($historia_ocupacional->afp->descripcion);
-			$arl=utf8_decode($historia_ocupacional->arl->descripcion);
+			$dia=$historia_ocupacional->created_at->format('d');
+			$mes=$historia_ocupacional->created_at->format('m');
+			$anio=$historia_ocupacional->created_at->format('Y');
+			$trabajador=$historia_ocupacional->medico_paciente->paciente->user->primerapellido.' '.$historia_ocupacional->medico_paciente->paciente->user->primernombre;
+			$empresa=$historia_ocupacional->empresa;
+			$cedula=$historia_ocupacional->medico_paciente->paciente->user->tipodocumento.' '.$historia_ocupacional->medico_paciente->paciente->user->numerodocumento;
+			$ocupacion=$historia_ocupacional->medico_paciente->paciente->user->ocupacion;
+			$estadocivil=$historia_ocupacional->medico_paciente->paciente->user->estadocivil;
+			$fechanacimiento=$historia_ocupacional->medico_paciente->paciente->user->fechanacimiento->format('d/m/Y');
+			$edad=$historia_ocupacional->medico_paciente->paciente->user->fechanacimiento->diff(Carbon::now())->format('%y años');
+			$genero=$historia_ocupacional->medico_paciente->paciente->user->genero;
+			$telefono=$historia_ocupacional->medico_paciente->paciente->user->telefono;
+			$direccion=$historia_ocupacional->medico_paciente->paciente->user->direccion;
 			$municipio=$historia_ocupacional->medico_paciente->paciente->municipio_id;
 			if($municipio==0){
 				$municipio='N/A';
 			}else{
-				$municipio_residencia = municipio::where('id',$municipio)->first();;
+				$municipio_residencia = municipio::where('id',$municipio)->first();
 				if(!is_null($municipio_residencia))
 				{
-					$municipio=utf8_decode($municipio_residencia->descripcion);
+					$municipio=$municipio_residencia->descripcion;
 				}else{
 					$municipio='N/A';
 				}
 			}
+
+			$cargo=$historia_ocupacional->ocupacional_actual->cargoactual;
+			$firmatrabajador=$historia_ocupacional->medico_paciente->paciente->user->firma;
+			$query_eps = Empresa::where('id',$historia_ocupacional->empresa_id)->first();
+			if(!is_null($query_eps)){ $eps=utf8_decode($query_eps->descripcion);}else{$eps='N/A';}
+
+			$afp=$historia_ocupacional->afp->descripcion;
+			$arl=$historia_ocupacional->arl->descripcion;
 			$peso=$historia_ocupacional->examen_fisico->peso;
 	    	$talla=$historia_ocupacional->examen_fisico->talla;
 	    	$imc=$historia_ocupacional->examen_fisico->imc;
@@ -1490,8 +1506,10 @@ class ReportsController extends Controller
 
 		}
     	
-      	$fpdf = new Fpdf();
+      	$fpdf = new PDF();
         $fpdf->AddPage();
+        $fpdf->SetTextColor(0,0,0);
+		$fpdf->SetFillColor(255,255,255);
 
         if(file_exists( public_path().'/images/banner/'.$banner) &&  $banner!='' ){
 			$fpdf->Image(asset('images/banner/'.$banner),10,8,190,30);
@@ -1504,73 +1522,66 @@ class ReportsController extends Controller
 		$fpdf->Cell(190,6,'CUESTIONARIO PARA TRABAJO EN ALTURAS',1,0,'C',0);
 		$fpdf->Ln();
 
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Cell(190,5,'Datos Personales ',1,0,'C',0);
+		$fpdf->Ln();
+
+		$fpdf->SetWidths(array(100,55,35));
+		$fpdf->SetAligns(array('L','C','C'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Nombre y Apellido','Documento','Edad'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($trabajador,$cedula,$edad));
+
+
+		$fpdf->SetWidths(array(30,30,30,100));
+		$fpdf->SetAligns(array('C','C','C','C'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Fecha Nac.','Genero','Estado Civil','Ocupacion'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($fechanacimiento,$genero,$estadocivil,$ocupacion));
+
+
+		
+		$fpdf->SetWidths(array(30,60,100));
+		$fpdf->SetAligns(array('C','C','L'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Teléfono','Ciudad','Dirección'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($telefono,$municipio,$direccion));
+
+
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Cell(190,5,'Datos Ocupacionales ',1,0,'C',0);
+		$fpdf->Ln();
+
+		$fpdf->SetWidths(array(120,70));
+		$fpdf->SetAligns(array('L','C'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Empresa','Cargo'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($empresa,$cargo));
+
+		$fpdf->SetWidths(array(63.3,63.3,63.3));
+		$fpdf->SetAligns(array('L','L','L'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('AFP','ARL','EPS'));
 		$fpdf->SetFont('Arial','',8);
-		$fpdf->Cell(40,5,'FECHA: ',1,0,'L',0);
-		$fpdf->Cell(30,5,'DIA: '.$dia,1,0,'L',0);
-		$fpdf->Cell(30,5,'MES: '.$mes,1,0,'L',0);
-		$fpdf->Cell(30,5,utf8_decode('AÑO: ').$anio,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'PESO: ',1,0,'L',0);
-		$fpdf->Cell(30,5,$peso,1,0,'C',0);
+		$fpdf->Row(array($afp,$arl,$eps));
 
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Cell(190,5,utf8_decode('Exploración Física'),1,0,'C',0);
 		$fpdf->Ln();
-		$fpdf->Cell(40,5,'EMPRESA: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$empresa,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'TALLA:',1,0,'L',0);
-		$fpdf->Cell(30,5,$talla,1,0,'C',0);
 
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'TRABAJADOR: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$trabajador,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'IMC:',1,0,'L',0);
-		$fpdf->Cell(30,5,$imc,1,0,'C',0);
+		$fpdf->SetWidths(array(31.7,31.7,31.7,31.7,31.7,31.7));
+		$fpdf->SetAligns(array('C','C','C','C','C','C'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Peso','Talla','IMC','TA','FC','FR'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array(number_format($peso,2),number_format($talla,2),$imc,$ta,$fc,$fr));
 
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'CEDULA: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$cedula,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'TA:',1,0,'L',0);
-		$fpdf->Cell(30,5,$ta,1,0,'C',0);
-		
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'CARGO: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$cargo,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'FC:',1,0,'L',0);
-		$fpdf->Cell(30,5,$fc,1,0,'C',0);
-
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'EDAD: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$edad,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'FR:',1,0,'L',0);
-		$fpdf->Cell(30,5,$fr,1,0,'C',0);
-
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'EPS: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$eps,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'LATERALIDAD:',1,0,'L',0);
-		$fpdf->Cell(30,5,$lateralidad,1,0,'C',0);
-
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'AFP: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$afp,1,0,'L',0);
 	
-
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'ARL: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$arl,1,0,'L',0);
-		
-
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'MUNICIPIO RESIDENCIA: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$municipio,1,0,'L',0);
-		
-	
-
+		$fpdf->SetFont('Arial','',8);
 		$fpdf->Ln();
 		$fpdf->Cell(140,5,'',0,0,'L',0);
 		$fpdf->Cell(25,5,'SI',1,0,'C',0);
@@ -1595,14 +1606,16 @@ class ReportsController extends Controller
 		}
 			
 		$fpdf->Ln(8);
-		$fpdf->SetFont('Arial','B',8);
-		$fpdf->Cell(140,5,utf8_decode('CONDICIÓN PARA TRABAJAR EN ALTURAS'),1,0,'L',0);
-		$fpdf->Cell(50,5,$condicion,1,0,'C',0);
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Cell(150,5,utf8_decode('CONDICIÓN PARA TRABAJAR EN ALTURAS'),1,0,'L',0);
+		$fpdf->Cell(40,5,utf8_decode('FECHA'),1,0,'L',0);
+		$fpdf->Ln();
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Cell(150,5,$condicion,1,0,'L',0);
+		$fpdf->Cell(40,5,$dia.'/'.$mes.'/'.$anio,1,0,'C',0);
 		$fpdf->Ln();
 		$fpdf->SetFont('Arial','',8);
-		$fpdf->Cell(190,5,utf8_decode('OBSERVACIONES'),1,0,'C',0);
-		$fpdf->Ln();
-		$fpdf->Rect(10,$fpdf->GetY(),190,35,'D');
+		$fpdf->Rect(10,$fpdf->GetY(),190,20,'D');
 		$fpdf->MultiCell(190,4,utf8_decode($observacion),0,'J',0);
 
 		$fpdf->SetY(265);
@@ -1640,6 +1653,13 @@ class ReportsController extends Controller
     	$cedula='';
     	$cargo='';
     	$edad='';
+    	$ocupacion='';
+    	$estadocivil='';
+    	$genero='';
+    	$fechanacimiento='';
+		$telefono='';
+		$direccion='';
+
     	$eps='';
     	$afp='';
     	$arl='';
@@ -1674,18 +1694,18 @@ class ReportsController extends Controller
 			$mes=date('m');
 			$anio=date('Y');
 
-			$trabajador=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->primerapellido.' '.$historia_ocupacional->medico_paciente->paciente->user->primernombre);
-			$empresa=utf8_decode($historia_ocupacional->empresa);
-			$cedula=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->tipodocumento.' '.$historia_ocupacional->medico_paciente->paciente->user->numerodocumento);
-			$cargo=utf8_decode($historia_ocupacional->ocupacional_actual->cargoactual);
-			$edad=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->fechanacimiento->diff(Carbon::now())->format('%y años'));
-			$firmatrabajador=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->firma);
-			$query_eps = Empresa::where('id',$historia_ocupacional->empresa_id)->first();
-			if(!is_null($query_eps)){ $eps=utf8_decode($query_eps->descripcion);}else{$eps='N/A';}
-
-			$afp=utf8_decode($historia_ocupacional->afp->descripcion);
-			$arl=utf8_decode($historia_ocupacional->arl->descripcion);
-
+			$mes=$historia_ocupacional->created_at->format('m');
+			$anio=$historia_ocupacional->created_at->format('Y');
+			$trabajador=$historia_ocupacional->medico_paciente->paciente->user->primerapellido.' '.$historia_ocupacional->medico_paciente->paciente->user->primernombre;
+			$empresa=$historia_ocupacional->empresa;
+			$cedula=$historia_ocupacional->medico_paciente->paciente->user->tipodocumento.' '.$historia_ocupacional->medico_paciente->paciente->user->numerodocumento;
+			$ocupacion=$historia_ocupacional->medico_paciente->paciente->user->ocupacion;
+			$estadocivil=$historia_ocupacional->medico_paciente->paciente->user->estadocivil;
+			$fechanacimiento=$historia_ocupacional->medico_paciente->paciente->user->fechanacimiento->format('d/m/Y');
+			$edad=$historia_ocupacional->medico_paciente->paciente->user->fechanacimiento->diff(Carbon::now())->format('%y años');
+			$genero=$historia_ocupacional->medico_paciente->paciente->user->genero;
+			$telefono=$historia_ocupacional->medico_paciente->paciente->user->telefono;
+			$direccion=$historia_ocupacional->medico_paciente->paciente->user->direccion;
 			$municipio=$historia_ocupacional->medico_paciente->paciente->municipio_id;
 			if($municipio==0){
 				$municipio='N/A';
@@ -1693,11 +1713,18 @@ class ReportsController extends Controller
 				$municipio_residencia = municipio::where('id',$municipio)->first();
 				if(!is_null($municipio_residencia))
 				{
-					$municipio=utf8_decode($municipio_residencia->descripcion);
+					$municipio=$municipio_residencia->descripcion;
 				}else{
 					$municipio='N/A';
 				}
 			}
+
+			$cargo=$historia_ocupacional->ocupacional_actual->cargoactual;
+			$firmatrabajador=$historia_ocupacional->medico_paciente->paciente->user->firma;
+			$query_eps = Empresa::where('id',$historia_ocupacional->empresa_id)->first();
+			if(!is_null($query_eps)){ $eps=utf8_decode($query_eps->descripcion);}else{$eps='N/A';}
+			$afp=$historia_ocupacional->afp->descripcion;
+			$arl=$historia_ocupacional->arl->descripcion;
 
 			$peso=$historia_ocupacional->examen_fisico->peso;
 	    	$talla=$historia_ocupacional->examen_fisico->talla;
@@ -1717,8 +1744,11 @@ class ReportsController extends Controller
 	    	$recomendaciones=utf8_decode($historia_ocupacional->recomendaciones);
 		}
 
-		$fpdf = new Fpdf();
+		$fpdf = new PDF();
         $fpdf->AddPage();
+        $fpdf->SetTextColor(0,0,0);
+		$fpdf->SetFillColor(255,255,255);
+
 
         if(file_exists( public_path().'/images/banner/'.$banner) &&  $banner!='' ){
 			$fpdf->Image(asset('images/banner/'.$banner),10,8,190,30);
@@ -1731,80 +1761,55 @@ class ReportsController extends Controller
 		$fpdf->Cell(190,6,'CONSENTIMIENTO INFORMADO DE EXAMENES OCUPACIONALES',1,0,'C',0);
 		$fpdf->Ln();
 
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Cell(190,5,'Datos Personales ',1,0,'C',0);
+		$fpdf->Ln();
+
+		$fpdf->SetWidths(array(100,55,35));
+		$fpdf->SetAligns(array('L','C','C'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Nombre y Apellido','Documento','Edad'));
 		$fpdf->SetFont('Arial','',9);
-		$fpdf->Cell(40,5,'FECHA: ',1,0,'L',0);
-		$fpdf->Cell(30,5,'DIA: '.$dia,1,0,'L',0);
-		$fpdf->Cell(30,5,'MES: '.$mes,1,0,'L',0);
-		$fpdf->Cell(30,5,utf8_decode('AÑO: ').$anio,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'PESO: ',1,0,'L',0);
-		$fpdf->Cell(30,5,$peso,1,0,'C',0);
+		$fpdf->Row(array($trabajador,$cedula,$edad));
+
+
+		$fpdf->SetWidths(array(30,30,30,100));
+		$fpdf->SetAligns(array('C','C','C','C'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Fecha Nac.','Genero','Estado Civil','Ocupacion'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($fechanacimiento,$genero,$estadocivil,$ocupacion));
+
 
 		
+		$fpdf->SetWidths(array(30,60,100));
+		$fpdf->SetAligns(array('C','C','L'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Teléfono','Ciudad','Dirección'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($telefono,$municipio,$direccion));
 
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'EMPRESA: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$empresa,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'TALLA:',1,0,'L',0);
-		$fpdf->Cell(30,5,$talla,1,0,'C',0);
-		
 
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Cell(190,5,'Datos Ocupacionales ',1,0,'C',0);
 		$fpdf->Ln();
-		$fpdf->Cell(40,5,'TRABAJADOR: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$trabajador,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'IMC:',1,0,'L',0);
-		$fpdf->Cell(30,5,$imc,1,0,'C',0);
 
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'CEDULA: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$cedula,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'TA:',1,0,'L',0);
-		$fpdf->Cell(30,5,$ta,1,0,'C',0);
-		
+		$fpdf->SetWidths(array(120,70));
+		$fpdf->SetAligns(array('L','C'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Empresa','Cargo'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($empresa,$cargo));
 
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'CARGO: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$cargo,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'FC:',1,0,'L',0);
-		$fpdf->Cell(30,5,$fc,1,0,'C',0);
-		
-		
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'EDAD: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$edad,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'FR:',1,0,'L',0);
-		$fpdf->Cell(30,5,$fr,1,0,'C',0);
-		
-	
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'EPS: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$eps,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'LATERALIDAD:',1,0,'L',0);
-		$fpdf->Cell(30,5,$lateralidad,1,0,'C',0);
+		$fpdf->SetWidths(array(63.3,63.3,63.3));
+		$fpdf->SetAligns(array('L','L','L'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('AFP','ARL','EPS'));
+		$fpdf->SetFont('Arial','',8);
+		$fpdf->Row(array($afp,$arl,$eps));
 
 
 		$fpdf->Ln();
-		$fpdf->Cell(40,5,'AFP: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$afp,1,0,'L',0);
-
-
-	
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'ARL: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$arl,1,0,'L',0);
-
-	
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'MUNICIPIO RESIDENCIA: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$municipio,1,0,'L',0);
-
-		$fpdf->Ln(10);
 		$fpdf->SetFont('Arial','',9);
 		$fpdf->MultiCell(190,5,utf8_decode('Yo: '.$trabajador.' identificado(a)  No. '.$cedula.' certifico que he sido informado (a) acerca de la naturaleza y proposito de los examenes ocupacionales y para clínicos que la empresa contratante solicita; autorizo sean estos realizados por los profesionales de la empresa CONSULTORIO MEDICO - SALUD OCUPACIONAL - '.$medico.' '),0,'J',0);
 		
@@ -1840,6 +1845,7 @@ class ReportsController extends Controller
 		}
 
 		$fpdf->Ln(6);
+		$alto=$fpdf->GetY()+35;
 		$fpdf->Cell(190,5,'','B',0,'C',0);
 		$fpdf->Ln();
 		$fpdf->Cell(190,5,'','B',0,'C',0);
@@ -1851,20 +1857,16 @@ class ReportsController extends Controller
 		$fpdf->Cell(190,5,'','B',0,'C',0);
 		$fpdf->Ln();
 		$fpdf->Cell(190,5,'','B',0,'C',0);
-
+		
 		$fpdf->Ln(-24);
 		$fpdf->SetFont('Arial','',9);
 		$fpdf->MultiCell(190,5	,utf8_decode(''),0,'J',0);
 
-		$fpdf->SetY(210);
+		$fpdf->SetY($alto);
 		$fpdf->SetFont('Arial','',9);
 		$fpdf->MultiCell(190,5	,utf8_decode('Ademas autorizo a CONSULTORIO MEDICO - SALUD OCUPACIONAL '.$medico.',  para que sea enviada una copia de mi historia clinica ocupacional al medico de Salud Ocupacional de la empresa que me contrata'),0,'J',0);
 		
 		$fpdf->Ln();
-
-		
-		
-
 
 		$fpdf->SetY(250);
 		if(file_exists( public_path().'/images/firmas/'.$firmatrabajador) &&  $firmatrabajador!='' ){
@@ -1895,7 +1897,7 @@ class ReportsController extends Controller
 //--------------CONCEPTO DE APTITUD LABORAL----------------//
 	public function aptitud_laboral($historia_ocupacional_id)
 	{
-		$dia='';
+			$dia='';
     	$mes='';
     	$anio='';
     	$trabajador='';
@@ -1903,6 +1905,13 @@ class ReportsController extends Controller
     	$cedula='';
     	$cargo='';
     	$edad='';
+    	$ocupacion='';
+    	$estadocivil='';
+    	$genero='';
+    	$fechanacimiento='';
+		$telefono='';
+		$direccion='';
+
     	$eps='';
     	$afp='';
     	$arl='';
@@ -1930,32 +1939,37 @@ class ReportsController extends Controller
 		if(!is_null($historia_ocupacional))
 		{
 
-			$dia=utf8_decode($historia_ocupacional->created_at->format('d'));
-			$mes=utf8_decode($historia_ocupacional->created_at->format('m'));
-			$anio=utf8_decode($historia_ocupacional->created_at->format('Y'));
-			$trabajador=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->primerapellido.' '.$historia_ocupacional->medico_paciente->paciente->user->primernombre);
-			$empresa=utf8_decode($historia_ocupacional->empresa);
-			$cedula=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->tipodocumento.' '.$historia_ocupacional->medico_paciente->paciente->user->numerodocumento);
-			$cargo=utf8_decode($historia_ocupacional->ocupacional_actual->cargoactual);
-			$edad=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->fechanacimiento->diff(Carbon::now())->format('%y años'));
-			$firmatrabajador=utf8_decode($historia_ocupacional->medico_paciente->paciente->user->firma);
-			$query_eps = Empresa::where('id',$historia_ocupacional->empresa_id)->first();if(!is_null($query_eps)){ $eps=utf8_decode($query_eps->descripcion);}else{$eps='N/A';}
-
-			$afp=utf8_decode($historia_ocupacional->afp->descripcion);
-			$arl=utf8_decode($historia_ocupacional->arl->descripcion);
-
+			$mes=$historia_ocupacional->created_at->format('m');
+			$anio=$historia_ocupacional->created_at->format('Y');
+			$trabajador=$historia_ocupacional->medico_paciente->paciente->user->primerapellido.' '.$historia_ocupacional->medico_paciente->paciente->user->primernombre;
+			$empresa=$historia_ocupacional->empresa;
+			$cedula=$historia_ocupacional->medico_paciente->paciente->user->tipodocumento.' '.$historia_ocupacional->medico_paciente->paciente->user->numerodocumento;
+			$ocupacion=$historia_ocupacional->medico_paciente->paciente->user->ocupacion;
+			$estadocivil=$historia_ocupacional->medico_paciente->paciente->user->estadocivil;
+			$fechanacimiento=$historia_ocupacional->medico_paciente->paciente->user->fechanacimiento->format('d/m/Y');
+			$edad=$historia_ocupacional->medico_paciente->paciente->user->fechanacimiento->diff(Carbon::now())->format('%y años');
+			$genero=$historia_ocupacional->medico_paciente->paciente->user->genero;
+			$telefono=$historia_ocupacional->medico_paciente->paciente->user->telefono;
+			$direccion=$historia_ocupacional->medico_paciente->paciente->user->direccion;
 			$municipio=$historia_ocupacional->medico_paciente->paciente->municipio_id;
 			if($municipio==0){
 				$municipio='N/A';
 			}else{
-				$municipio_residencia = municipio::where('id',$municipio)->first();	
+				$municipio_residencia = municipio::where('id',$municipio)->first();
 				if(!is_null($municipio_residencia))
 				{
-					$municipio=utf8_decode($municipio_residencia->descripcion);
+					$municipio=$municipio_residencia->descripcion;
 				}else{
 					$municipio='N/A';
 				}
 			}
+
+			$cargo=$historia_ocupacional->ocupacional_actual->cargoactual;
+			$firmatrabajador=$historia_ocupacional->medico_paciente->paciente->user->firma;
+			$query_eps = Empresa::where('id',$historia_ocupacional->empresa_id)->first();
+			if(!is_null($query_eps)){ $eps=utf8_decode($query_eps->descripcion);}else{$eps='N/A';}
+			$afp=$historia_ocupacional->afp->descripcion;
+			$arl=$historia_ocupacional->arl->descripcion;
 
 			$peso=$historia_ocupacional->examen_fisico->peso;
 	    	$talla=$historia_ocupacional->examen_fisico->talla;
@@ -1991,77 +2005,56 @@ class ReportsController extends Controller
 		$fpdf->Cell(190,6,'CONCEPTO DE APTITUD LABORAL',1,0,'C',0);
 		$fpdf->Ln();
 
-		$fpdf->SetFont('Arial','',8);
-		$fpdf->Cell(40,5,'FECHA: ',1,0,'L',0);
-		$fpdf->Cell(30,5,'DIA: '.$dia,1,0,'L',0);
-		$fpdf->Cell(30,5,'MES: '.$mes,1,0,'L',0);
-		$fpdf->Cell(30,5,utf8_decode('AÑO: ').$anio,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(55,5,'TIPO DE EXAMEN:',1,0,'L',0);
-
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'EMPRESA: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$empresa,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
 		$fpdf->SetFont('Arial','B',9);
-		$fpdf->Cell(55,5,$tipoexamen,1,0,'C',0);
+		$fpdf->Cell(190,5,'Datos Personales ',1,0,'C',0);
+		$fpdf->Ln();
+
+		$fpdf->SetWidths(array(100,55,35));
+		$fpdf->SetAligns(array('L','C','C'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Nombre y Apellido','Documento','Edad'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($trabajador,$cedula,$edad));
+
+
+		$fpdf->SetWidths(array(30,30,30,100));
+		$fpdf->SetAligns(array('C','C','C','C'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Fecha Nac.','Genero','Estado Civil','Ocupacion'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($fechanacimiento,$genero,$estadocivil,$ocupacion));
+
+
+		
+		$fpdf->SetWidths(array(30,60,100));
+		$fpdf->SetAligns(array('C','C','L'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Teléfono','Ciudad','Dirección'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($telefono,$municipio,$direccion));
+
+
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Cell(190,5,'Datos Ocupacionales ',1,0,'C',0);
+		$fpdf->Ln();
+
+		$fpdf->SetWidths(array(120,70));
+		$fpdf->SetAligns(array('L','C'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Empresa','Cargo'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($empresa,$cargo));
+
+		$fpdf->SetWidths(array(63.3,63.3,63.3));
+		$fpdf->SetAligns(array('L','L','L'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('AFP','ARL','EPS'));
 		$fpdf->SetFont('Arial','',8);
+		$fpdf->Row(array($afp,$arl,$eps));
 
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'TRABAJADOR: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$trabajador,1,0,'L',0);
-
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'CEDULA: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$cedula,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'PESO: ',1,0,'L',0);
-		$fpdf->Cell(30,5,$peso,1,0,'C',0);
-
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'CARGO: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$cargo,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'TALLA:',1,0,'L',0);
-		$fpdf->Cell(30,5,$talla,1,0,'C',0);
-		
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'EDAD: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$edad,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'IMC:',1,0,'L',0);
-		$fpdf->Cell(30,5,$imc,1,0,'C',0);
-	
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'EPS: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$eps,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'TA:',1,0,'L',0);
-		$fpdf->Cell(30,5,$ta,1,0,'C',0);
-
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'AFP: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$afp,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'FC:',1,0,'L',0);
-		$fpdf->Cell(30,5,$fc,1,0,'C',0);
-	
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'ARL: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$arl,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'FR:',1,0,'L',0);
-		$fpdf->Cell(30,5,$fr,1,0,'C',0);
-	
-		$fpdf->Ln();
-		$fpdf->Cell(40,5,'MUNICIPIO RESIDENCIA: ',1,0,'L',0);
-		$fpdf->Cell(90,5,$municipio,1,0,'L',0);
-		$fpdf->Cell(5,5,'',0,0,'L',0);
-		$fpdf->Cell(25,5,'LATERALIDAD:',1,0,'L',0);
-		$fpdf->Cell(30,5,$lateralidad,1,0,'C',0);
 		
 
-		$fpdf->Ln(8);
+		$fpdf->Ln();
 		$fpdf->SetFont('Arial','B',8);
 		$fpdf->Cell(130,5,utf8_decode('CONCEPTO EXAMEN '.strtoupper($tipoexamen)),1,0,'L',0);
 		$fpdf->SetFont('Arial','B',8);
@@ -2147,10 +2140,10 @@ class ReportsController extends Controller
 
 		$fpdf->SetY(245);
 		if(file_exists( public_path().'/images/firmas/'.$firmatrabajador) &&  $firmatrabajador!='' ){
-			$fpdf->Image(asset('images/firmas/'.$firmatrabajador),130,242,45,15);
+			$fpdf->Image(asset('images/firmas/'.$firmatrabajador),130,232,45,15);
 		}
 		if(file_exists( public_path().'/images/firmas/'.$firmamedico) &&  $firmamedico!='' ){
-			$fpdf->Image(asset('images/firmas/'.$firmamedico),35,242,45,15);
+			$fpdf->Image(asset('images/firmas/'.$firmamedico),35,232,45,15);
 		}
 		$fpdf->SetFont('Arial','',9);
 

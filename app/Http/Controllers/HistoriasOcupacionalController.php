@@ -69,10 +69,14 @@ class HistoriasOcupacionalController extends Controller
 	public function index($paciente_id,$medico_paciente_id)
     {
     	$medico_paciente=Medico_paciente::where('id',$medico_paciente_id)->first();
-      	$historia_ocupacionales=Historia_ocupacional::with('tipo_examen')->where('medico_paciente_id',$medico_paciente->id)->get();
+      	$historia_ocupacionales=Historia_ocupacional::with('tipo_examen')->where('medico_paciente_id',$medico_paciente->id)->orderby('id','DESC')->  get();
 		$paciente=Paciente::where('id',$medico_paciente->paciente_id)->with('user')->first();
 		$medico=Medico::where('id',$medico_paciente->medico_id)->with('user')->first();
-        return view('historias.historia.ocupacional.index')->with(['medico' => $medico,'paciente' => $paciente,'medico_paciente' => $medico_paciente,'historia_ocupacionales' => $historia_ocupacionales]);
+
+        if(Auth::user()->roles()->get()->whereIn('id',[1,2])->count()==0)
+        {$acciones=false;}else{$acciones=true;}     
+        
+        return view('historias.historia.ocupacional.index')->with(['medico' => $medico,'paciente' => $paciente,'medico_paciente' => $medico_paciente,'historia_ocupacionales' => $historia_ocupacionales,'acciones'=> $acciones]);
     }
    
     public function ocupacional_create($paciente_id,$medico_paciente_id)
@@ -80,6 +84,9 @@ class HistoriasOcupacionalController extends Controller
 
         $medico_paciente = Medico_paciente::where(['id' => $medico_paciente_id] )->with('paciente')->first();
        
+
+        Historia_ocupacional::where('medico_paciente_id', '=', $medico_paciente_id)->update(['activa' => 0]);
+
         $historia_ocupacional= new Historia_ocupacional;
         $historia_ocupacional->medico_paciente()->associate($medico_paciente);
         $historia_ocupacional->escolaridad()->associate(1);
@@ -91,6 +98,7 @@ class HistoriasOcupacionalController extends Controller
         $historia_ocupacional->numeropersonascargo=0;
         $historia_ocupacional->empresa='';
         $historia_ocupacional->recomendaciones='';
+        $historia_ocupacional->activa=1;
         $historia_ocupacional->save();
 
         $Habito_fumador=new Habito_fumador;   
@@ -170,7 +178,10 @@ class HistoriasOcupacionalController extends Controller
      */
     public function destroy_ocupacional($paciente_id,$medico_id,$historia_ocupacional_id)
     {
-        $historia_ocupacional = Historia_ocupacional::findOrFail($historia_ocupacional_id);
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $historia_ocupacional->delete();
         flash('La historia ocupacional se ha eliminado de forma exitosa!', 'danger');
         return redirect()->route('historias.historia',[$paciente_id,'ocupacional',$medico_id]);
@@ -189,7 +200,10 @@ class HistoriasOcupacionalController extends Controller
      */
     public function ocupacional_documentos($paciente_id,$historia_ocupacional_id)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();
        
@@ -265,7 +279,10 @@ class HistoriasOcupacionalController extends Controller
      */
     public function ocupacional_edit($paciente_id,$historia_ocupacional_id)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();
 
@@ -353,7 +370,10 @@ class HistoriasOcupacionalController extends Controller
      */
     public function ocupacional_consentimientos($paciente_id,$historia_ocupacional_id)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();
 
@@ -435,7 +455,10 @@ class HistoriasOcupacionalController extends Controller
      */
     public function ocupacional_actual($paciente_id,$historia_ocupacional_id)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();
 
@@ -548,7 +571,10 @@ class HistoriasOcupacionalController extends Controller
      */
     public function Ocupacional_actual_destroy_factor($paciente_id,$historia_ocupacional_id,$ocupacional_actual_factor_riesgo_id)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+         $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $Ocupacional_actual_factor_riesgo_id = Ocupacional_actual_factor_riesgo::findOrFail($ocupacional_actual_factor_riesgo_id);
         $Ocupacional_actual_factor_riesgo_id->delete();
         flash('El registro se ha eliminado de forma exitosa!', 'danger');
@@ -564,7 +590,10 @@ class HistoriasOcupacionalController extends Controller
      */
     public function ocupacional_antecedentes($paciente_id,$historia_ocupacional_id)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+         $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();
         $antecedente_ocupacionales = Antecedente_ocupacional::where(['historia_ocupacional_id' => $historia_ocupacional->id])->get();
@@ -617,7 +646,10 @@ class HistoriasOcupacionalController extends Controller
 
     public function ocupacional_antecedentes_destroy($paciente_id,$historia_ocupacional_id,$antecedente_ocupacional_id)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+         $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $Antecedente_ocupacional = Antecedente_ocupacional::findOrFail($antecedente_ocupacional_id);
         $Antecedente_ocupacional->delete();
         flash('La empresa '.$Antecedente_ocupacional->empresa.' se ha eliminado de forma exitosa!', 'danger');
@@ -631,7 +663,10 @@ class HistoriasOcupacionalController extends Controller
      */
     public function ocupacional_antecedentes_riesgos($paciente_id,$historia_ocupacional_id,$antecedente_ocupacional_id)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+         $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();
 
@@ -707,7 +742,10 @@ class HistoriasOcupacionalController extends Controller
      */
     public function ocupacional_antecedentes_lesiones($paciente_id,$historia_ocupacional_id,$antecedente_ocupacional_id)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+         $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();
 
@@ -784,7 +822,10 @@ class HistoriasOcupacionalController extends Controller
      */
     public function ocupacional_patologias($paciente_id,$historia_ocupacional_id)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+         $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();
 
@@ -886,7 +927,8 @@ class HistoriasOcupacionalController extends Controller
      */
     public function Ocupacional_patologias_store_habitos(Request $request)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();
+          $historia_ocupacional = Historia_ocupacional::where(['id' => $request->historia_ocupacional_id] )->with('medico_paciente')->first();
+      
          
         $validator = Validator::make($request->all(), [
             'fumador' => 'required|string|max:10', 
@@ -1069,7 +1111,10 @@ class HistoriasOcupacionalController extends Controller
      */
     public function Ocupacional_patologias_destroy_enfermedad($paciente_id,$historia_ocupacional_id,$patologico_id)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+         $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $Patologico = Patologico::findOrFail($patologico_id);
         $Patologico->delete();
         flash('El registro se ha eliminado de forma exitosa!', 'danger');
@@ -1083,7 +1128,10 @@ class HistoriasOcupacionalController extends Controller
      */
     public function Ocupacional_patologias_destroy_vacuna($paciente_id,$historia_ocupacional_id,$inmunizacion_id)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+         $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $Inmunizacion = Inmunizacion::findOrFail($inmunizacion_id);
         $Inmunizacion->delete();
         flash('El registro se ha eliminado de forma exitosa!', 'danger');
@@ -1098,7 +1146,10 @@ class HistoriasOcupacionalController extends Controller
      */
     public function ocupacional_fisicos($paciente_id,$historia_ocupacional_id)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();
         $datos=array();
@@ -1238,7 +1289,10 @@ class HistoriasOcupacionalController extends Controller
      */
     public function ocupacional_fisicos_destroy_exploracion($paciente_id,$historia_ocupacional_id,$exploracion_id)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+         $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $Exploracion = Exploracion::findOrFail($exploracion_id);
         $Exploracion->delete();
         flash('Los datos se han eliminado de forma exitosa!', 'danger');
@@ -1280,7 +1334,10 @@ class HistoriasOcupacionalController extends Controller
      */
     public function ocupacional_fisicos_destroy_visual($paciente_id,$historia_ocupacional_id,$visual_id)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $Visual = Visual::findOrFail($visual_id);
         $Visual->delete();
         flash('Los datos se han eliminado de forma exitosa!', 'danger');
@@ -1296,7 +1353,10 @@ class HistoriasOcupacionalController extends Controller
      */
     public function ocupacional_alturas($paciente_id,$historia_ocupacional_id)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+         $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();
         $combos=array();
@@ -1388,7 +1448,10 @@ class HistoriasOcupacionalController extends Controller
      */
     public function ocupacional_alturas_destroy($paciente_id,$historia_ocupacional_id,$examen_altura_id)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+         $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $Examen_altura = Examen_altura::findOrFail($examen_altura_id);
         $Examen_altura->delete();
         flash('El registro se ha eliminado de forma exitosa!', 'danger');
@@ -1447,7 +1510,10 @@ class HistoriasOcupacionalController extends Controller
      */
     public function ocupacional_examenes_destroy($paciente_id,$historia_ocupacional_id,$examen_laboratorio_id)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+         $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $Examen_laboratorio = Examen_laboratorio::findOrFail($examen_laboratorio_id);
         $Examen_laboratorio->delete();
         flash('El registro se ha eliminado de forma exitosa!', 'danger');
@@ -1463,7 +1529,10 @@ class HistoriasOcupacionalController extends Controller
      */
     public function ocupacional_diagnosticos($paciente_id,$historia_ocupacional_id)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+         $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();
 
@@ -1559,7 +1628,10 @@ class HistoriasOcupacionalController extends Controller
      */
     public function ocupacional_diagnosticos_destroy($paciente_id,$historia_ocupacional_id,$diagnostico_id)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+         $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $Diagnostico = Diagnostico::findOrFail($diagnostico_id);
         $Diagnostico->delete();
         flash('El registro se ha eliminado de forma exitosa!', 'danger');
@@ -1575,7 +1647,10 @@ class HistoriasOcupacionalController extends Controller
      */
     public function ocupacional_recomendaciones($paciente_id,$historia_ocupacional_id)
     {
-        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id] )->with('medico_paciente')->first();
+        $historia_ocupacional = Historia_ocupacional::where(['id' => $historia_ocupacional_id,'activa'=>1] )->with('medico_paciente')->first();
+        if(is_null($historia_ocupacional)){
+            abort(404);
+        }
         $paciente = Paciente::where(['id'=> $historia_ocupacional->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $historia_ocupacional->medico_paciente->medico_id])->with('user')->first();
 

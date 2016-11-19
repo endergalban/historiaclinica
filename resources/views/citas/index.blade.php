@@ -42,16 +42,22 @@
               </div>
               <!-- /btn-group -->
               <div class="input-group">
-               {!! Form::select('medico_id',$medicos,0,['class' => 'form-control select2','style' => 'width: 100%','id' => 'medico_id' ]) !!}
-                
-               {!! Form::select('especialidad_id',$especialidades, old('especialidad_id'),['class' => 'form-control select2','style' => 'width: 100%','id' => 'especialidad_id']) !!}
-
-                {!! Form::select('pacientes[]',$pacientes,null,['id' => 'new-event', 'class' => 'form-control select2','style' => 'width: 100%','placeholder' => 'Seleccione el Paciente' ]) !!}
-                {!! Form::text('fechainicio',null,['class'=>'form-control pull-right', 'id'=>'fechainicio']) !!}
+                    <div class="form-group col-md-12">
+                        {!! Form::select('medico_id',$medicos,0,['class' => 'form-control select2','style' => 'width:   100%','id' => 'medico_id' ]) !!}
+                    </div>
+                     <div class="form-group col-md-12">
+                        {!! Form::select('especialidad_id',$especialidades, old('especialidad_id'),['class' => 'form-control select2','style' => 'width: 100%','id' => 'especialidad_id']) !!}
+                    </div>
+                    <div class="form-group col-md-12">
+                        {!! Form::select('pacientes[]',$pacientes,null,['id' => 'new-event', 'class' => 'form-control select2','style' => 'width: 100%','placeholder' => 'Seleccione el Paciente' ]) !!}
+                    </div>
+                    <div class="form-group col-md-12">
+                        {!! Form::text('fechainicio',null,['class'=>'form-control pull-right', 'id'=>'fechainicio']) !!}
+                    </div>
               </div>
              
-              <div class="input-group-btn">
-                  <button id="add-new-event" type="button" class="btn btn-primary btn-flat">Guardar</button>
+              <div class="form-group col-md-12">
+                    <button id="add-new-event" type="button" class="btn btn-primary btn-flat">Guardar</button>
                 </div>
               <!-- /input-group -->
               {!! Form::open(['route' => ['guardarcita'], 'method'=> 'POST', 'id' => 'form-calendario']) !!}
@@ -138,22 +144,25 @@ function eliminar()
    $('#medico_id').change(function(e) {
         console.log(e);
         var medico_id = e.target.value;
-         $.get("{{ url('getDataEspecialidades') }}/"+medico_id, function(data) {
-              $('#especialidad_id').empty();
-              //$('#especialidad_id').append('<option value="0">Seleccione una opción</option>');
-               $.each(data[0].especialidades, function(i, objeto) {
-                  //if(objeto.medico_id==medico_id){
-                    $('#especialidad_id').append('<option value="'+objeto.id+'">'+objeto.descripcion+'</option>');
+          if(medico_id!=0){
+           $.get("{{ url('getDataEspecialidades') }}/"+medico_id, function(data) {
+                $('#especialidad_id').empty();
+                //$('#especialidad_id').append('<option value="0">Seleccione una opción</option>');
+                 $.each(data[0].especialidades, function(i, objeto) {
+                    //if(objeto.medico_id==medico_id){
+                      $('#especialidad_id').append('<option value="'+objeto.id+'">'+objeto.descripcion+'</option>');
 
-                  //}
-               });
-             var events= {url: 'api',
-                          data:{ medico_id:$('#medico_id').val(), especialidad_id:$('#especialidad_id').val()},
-                          type: 'GET'}; 
-               $('#calendar').fullCalendar( 'removeEventSource', events);
-             $('#calendar').fullCalendar( 'addEventSource', events);                      
-          });
+                    //}
+                 });
+               var events= {url: 'api',
+                            data:{ medico_id:$('#medico_id').val(), especialidad_id:$('#especialidad_id').val()},
+                            type: 'GET'}; 
+                 $('#calendar').fullCalendar( 'removeEventSource', events);
+               $('#calendar').fullCalendar( 'addEventSource', events);                      
+            });
+          }
       });
+   
     $('#especialidad_id').change(function(e) {
              var events= {url: 'api',
                           data:{ medico_id:$('#medico_id').val(), especialidad_id:$('#especialidad_id').val()},
@@ -161,6 +170,8 @@ function eliminar()
                $('#calendar').fullCalendar( 'removeEventSource', events);
                $('#calendar').fullCalendar( 'addEventSource', events);                      
       });
+
+
   $(function () {
 
          //Timepicker

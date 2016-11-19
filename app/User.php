@@ -84,7 +84,8 @@ class User extends Authenticatable
             ->join('user_role', 'users.id', '=', 'user_role.user_id')
             ->join('roles', 'user_role.role_id', '=', 'roles.id')
             ->join('role_modulo', 'roles.id', '=', 'role_modulo.role_id')
-            ->join('modulos', 'role_modulo.modulo_id', '=', 'modulos.id');
+            ->join('modulos', 'role_modulo.modulo_id', '=', 'modulos.id')
+            ->whereNull('modulos.deleted_at');
         return $query;
     }
 

@@ -48,7 +48,7 @@
 								@foreach( $users as $user )
 								<tr>
 									<td>{{ $user->tipodocumento.' '.$user->numerodocumento }}</td>
-									<td>{{ $user->primerapellido.' '.$user->primernombre }}</td>
+									<td>{{ $user->primernombre.' '.$user->primerapellido }}</td>
 									<td class="text-center">
 										@foreach( $user->roles as $role )
 											<a href="{{ route('users.role',[$user->id,$role->id]) }}" ><span class="label label-default">{{ $role->descripcion }}</span></a>
@@ -72,6 +72,10 @@
 					</table>
 					{{ $users->links() }}
 		  		</div>
+
+		  		 <div class="box-footer">
+					<a class="btn btn-default btn-sm pull-right" href="{{ route('users.reciclaje') }}" >Ver Papelera</a>
+		        </div>
 					
 			</div>
 	 	</div>

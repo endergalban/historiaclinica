@@ -12,7 +12,7 @@ class Historia_ginecologica extends Model
     protected $table='historia_ginecologicas';
 
     protected $fillable = [
-        'medico_paciente_id','motivo_consulta', 'enfermedad_actual', 'informe', 'analisis', 'procedimientos', 'recomendaciones', 
+        'medico_paciente_id','motivo_consulta', 'enfermedad_actual', 'informe', 'analisis', 'procedimientos', 'recomendaciones', 'activa',
         ];
     protected $dates = ['deleted_at'];
 

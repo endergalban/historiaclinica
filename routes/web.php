@@ -97,6 +97,7 @@ Route::group(['middleware' => 'roles','site'=>'especialidades'], function () {
 Route::group(['middleware' => 'roles','site'=>'historias'], function () {
 
 	Route::resource('historias','HistoriasController',['only' => ['index']]);
+	Route::get('historias/medicos/{paciente_id}',['uses'=>'HistoriasController@medico','as'=>'historias.medicos']);
 	Route::get('historias/{id}/{tipo}/{medico_id?}',['uses'=>'HistoriasController@historia','as'=>'historias.historia']);
 
 
@@ -291,6 +292,9 @@ Route::group(['middleware' => 'roles','site'=>'users'], function () {
 	Route::put('user/{id}/medico', ['uses'	=>'UsersController@medico','as'=>'users.updaterolemedico']);
 	Route::put('user/{id}/paciente', ['uses'=>'UsersController@paciente','as'=>'users.updaterolepaciente']);
 	Route::put('user/{id}/asistente', ['uses'=>'UsersController@asistente','as'=>'users.updateroleasistente']);
+
+	Route::get('user/reciclaje', ['uses'=>'UsersController@reciclaje','as'=>'users.reciclaje']);
+	Route::get('user/{id}/restaurar', ['uses'=>'UsersController@restaurar','as'=>'users.restaurar']);
 });
 
 Auth::routes();

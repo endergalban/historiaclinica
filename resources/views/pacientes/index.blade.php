@@ -39,8 +39,8 @@
 							<tr >
 								<th>Identificación</th>
 								<th>Nombre</th>
-								<th>Email</th>
-								<th>Historia</th>
+								<th class="text-center">Email</th>
+								<th class="text-center">Teléfono</th>
 								<th class="text-center">Acción</th>
 							</tr>
 				   		</thead>
@@ -48,14 +48,14 @@
 								@foreach( $users as $user )
 								<tr>
 									<td>{{ $user->tipodocumento.' '.$user->numerodocumento }}</td>
-									<td>{{ $user->primerapellido.' '.$user->primernombre }}</td>
-									<td>{{ $user->email }}</td>
-									<td></td>
+									<td>{{ $user->primernombre.' '.$user->primerapellido }}</td>
+									<td class="text-center">{{ $user->email }}</td>
+									<td class="text-center">{{ $user->telefono }}</td>
 									<td class="text-center">
-										<a href="{{ route('historias.index',$user->id) }}"><span class="label label-info">Historia</span></a>
+										<a href="{{ route('historias.medicos',$user->paciente->id) }}"><span class="label label-info">Historia</span></a>
 										<a href="{{ route('pacientes.show',$user->id) }}"><span class="label label-primary">Mostrar</span></a>
 										<a href="{{ route('pacientes.edit',$user->id) }}" ><span class="label label-warning">Editar</span></a>
-										<a data-toggle="modal" data-url="{{ route('pacientes.destroy',$user->id) }}" class=open-modal label label-danger" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
+								
 									</td>
 								</tr>
 								@endforeach

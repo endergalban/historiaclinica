@@ -181,7 +181,7 @@
           <!-- search form -->
           @if(Auth::user()->hasAnyRole('administrador'))
             {!! Form::open(['method' => 'GET','route' => ['users.index'],'role' => 'form','class' => 'sidebar-form']) !!}
-          @else
+          @elseif(Auth::user()->hasAnyRole(['asistente','medico']))
             {!! Form::open(['method' => 'GET','route' => ['pacientes.index'],'role' => 'form','class' => 'sidebar-form']) !!}
           @endif
             <div class="input-group">
@@ -483,6 +483,7 @@
       @else
         //Initialize Select2 Elements
         $(".select2").select2();
+        
       @endif
         $.fn.modal.Constructor.prototype.enforceFocus = function() {};
          //Date picker

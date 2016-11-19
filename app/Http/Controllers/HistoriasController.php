@@ -22,60 +22,141 @@ class HistoriasController extends Controller
      * Muestra los pacientes del sistema para la carga de historias
      * @param  $request->search  para filtro de resultado
      */
-    public function index(Request $request)
+
+    public function medico($paciente_id)
     {
-        $users=User::ofType($request->search)->has('paciente')->orderby('numerodocumento','ASC')->paginate(15);
+        $paciente=Paciente::has('user')->where(['id'=>$paciente_id])->with('user')->first();
         $role = User::find(Auth::user()->id)->roles()->pluck('descripcion');
-
-        if($role->contains('administrador')){
+        if($role->contains('administrador')){ //USUARIO ADMINISTRADOR
           
-            $querymedicos=User::has('medico')->with('medico');
-            if($querymedicos->count()==0){
-
+            $medicos=User::has('medico')->with('medico.especialidades')->get();
+            if($medicos->count()==0){
                 flash('No existen médicos registrados en el sistema!', 'danger');
-                return redirect()->route('home');
-               
-            }elseif($querymedicos->count()==1){
-
-                $medicos=$querymedicos->first()->medico->id;
-
+                return redirect()->route('historias.index'  );
             }else{
-                
-                foreach ($querymedicos->get() as $medico) {
-                    $medicos[$medico->medico->id]=$medico->tipodocumento.' '.$medico->numerodocumento.' '.$medico->primerapellido.' '.$medico->primernombre;
-                }
+                return  view('historias.medicos')->with(['medicos'=>$medicos,'paciente'=>$paciente]);
             }
-        }elseif($role->contains('medico')){
-            $medico=Medico::has('user')->where('user_id',Auth::user()->id)->first();
-            $medicos=$medico->id;
 
-        }elseif($role->contains('asistente')){
+
+        }elseif($role->contains('medico')){ //USUARIO MEDICO
+            $medico=User::has('medico')->where('id',Auth::user()->id)->with('medico.especialidades')->first();
+           
+            if($medico->medico->especialidades->count() == 0){ //SIN ESPECIALIDAD
+                flash('No existen especialidades registrados a tu usuario, comuniquese con el administrador!', 'danger');
+                return redirect()->route('historias.index');
+            }elseif($medico->medico->especialidades->count() == 1){ //UNA ESPECIALIDAD
+                 
+               if($medico->medico->especialidades->first()->id==3){ //GINECOLOGIA
+                    
+                    if($paciente->user->genero=='Masculino') { // SI ES MASCULINO NO PODRA ABRIR LA HISTORIA GINECOLOGIA
+                        flash('Tu especialidad solo es Ginecología, no puedes cargar la historia a una persona del genero masculino!', 'danger');
+                        return redirect()->route('historias.index');
+                    }else{ // REDIRECCIONO SI NO ES MASCULINO PARA ABRIR LA HISTORIA GINECOLOGIA
+                        return redirect()->route('historias.historia',[$paciente_id,$medico->medico->especialidades->first()->id,$medico->medico->id]);
+                    }
+                }else{ //NO GINECOLOGIA 
+
+                    return redirect()->route('historias.historia',[$paciente_id,$medico->medico->especialidades->first()->id,$medico->medico->id]);
+                }
+            }elseif($medico->medico->especialidades->count() == 2){  //DOS ESPECIALIDADES
+               
+                if($medico->medico->especialidades->contains('3')) // CONTIENE GINECOLOGIA
+                {
+                     if($paciente->user->genero=='Masculino') { //REDIRECCIONO A LA QUE NO ES GINECOLOGIA
+                           
+                        return redirect()->route('historias.historia',[$paciente_id, $medico->medico->especialidades->except([3])->first()->id,$medico->medico->id]);
+                     }else{ //MUESTRO LA PAGINA PARA QUE MEDICO ESCOJA LA ESPECIALIDAD
+                        $medicos[]=$medico;
+                        return  view('historias.medicos')->with(['medicos'=>$medicos,'paciente'=>$paciente]);
+                     }
+
+                }else{ //NO CONTIENE GINECOLOGIA MUESTRO LA PAGINA PARA QUE MEDICO ESCOJA LA ESPECIALIDAD
+                    $medicos[]=$medico;
+                    return  view('historias.medicos')->with(['medicos'=>$medicos,'paciente'=>$paciente]);       
+                }   
+            }else{ // MAS DE DOS ESPECIALIDADES MUESTRO LA PAGINA PARA QUE MEDICO ESCOJA LA ESPECIALIDAD
+                
+                $medicos[]=$medico;
+                return  view('historias.medicos')->with(['medicos'=>$medicos,'paciente'=>$paciente]);   
+
+            }
+
+        }elseif($role->contains('asistente')){ //USUARIO ASISTENTE
 
             $Asistente=Asistente::where(['user_id'=>Auth::user()->id])->first();
-            $querymedicos = Asistente::find($Asistente->id)->medicos();
-            if($querymedicos->count()==0){
+            $asistente_id = $Asistente->id;
+            $medico = User::wherehas('medico.asistentes',function ($query) use ($asistente_id){
+                $query->where([ 'asistente_id' => $asistente_id]);
+            })->with('medico.especialidades')->get();
+            if($medico->count()==0){
                 flash('No estas asignado(a) a ningún médico dentro del sistema!', 'danger');
-                return redirect()->route('home');
+                 return redirect()->route('historias.index');
 
-            }elseif($querymedicos->count()==1){
-                $medicos=$querymedicos->first()->id;
-              
-            }else{
-                foreach ($querymedicos->with('user')->get() as $medico) {
-                    $medicos[$medico->id]=$medico->user->tipodocumento.' '.$medico->user->numerodocumento
-                    .' '.$medico->user->primerapellido.' '.$medico->user->primernombre;
+            }elseif($medico->count()==1){
+                $medico=$medico->first();
+                if($medico->medico->especialidades->count() == 0){ //SIN ESPECIALIDAD
+
+                    flash('El médico asignado no posee especialidades registradas, comuniquese con el administrador!', 'danger');
+                    return redirect()->route('historias.index');
+
+                }elseif($medico->medico->especialidades->count() == 1){ //UNA ESPECIALIDAD
+                 
+                   if($medico->medico->especialidades->first()->id==3){ //GINECOLOGIA
+                        
+                        if($paciente->user->genero=='Masculino') { // SI ES MASCULINO NO PODRA ABRIR LA HISTORIA GINECOLOGIA
+                            flash('La especialidad del médico es Ginecología, no puedes cargar la historia a una persona del genero masculino!', 'danger');
+                            return redirect()->route('historias.index');
+                        }else{ // REDIRECCIONO SI NO ES MASCULINO PARA ABRIR LA HISTORIA GINECOLOGIA
+                            return redirect()->route('historias.historia',[$paciente_id,$medico->medico->especialidades->first()->id,$medico->medico->id]);
+                        }
+                    }else{ //NO GINECOLOGIA 
+
+                        return redirect()->route('historias.historia',[$paciente_id,$medico->medico->especialidades->first()->id,$medico->medico->id]);
+                    }
+                }elseif($medico->medico->especialidades->count() == 2){  //DOS ESPECIALIDADES
+                   
+                    if($medico->medico->especialidades->contains('3')) // CONTIENE GINECOLOGIA
+                    {
+                         if($paciente->user->genero=='Masculino') { //REDIRECCIONO A LA QUE NO ES GINECOLOGIA
+                               
+                            return redirect()->route('historias.historia',[$paciente_id, $medico->medico->especialidades->except([3])->first()->id,$medico->medico->id]);
+                         }else{ //MUESTRO LA PAGINA PARA QUE MEDICO ESCOJA LA ESPECIALIDAD
+                            $medicos[]=$medico;
+                            return  view('historias.medicos')->with(['medicos'=>$medicos,'paciente'=>$paciente]);
+                         }
+
+                    }else{ //NO CONTIENE GINECOLOGIA MUESTRO LA PAGINA PARA QUE MEDICO ESCOJA LA ESPECIALIDAD
+                        $medicos[]=$medico;
+                        return  view('historias.medicos')->with(['medicos'=>$medicos,'paciente'=>$paciente]);       
+                    }   
+                }else{ // MAS DE DOS ESPECIALIDADES MUESTRO LA PAGINA PARA QUE MEDICO ESCOJA LA ESPECIALIDAD
+                    
+                    $medicos[]=$medico;
+                    return  view('historias.medicos')->with(['medicos'=>$medicos,'paciente'=>$paciente]);   
+
                 }
+             
+            }else{
+                return  view('historias.medicos')->with(['medicos'=>$medico,'paciente'=>$paciente]); 
             }
          
         }else{
             flash('No tiene permiso de entrar a esta área, por favor contacte al administrador!', 'danger');
-            return redirect()->route('home');
+            abort(404);
         }
-         
-        return  view('historias.index')->with(['users'=>$users,'medicos'=>$medicos ]);
+
     }
 
-   
+    /**
+     * .
+     * Muestra los pacientes
+     * @param  $request->search para los pacientes
+     */
+    public function index(Request $request)
+    {
+        $users=User::ofType($request->search)->has('paciente')->orderby('numerodocumento','ASC')->paginate(15);
+        return  view('historias.index')->with(['users'=>$users]);
+    }
 
     /**
      * .
