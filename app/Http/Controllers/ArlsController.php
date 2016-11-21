@@ -61,7 +61,7 @@ class ArlsController extends Controller
      */
     public function edit($id)
     {
-       $arl=Arl::findOrFail($id);
+       $arl=Arl::find($id);
        return  view('arls.edit')->with('arl',$arl);
     }
 
@@ -72,7 +72,7 @@ class ArlsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $arl=Arl::findOrFail($id);
+        $arl=Arl::find($id);
         $validator = Validator::make($request->all(), [
             'descripcion' => 'required|string|max:100',Rule::unique('descripcion')->ignore($arl->id), 
         ]);
@@ -94,7 +94,7 @@ class ArlsController extends Controller
      */
     public function destroy($id)
     {
-        $arl=Arl::findOrFail($id);
+        $arl=Arl::find($id);
         $arl->delete();
         flash('La ARL '.$arl->descripcion.' se ha eliminado de forma exitosa!', 'danger');
         return redirect()->route('arls.index');

@@ -78,7 +78,7 @@ class ModulosController extends Controller
      */
     public function edit($id){
       
-    	$modulo= Modulo::findOrFail($id);
+    	$modulo= Modulo::find($id);
     	$roles= Role::all()->sortBy('descripcion')->pluck('descripcion','id');
     	$modulo_role=Modulo::find($modulo->id)->roles()->pluck('role_id')->toArray();
     	return view('modulos.edit')->with(['modulo' => $modulo,'roles'=> $roles,'modulo_role'=>$modulo_role]);
@@ -90,7 +90,7 @@ class ModulosController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $modulo  =   Modulo::findOrFail($id);
+        $modulo  =   Modulo::find($id);
         $validator = Validator::make($request->all(), [
             'registro' => 'required|string|max:100',     
         ]);

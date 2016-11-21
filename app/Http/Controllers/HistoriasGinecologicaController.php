@@ -629,7 +629,7 @@ class HistoriasGinecologicaController extends Controller
         if(is_null($historia_ginecologica)){
             abort(404);
         }
-        $Ginecologia_diagnostico = Ginecologia_diagnostico::findOrFail($diagnostico_id);
+        $Ginecologia_diagnostico = Ginecologia_diagnostico::find($diagnostico_id);
         $Ginecologia_diagnostico->delete();
         flash('El registro se ha eliminado de forma exitosa!', 'danger');
         return redirect()->route('historias.ginecologica.diagnosticos',[$historia_ginecologica->medico_paciente->paciente->id,$historia_ginecologica->id]);

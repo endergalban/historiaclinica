@@ -575,7 +575,7 @@ class HistoriasOcupacionalController extends Controller
         if(is_null($historia_ocupacional)){
             abort(404);
         }
-        $Ocupacional_actual_factor_riesgo_id = Ocupacional_actual_factor_riesgo::findOrFail($ocupacional_actual_factor_riesgo_id);
+        $Ocupacional_actual_factor_riesgo_id = Ocupacional_actual_factor_riesgo::find($ocupacional_actual_factor_riesgo_id);
         $Ocupacional_actual_factor_riesgo_id->delete();
         flash('El registro se ha eliminado de forma exitosa!', 'danger');
         return redirect()->route('historias.ocupacional.actual',[$historia_ocupacional->medico_paciente->paciente->id,$historia_ocupacional->id]);
@@ -650,7 +650,7 @@ class HistoriasOcupacionalController extends Controller
         if(is_null($historia_ocupacional)){
             abort(404);
         }
-        $Antecedente_ocupacional = Antecedente_ocupacional::findOrFail($antecedente_ocupacional_id);
+        $Antecedente_ocupacional = Antecedente_ocupacional::find($antecedente_ocupacional_id);
         $Antecedente_ocupacional->delete();
         flash('La empresa '.$Antecedente_ocupacional->empresa.' se ha eliminado de forma exitosa!', 'danger');
         return redirect()->route('historias.ocupacional.antecedentes',[$historia_ocupacional->medico_paciente->paciente->id,$historia_ocupacional->id]);
@@ -730,7 +730,7 @@ class HistoriasOcupacionalController extends Controller
      */
     public function ocupacional_antecedentes_destroy_riesgo($paciente_id,$historia_ocupacional_id,$antecedente_ocupacional_id,$antecedente_ocupacional_factor_riesgo_id)
     {
-        $Antecedente_ocupacional_factor_riesgo = Antecedente_ocupacional_factor_riesgo::findOrFail($antecedente_ocupacional_factor_riesgo_id);
+        $Antecedente_ocupacional_factor_riesgo = Antecedente_ocupacional_factor_riesgo::find($antecedente_ocupacional_factor_riesgo_id);
         $Antecedente_ocupacional_factor_riesgo->delete();
         flash('La información se ha eliminado de forma exitosa!', 'danger');
         return redirect()->route('historias.ocupacional.antecedentes.riesgos',[$paciente_id,$historia_ocupacional_id,$antecedente_ocupacional_id]);
@@ -807,7 +807,7 @@ class HistoriasOcupacionalController extends Controller
      */
     public function ocupacional_antecedentes_destroy_lesion($paciente_id,$historia_ocupacional_id,$antecedente_ocupacional_id,$tramatologico_id)
     {
-        $Traumatologico = Traumatologico::findOrFail($tramatologico_id);
+        $Traumatologico = Traumatologico::find($tramatologico_id);
         $Traumatologico->delete();
         flash('La información se ha eliminado de forma exitosa!', 'danger');
         return redirect()->route('historias.ocupacional.antecedentes.lesiones',[$paciente_id,$historia_ocupacional_id,$antecedente_ocupacional_id]);
@@ -1115,7 +1115,7 @@ class HistoriasOcupacionalController extends Controller
         if(is_null($historia_ocupacional)){
             abort(404);
         }
-        $Patologico = Patologico::findOrFail($patologico_id);
+        $Patologico = Patologico::find($patologico_id);
         $Patologico->delete();
         flash('El registro se ha eliminado de forma exitosa!', 'danger');
         return redirect()->route('historias.ocupacional.patologias',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id]);
@@ -1132,7 +1132,7 @@ class HistoriasOcupacionalController extends Controller
         if(is_null($historia_ocupacional)){
             abort(404);
         }
-        $Inmunizacion = Inmunizacion::findOrFail($inmunizacion_id);
+        $Inmunizacion = Inmunizacion::find($inmunizacion_id);
         $Inmunizacion->delete();
         flash('El registro se ha eliminado de forma exitosa!', 'danger');
          return redirect()->route('historias.ocupacional.patologias',[$historia_ocupacional->medico_paciente->paciente_id,$historia_ocupacional->id]);
@@ -1293,7 +1293,7 @@ class HistoriasOcupacionalController extends Controller
         if(is_null($historia_ocupacional)){
             abort(404);
         }
-        $Exploracion = Exploracion::findOrFail($exploracion_id);
+        $Exploracion = Exploracion::find($exploracion_id);
         $Exploracion->delete();
         flash('Los datos se han eliminado de forma exitosa!', 'danger');
         return redirect()->route('historias.ocupacional.fisicos',[$historia_ocupacional->medico_paciente->paciente->id,$historia_ocupacional->id]);
@@ -1338,7 +1338,7 @@ class HistoriasOcupacionalController extends Controller
         if(is_null($historia_ocupacional)){
             abort(404);
         }
-        $Visual = Visual::findOrFail($visual_id);
+        $Visual = Visual::find($visual_id);
         $Visual->delete();
         flash('Los datos se han eliminado de forma exitosa!', 'danger');
         return redirect()->route('historias.ocupacional.fisicos',[$historia_ocupacional->medico_paciente->paciente->id,$historia_ocupacional->id]);
@@ -1452,7 +1452,7 @@ class HistoriasOcupacionalController extends Controller
         if(is_null($historia_ocupacional)){
             abort(404);
         }
-        $Examen_altura = Examen_altura::findOrFail($examen_altura_id);
+        $Examen_altura = Examen_altura::find($examen_altura_id);
         $Examen_altura->delete();
         flash('El registro se ha eliminado de forma exitosa!', 'danger');
         return redirect()->route('historias.ocupacional.alturas',[$historia_ocupacional->medico_paciente->paciente->id,$historia_ocupacional->id]);
@@ -1514,7 +1514,7 @@ class HistoriasOcupacionalController extends Controller
         if(is_null($historia_ocupacional)){
             abort(404);
         }
-        $Examen_laboratorio = Examen_laboratorio::findOrFail($examen_laboratorio_id);
+        $Examen_laboratorio = Examen_laboratorio::find($examen_laboratorio_id);
         $Examen_laboratorio->delete();
         flash('El registro se ha eliminado de forma exitosa!', 'danger');
         return redirect()->route('historias.ocupacional.examenes',[$historia_ocupacional->medico_paciente->paciente->id,$historia_ocupacional->id]);
@@ -1632,7 +1632,7 @@ class HistoriasOcupacionalController extends Controller
         if(is_null($historia_ocupacional)){
             abort(404);
         }
-        $Diagnostico = Diagnostico::findOrFail($diagnostico_id);
+        $Diagnostico = Diagnostico::find($diagnostico_id);
         $Diagnostico->delete();
         flash('El registro se ha eliminado de forma exitosa!', 'danger');
         return redirect()->route('historias.ocupacional.diagnosticos',[$historia_ocupacional->medico_paciente->paciente->id,$historia_ocupacional->id]);

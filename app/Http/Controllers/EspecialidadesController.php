@@ -61,7 +61,7 @@ class EspecialidadesController extends Controller
      */
     public function edit($id)
     {
-       $especialidad=Especialidad::findOrFail($id);
+       $especialidad=Especialidad::find($id);
        return  view('especialidades.edit')->with('especialidad',$especialidad);
     }
 
@@ -72,7 +72,7 @@ class EspecialidadesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $especialidad=Especialidad::findOrFail($id);
+        $especialidad=Especialidad::find($id);
         $validator = Validator::make($request->all(), [
             'descripcion' => 'required|string|max:100',Rule::unique('descripcion')->ignore($especialidad->id), 
         ]);
@@ -94,7 +94,7 @@ class EspecialidadesController extends Controller
      */
     public function destroy($id)
     {
-        $especialidad=Especialidad::findOrFail($id);
+        $especialidad=Especialidad::find($id);
         $especialidad->delete();
         flash('La especialidad '.$especialidad->descripcion.' se ha eliminado de forma exitosa!', 'danger');
         return redirect()->route('especialidades.index');

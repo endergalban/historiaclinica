@@ -61,7 +61,7 @@ class EmpresasController extends Controller
      */
     public function edit($id)
     {
-       $empresa=Empresa::findOrFail($id);
+       $empresa=Empresa::find($id);
        return  view('empresas.edit')->with('empresa',$empresa);
     }
 
@@ -72,7 +72,7 @@ class EmpresasController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $empresa=Empresa::findOrFail($id);
+        $empresa=Empresa::find($id);
         $validator = Validator::make($request->all(), [
             'descripcion' => 'required|string|max:100',Rule::unique('descripcion')->ignore($empresa->id), 
         ]);
@@ -94,7 +94,7 @@ class EmpresasController extends Controller
      */
     public function destroy($id)
     {
-        $empresa=Empresa::findOrFail($id);
+        $empresa=Empresa::find($id);
         $empresa->delete();
         flash('La EPS '.$empresa->descripcion.' se ha eliminado de forma exitosa!', 'danger');
         return redirect()->route('empresas.index');

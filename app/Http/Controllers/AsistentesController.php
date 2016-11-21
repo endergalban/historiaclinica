@@ -198,7 +198,7 @@ class AsistentesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user   =   User::findOrFail($id);
+        $user   =   User::find($id);
         $validator = Validator::make($request->all(), [
             'imagen' => 'image', 
             'tipodocumento' => 'required|string|max:2',     
@@ -287,7 +287,7 @@ class AsistentesController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
+        $user = User::find($id);
         $user->delete();
         flash('El asistente '.$user->primernombre.' '.$user->primerapellido.' se ha eliminado de forma exitosa!', 'danger');
         return redirect()->route('asistentes.index');

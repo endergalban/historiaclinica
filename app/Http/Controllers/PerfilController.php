@@ -31,7 +31,7 @@ class PerfilController extends Controller
      */
     public function update(Request $request, $id)
     {
-		 $user	=	User::findOrFail($id);
+		 $user	=	User::find($id);
          $validator = Validator::make($request->all(), [
             'password' => 'string||min:6|max:16|confirmed',   
             'imagen' => 'image',   

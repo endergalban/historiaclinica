@@ -61,7 +61,7 @@ class AfpsController extends Controller
      */
     public function edit($id)
     {
-       $afp=Afp::findOrFail($id);
+       $afp=Afp::find($id);
        return  view('afps.edit')->with('afp',$afp);
     }
 
@@ -72,7 +72,7 @@ class AfpsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $afp=Afp::findOrFail($id);
+        $afp=Afp::find($id);
         $validator = Validator::make($request->all(), [
             'descripcion' => 'required|string|max:100',Rule::unique('descripcion')->ignore($afp->id), 
         ]);
@@ -94,7 +94,7 @@ class AfpsController extends Controller
      */
     public function destroy($id)
     {
-        $afp=Afp::findOrFail($id);
+        $afp=Afp::find($id);
         $afp->delete();
         flash('La AFP '.$afp->descripcion.' se ha eliminado de forma exitosa!', 'danger');
         return redirect()->route('afps.index');

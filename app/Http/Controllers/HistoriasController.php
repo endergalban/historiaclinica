@@ -154,8 +154,31 @@ class HistoriasController extends Controller
      */
     public function index(Request $request)
     {
-        $users=User::ofType($request->search)->has('paciente')->orderby('numerodocumento','ASC')->paginate(15);
-        return  view('historias.index')->with(['users'=>$users]);
+        $role = User::find(Auth::user()->id)->roles()->pluck('descripcion');
+        if($role->contains('administrador')){ //USUARIO ADMINISTRADOR
+
+            $users=User::ofType($request->search)->has('paciente.medico_pacientes')->orderby('numerodocumento','ASC')->paginate(15);
+            return  view('historias.index')->with(['users'=>$users]); 
+
+        }elseif($role->contains('medico')){ //USUARIO MEDICO
+
+            $Medico=Medico::where(['user_id'=>Auth::user()->id])->first();
+            $medico_id = $Medico->id;
+            $users = User::ofType($request->search)->wherehas('paciente.medico_pacientes',function ($query) use ($medico_id){
+                $query->where([ 'medico_id' => $medico_id]);
+            })->with('paciente.medico_pacientes')->orderby('numerodocumento','ASC')->paginate(15);
+            dd($users);
+            return  view('historias.index')->with(['users'=>$users]);   
+
+        }elseif($role->contains('asistente')){ //USUARIO ASISTENTE
+
+            $Asistente=Asistente::where(['user_id'=>Auth::user()->id])->first();
+            $asistente_id = $Asistente->id;
+            $users = User::ofType($request->search)->wherehas('paciente.medico_pacientes.medico.asistentes',function ($query) use ($asistente_id){
+                $query->where([ 'asistente_id' => $asistente_id]);
+            })->orderby('numerodocumento','ASC')->paginate(15);
+            return  view('historias.index')->with(['users'=>$users]);
+        }
     }
 
     /**

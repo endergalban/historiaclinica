@@ -482,7 +482,14 @@
         //No Initialize Select2 Elements
       @else
         //Initialize Select2 Elements
-        $(".select2").select2();
+        $(".select2").select2().on(
+            'select2:close',
+            function () {
+                $(this).focus();
+            }
+        );
+
+      
         
       @endif
         $.fn.modal.Constructor.prototype.enforceFocus = function() {};
