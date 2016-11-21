@@ -157,29 +157,83 @@ class HistoriasController extends Controller
         $role = User::find(Auth::user()->id)->roles()->pluck('descripcion');
         if($role->contains('administrador')){ //USUARIO ADMINISTRADOR
 
-            $users=User::ofType($request->search)->has('paciente.medico_pacientes')->orderby('numerodocumento','ASC')->paginate(15);
-            return  view('historias.index')->with(['users'=>$users]); 
-
+            $users=User::ofType($request->search)->has('paciente.medico_pacientes.medico.user')->orderby('numerodocumento','ASC')->paginate(15);
+     
         }elseif($role->contains('medico')){ //USUARIO MEDICO
 
             $Medico=Medico::where(['user_id'=>Auth::user()->id])->first();
             $medico_id = $Medico->id;
             $users = User::ofType($request->search)->wherehas('paciente.medico_pacientes',function ($query) use ($medico_id){
                 $query->where([ 'medico_id' => $medico_id]);
-            })->with('paciente.medico_pacientes')->orderby('numerodocumento','ASC')->paginate(15);
-            dd($users);
-            return  view('historias.index')->with(['users'=>$users]);   
+            })->with(['paciente.medico_pacientes' => function ($query) use ($medico_id){
+                $query->where([ 'medico_id' => $medico_id]);
+            }])->orderby('numerodocumento','ASC')->paginate(15);
+     
 
         }elseif($role->contains('asistente')){ //USUARIO ASISTENTE
 
-            $Asistente=Asistente::where(['user_id'=>Auth::user()->id])->first();
-            $asistente_id = $Asistente->id;
-            $users = User::ofType($request->search)->wherehas('paciente.medico_pacientes.medico.asistentes',function ($query) use ($asistente_id){
+            $asistente_id=Asistente::where(['user_id'=>Auth::user()->id])->first()->id;
+            $Medicos=Medico::whereHas('asistentes',function($query) use ($asistente_id){
                 $query->where([ 'asistente_id' => $asistente_id]);
-            })->orderby('numerodocumento','ASC')->paginate(15);
-            return  view('historias.index')->with(['users'=>$users]);
+            })->pluck('id');
+           
+            $users = User::ofType($request->search)->wherehas('paciente.medico_pacientes',function ($query) use ($Medicos){
+                $query->whereIn( 'medico_id' , $Medicos);
+            })->with(['paciente.medico_pacientes' => function ($query) use ($Medicos){
+                $query->whereIn('medico_id', $Medicos );
+            }])->orderby('numerodocumento','ASC')->paginate(15);
         }
+
+        if(Auth::user()->roles()->get()->whereIn('id',[1,2])->count()==0)
+        {$acciones=false;}else{$acciones=true;}     
+        
+        return  view('historias.index')->with(['users'=>$users,'acciones'=>$acciones]);  
     }
+
+      /**
+     * .
+     * Muestra las historias eliminadas
+     * @param  $request->search para los pacientes
+     */
+    public function reciclaje(Request $request)
+    {
+        $role = User::find(Auth::user()->id)->roles()->pluck('descripcion');
+        if($role->contains('administrador')){ //USUARIO ADMINISTRADOR
+
+            $Medico_paciente=Medico_paciente::onlyTrashed()->with('paciente.user')->with('medico.user')->with('especialidad')->get();
+    
+        }elseif($role->contains('medico')){ //USUARIO MEDICO
+            $medico_id=Medico::where('user_id',Auth::user()->id)->first()->id;
+            $Medico_paciente=Medico_paciente::onlyTrashed()->where('medico_id',$medico_id)->with('paciente.user')->with('medico.user')->with('especialidad')->get();
+          
+
+        }elseif($role->contains('asistente')){ //USUARIO ASISTENTE
+            
+            $asistente_id=Asistente::where(['user_id'=>Auth::user()->id])->first()->id;
+            $Medicos=Medico::whereHas('asistentes',function($query) use ($asistente_id){
+                $query->where([ 'asistente_id' => $asistente_id]);
+            })->pluck('id');
+
+            $Medico_paciente=Medico_paciente::onlyTrashed()->whereIn('medico_id',$Medicos)->with('paciente.user')->with('medico.user')->with('especialidad')->get();
+        }
+         return  view('historias.reciclaje')->with(['Medico_pacientes' => $Medico_paciente]); 
+    }
+
+
+       /**
+     * .
+     * Muestra las historias eliminadas
+     * @param  $request->search para los pacientes
+     */
+    public function restaurar($medico_paciente_id)
+    {
+        $Medico_paciente = Medico_paciente::onlyTrashed()->findOrFail($medico_paciente_id);
+        $Medico_paciente->restore();
+        flash('Las historias se han restaurado de forma exitosa!', 'success');
+        return redirect()->route('historias.index');
+    }
+
+
 
     /**
      * .
@@ -195,7 +249,7 @@ class HistoriasController extends Controller
         }elseif($especialidad_id=='pediatria'){
             $especialidad_id=2;
         }
-        $medico_paciente = Medico_paciente::where(['paciente_id' => $paciente_id,'especialidad_id' => $especialidad_id,'medico_id' => $medico_id] )->first();
+        $medico_paciente = Medico_paciente::withTrashed()->where(['paciente_id' => $paciente_id,'especialidad_id' => $especialidad_id,'medico_id' => $medico_id] )->first();
         if(is_null($medico_paciente)){
 
             $medico_paciente= new Medico_paciente;
@@ -203,6 +257,10 @@ class HistoriasController extends Controller
             $medico_paciente->medico()->associate($medico_id);
             $medico_paciente->especialidad_id=$especialidad_id;
             $medico_paciente->save();
+        }else{
+            if ($medico_paciente->trashed()) {
+                $medico_paciente->restore();
+            }
         }
 
         if($especialidad_id==1){
@@ -217,6 +275,20 @@ class HistoriasController extends Controller
             echo "Pediatria";
         }
 
+    }
+
+
+    /**
+     * .
+     * Elimina el vinculo entre médico y paciente
+     * @param  $paciente_id,$especialidad_id (Ocupacional | Pediatría | Ginecología ),$medico_id
+     */
+    public function destroy($medico_paciente_id)
+    {
+        $Medico_paciente=Medico_paciente::find($medico_paciente_id);
+        $Medico_paciente->delete();
+        flash('Se ha eliminado la historia de   forma exitosa!', 'danger');
+        return redirect()->route('historias.index');
     }
       
         

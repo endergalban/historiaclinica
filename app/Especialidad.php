@@ -21,6 +21,10 @@ class Especialidad extends Model
 		return $this->belongsToMany('App\Medico','especialidad_medico','especialidad_id','medico_id');
 	}
 
+	public function medico_pacientes(){
+		return $this->hasMany('App\Medico_pacientes','especialidad_id');
+	}
+
 
 	public function scopeOfType($query, $type){
 		

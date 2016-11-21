@@ -39,15 +39,16 @@
 	            <!-- /.box-header -->
 	            <div class="box-body table-responsive">
 	           	
-	              	<table id="example2" class="table table-bordered table-hover">
+	              	<table id="example2" class="table table-bordered">
 				 		<thead>
 							<tr >
 								<th>Identificación</th>
 								<th>Nombre</th>
 								<th class="text-center">Edad</th>
 								<th class="text-center">Teléfono</th>
-								<th class="text-center">Email</th>
 								<th class="text-center">Seleccionar</th>
+								<th>Historias Creadas</th>
+								
 							</tr>
 				   		</thead>
 						  	<tbody>
@@ -58,21 +59,68 @@
 									<td>{{ $user->primernombre.' '.$user->primerapellido }}</td>
 									<td class="text-center">{{ $user->fechanacimiento->diff(Carbon\Carbon::now())->format('%y') }} año(s)</td>
 									<td class="text-center">{{ $user->telefono }}</td>
-									<td class="text-center">{{ $user->email }}</td>
 									<td class="text-center">
-										<a  href="{{ route('historias.medicos',[$user->paciente->id]) }}"><i class="fa fa-search" ></i></a>
+										<a  class="open-modal label label-success" href="{{ route('historias.medicos',[$user->paciente->id]) }}">Ver Historia</a>
 									</td>
+									<td>
+										<table id="example2" class="table table-bordered table-hover">
+										
+											@foreach( $user->paciente->medico_pacientes as $medico )
+										  		<tr>
+											  		<td>{{$medico->medico->user->primernombre.' '.$medico->medico->user->primerapellido}}</td>
+											  		<td> {{$medico->load('especialidad')->especialidad->descripcion }}</td>
+											  		<td class="text-center"> 
+											  			@if( $acciones==true )
+											  				<a data-toggle="modal" data-url="{{ route('historias.destroy',$medico->id) }}" class=open-modal label label-danger" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
+											  			@else
+															<a  href="#"><span class="label label-default">Eliminar</span></a>
+											  			@endif
+											  		</td>
+											  	</tr>
+										  	@endforeach
+										  
+										
+										</table>
+									</td>
+									
 								</tr>
 								@endforeach
 						  	</tbody>
 					</table>
 					{{ $users->links() }}
 		  		</div>
+				@if( $acciones==true )
+		  		 <div class="box-footer">
+					<a class="btn btn-default btn-sm pull-right" href="{{ route('historias.reciclaje') }}" >Ver Papelera</a>
+		        </div>
+		        @endif
 					
 			</div>
 	 	</div>
 	</div>
 
+
+ <div class="modal fade"  id="myAlert" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Confirmación</h4>
+              </div>
+              <div class="modal-body">
+               	<p>Esta seguro que desea continuar con la operación...? </p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+              	<a  class="btnsi"><button type="button" class="btn btn-primary">Si</button></a>
+              </div>
+            </div>
+            <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
 
      
 @endsection

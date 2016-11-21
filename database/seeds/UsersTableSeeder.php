@@ -92,7 +92,7 @@ class UsersTableSeeder extends Seeder
         $user->ocupacion = 'Ingeniero';
         $user->telefono = '00573126688172';
         $user->firma = '';
-        $user->imagen = '';
+        $user->imagen = 'avatar.png';
         $user->activo = true;
         $user->password = bcrypt('123456');
         $user->save();

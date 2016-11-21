@@ -98,6 +98,10 @@ Route::group(['middleware' => 'roles','site'=>'historias'], function () {
 
 	Route::resource('historias','HistoriasController',['only' => ['index']]);
 	Route::get('historias/medicos/{paciente_id}',['uses'=>'HistoriasController@medico','as'=>'historias.medicos']);
+	Route::get('historias/destroy/{medico_paciente_id}',['uses'=>'HistoriasController@destroy','as'=>'historias.destroy']);
+	Route::get('historias/reciclaje', ['uses'=>'HistoriasController@reciclaje','as'=>'historias.reciclaje']);
+	Route::get('historias/{id}/restaurar', ['uses'=>'HistoriasController@restaurar','as'=>'historias.restaurar']);
+
 	Route::get('historias/{id}/{tipo}/{medico_id?}',['uses'=>'HistoriasController@historia','as'=>'historias.historia']);
 
 

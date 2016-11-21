@@ -17,7 +17,7 @@ class CreateMedicoPacientesTable extends Migration
             $table->increments('id');
             $table->integer('medico_id')->unsigned();$table->foreign('medico_id')->references('id')->on('medicos')->onDelete('restrict');
             $table->integer('paciente_id')->unsigned();$table->foreign('paciente_id')->references('id')->on('pacientes')->onDelete('restrict');
-            $table->integer('especialidad_id')->unsigned();//$table->foreign('especialidad_id')->references('id')->on('especialidades')->onDelete('restrict');
+            $table->integer('especialidad_id')->unsigned();$table->foreign('especialidad_id')->references('id')->on('especialidades')->onDelete('restrict');
             $table->softDeletes();
             $table->timestamps();
         });
