@@ -54,6 +54,21 @@
                     <div class="form-group col-md-12">
                         {!! Form::text('fechainicio',null,['class'=>'form-control pull-right', 'id'=>'fechainicio']) !!}
                     </div>
+                    <div class="form-group col-md-12">
+                        <select id="cbRango" name="cbRango" class="form-control">
+                          <option value="5">05 min</option>
+                          <option value="10">10 min</option>
+                          <option value="15">15 min</option>
+                          <option value="20">20 min</option>
+                          <option value="25">25 min</option>
+                          <option value="30">30 min</option>
+                          <option value="35">35 min</option>
+                          <option value="40">40 min</option>
+                          <option value="45">45 min</option>
+                          <option value="50">50 min</option>
+                          <option value="55">55 min</option>
+                        </select>
+                    </div>
               </div>
              
               <div class="form-group col-md-12">
@@ -244,6 +259,8 @@ function eliminar()
         m = date.getMonth(),
         y = date.getFullYear();
     $('#calendar').fullCalendar({
+
+      slotDuration: '00:05:00',
       header: {
         left: 'prev,next today',
         center: 'title',
@@ -363,7 +380,7 @@ function eliminar()
       var id_me= $("#medico_id").val();
       var id_esp= $("#especialidad_id").val();
       var color= currColor;
-      var duracion = 30;
+      var duracion = $("#cbRango").val();
       var borrar = false;
       if ($("input:checked").val() > 0)
       {
