@@ -138,7 +138,7 @@ class CitasController extends Controller
         $color= Citas::where('fechainicio','>=',$start)->where('fechafin','<=',$end)->whereIn('medico_paciente_id',$array_medico_paciente)->pluck('color');
         //$id_pa= Citas::where('fechainicio','>=',$start)->where('fechafin','<=',$end)->whereIn('medico_paciente_id',$array_medico_paciente)->pluck('medico_paciente_id');
         //$id_pa = User::with('paciente.medico_pacientes.citas')->whereHas('citas',$array_medico_paciente);
-        $id_pa = Citas::with('medico_pacientes.paciente.user')->where('fechainicio','>=',$start)->where('fechafin','<=',$end)->whereIn('medico_paciente_id',$array_medico_paciente)->get();
+        $id_pa = Citas::with('medico_pacientes.paciente')->where('fechainicio','>=',$start)->where('fechafin','<=',$end)->whereIn('medico_paciente_id',$array_medico_paciente)->get();
 
         $count = count($id);
         $interval = $fechainicio->diff($fechafin);
@@ -151,7 +151,7 @@ class CitasController extends Controller
                 'backgroundColor' => $color[$i],
                 'borderColor'=> $color[$i],
                 'id' => $id[$i],
-                'id_pa' => $id_pa[$i]->medico_pacientes->paciente->user->id,
+                'id_pa' => $id_pa[$i]->medico_pacientes->paciente->id,
                 'diff' => $interval
             );    
         }  

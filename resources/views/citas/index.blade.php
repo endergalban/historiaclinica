@@ -113,7 +113,7 @@
                                 <div class="modal-body">
 
                             <input type="hidden" id="hdnIdCita" name="hdnIdCita" />
-                            <button type="button" id="btnVerP" class="btn btn-default">Ver Infomación Paciente</button>
+                            <button type="button" id="btnVerP" class="btn btn-default">Crear Historia</button>
                             <button type="button" class="btn btn-danger" onclick="eliminar()" data-dismiss="modal" >Eliminar Cita</button>
                 </div>
                 <div class="modal-footer">
@@ -336,7 +336,7 @@ function eliminar()
       eventClick: function(calEvent)
       {
          
-         $("#btnVerP").attr("onclick","location.href='pacientes/"+calEvent.id_pa+"'");
+         $("#btnVerP").attr("onclick","location.href='historias/medicos/"+calEvent.id_pa+"'");
          $("#hdnIdCita").val(calEvent.id);
          document.getElementById('lbPaciente').innerHTML = calEvent.title;
          document.getElementById('lbCita').innerHTML = calEvent.start.format("DD/MM/YYYY h:mm A");
