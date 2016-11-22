@@ -66,26 +66,42 @@ use Auth;
 class HistoriasOcupacionalController extends Controller
 {
 
-	public function index($paciente_id,$medico_paciente_id)
+	public function index($paciente_id,$medico_id)
     {
-    	$medico_paciente=Medico_paciente::where('id',$medico_paciente_id)->first();
-      	$historia_ocupacionales=Historia_ocupacional::with('tipo_examen')->where('medico_paciente_id',$medico_paciente->id)->orderby('id','DESC')->  get();
-		$paciente=Paciente::where('id',$medico_paciente->paciente_id)->with('user')->first();
-		$medico=Medico::where('id',$medico_paciente->medico_id)->with('user')->first();
-
+        $medico_paciente = Medico_paciente::where(['paciente_id' => $paciente_id,'especialidad_id' => 1,'medico_id' => $medico_id] )->first();
+        if(is_null($medico_paciente)){
+            $historia_ocupacionales=array();
+        }else{
+            $historia_ocupacionales=Historia_ocupacional::with('tipo_examen')->where('medico_paciente_id',$medico_paciente->id)->orderby('id','DESC')->get();
+        }
+        $paciente=Paciente::where('id',$paciente_id)->with('user')->first();
+        $medico=Medico::where('id',$medico_id)->with('user')->first();
+	
         if(Auth::user()->roles()->get()->whereIn('id',[1,2])->count()==0)
         {$acciones=false;}else{$acciones=true;}     
         
-        return view('historias.historia.ocupacional.index')->with(['medico' => $medico,'paciente' => $paciente,'medico_paciente' => $medico_paciente,'historia_ocupacionales' => $historia_ocupacionales,'acciones'=> $acciones]);
+        return view('historias.historia.ocupacional.index')->with(['medico' => $medico,'paciente' => $paciente,'historia_ocupacionales' => $historia_ocupacionales,'acciones'=> $acciones]);
     }
    
-    public function ocupacional_create($paciente_id,$medico_paciente_id)
+    public function ocupacional_create($paciente_id,$medico_id)
     {
 
-        $medico_paciente = Medico_paciente::where(['id' => $medico_paciente_id] )->with('paciente')->first();
+        $medico_paciente = Medico_paciente::withTrashed()->where(['paciente_id' => $paciente_id,'especialidad_id' => 1,'medico_id' => $medico_id] )->first();
+        if(is_null($medico_paciente)){
+
+            $medico_paciente= new Medico_paciente;
+            $medico_paciente->paciente()->associate($paciente_id);
+            $medico_paciente->medico()->associate($medico_id);
+            $medico_paciente->especialidad_id=3;
+            $medico_paciente->save();
+        }else{
+            if ($medico_paciente->trashed()) {
+                $medico_paciente->restore();
+            }
+        }
        
 
-        Historia_ocupacional::where('medico_paciente_id', '=', $medico_paciente_id)->update(['activa' => 0]);
+        Historia_ocupacional::where('medico_paciente_id', '=', $medico_paciente->id)->update(['activa' => 0]);
 
         $historia_ocupacional= new Historia_ocupacional;
         $historia_ocupacional->medico_paciente()->associate($medico_paciente);
@@ -187,11 +203,7 @@ class HistoriasOcupacionalController extends Controller
         return redirect()->route('historias.historia',[$paciente_id,'ocupacional',$medico_id]);
     }
 
-    /**
-     * .
-     * Crea una nueva historia ocupacional con todos los datos hijos por defecto
-     * @param $paciente_id,$medico_paciente_id
-     */
+   
 
      /**
      * .

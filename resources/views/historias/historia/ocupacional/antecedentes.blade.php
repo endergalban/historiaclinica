@@ -94,7 +94,7 @@
                         </div>
 
                         <div class="form-group col-md-12">
-                            {!! Form::label('ocupacion','Oupación') !!}
+                            {!! Form::label('ocupacion','Ocupación') !!}
                             {!! Form::text('ocupacion',old('ocupacion'),['placeholder' => 'Nombre del cargo que ejerció en la empresa','class'=>'form-control']) !!}
                         </div>
                     

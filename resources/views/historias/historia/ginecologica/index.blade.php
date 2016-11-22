@@ -66,7 +66,7 @@
                        
                                              
                         <td class="text-center">
-                            @if($historia->activa==1 and  $acciones==true))
+                            @if($historia->activa==1 and  $acciones==true)
                                 <a href="{{ route('historias.ginecologica.edit',[$paciente->id,$historia->id]) }}" ><span class="label label-warning">Editar</span></a>
                                 <a href="{{ route('historias.ginecologica.documentos',[$paciente->id,$historia->id]) }}" ><span class="label bg-purple">Documentos</span></a>
                                 <a data-toggle="modal" data-url="{{ route('historias.destroy_ginecologica',[$paciente->id,$medico->id , $historia->id ]) }}" class="open-modal" href="#myAlert"><span class="label label-danger">Eliminar</span></a>
@@ -77,7 +77,7 @@
                             @endif
                         </td>
                          <td class="text-right"> 
-                       
+                             <a href="{{ route('reporte.ginecologia_consulta',[$historia->id]) }}" target="_BLANK"><span class="label label-primary" >Indicaciones</span></a>
                         </td> 
                     </tr>
                     @endforeach
@@ -87,9 +87,9 @@
         <!-- /.box-body -->
         <div class="box-footer">
             @if($acciones==true)
-                <a class="btn btn-default btn-sm pull-right open-modal" data-toggle="modal" data-url="{{ route('historias.ginecologica.create',[$paciente->id,$medico_paciente->id]) }}" href="#myAlert" >Crear Nueva Historia Ginecológica</a>
+                <a class="btn btn-default btn-sm pull-right open-modal" data-toggle="modal" data-url="{{ route('historias.ginecologica.create',[$paciente->id,$medico->id]) }}" href="#myAlert" >Crear Nueva Historia Ginecológica</a>
             @endif
-             Total: {{ $historia_ginecologicas->count() }}
+            
         </div>
     </div>
 

@@ -184,15 +184,15 @@
 
               	 @if($user->firma != '')
 			    <div class="col-md-12">
-               		<div class="form-group col-md-1">
-					 	<img class='profile-user-img img-responsive' src="{{ asset('images/firmas/'.$user->firma)}}" />
+               		<div class="form-group col-md-3">
+					 	<img class='img-responsive' src="{{ asset('images/firmas/'.$user->firma)}}" />
 				    </div>
       			</div>	
       			@endif
 
             	<div class="col-md-12">
-               		<div class="form-group col-md-3">
-					 	{!! Form::label('firma','Firma digital') !!}
+               		<div class="form-group col-md-4">
+					 	{!! Form::label('firma','Firma digital ( sugerido 360x120 pixeles )') !!}
 					    {!! Form::file('firma', null,['class'=>'form-control']) !!}
 				    </div>
 			    </div>
@@ -200,14 +200,14 @@
 			    @if(file_exists( public_path().'/images/banner/'.$user->medico->banner) && $user->medico->banner != '')
 				<div class="form-group col-md-12 ">
 				    <div class="form-group col-md-12 ">
-					 	<img class='profile-user-img img-responsive ' src="{{ asset('images/banner/'.$user->medico->banner)}}" />
+					 	<img class='img-responsive ' src="{{ asset('images/banner/'.$user->medico->banner)}}" />
                		</div>
 				</div>
 				@endif
 
 			   <div class="form-group col-md-12 ">
 			   		<div class="form-group col-md-3">
-					 	{!! Form::label('banner','Banner') !!}
+					 	{!! Form::label('banner','Banner ( sugerido 1080x170 pixeles )') !!}
 					    {!! Form::file('banner', null,['class'=>'form-control']) !!}
 				    </div>
     			

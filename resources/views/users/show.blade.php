@@ -163,8 +163,8 @@
 	            </div>
 	            @if($user->firma != '')
 				<div class="col-md-12">
-		          	<div class="form-group col-md-1 ">
-						 	<img class='profile-user-img img-responsive' src="{{ asset('images/firmas/'.$user->firma)}}" />
+		          	<div class="form-group col-md-4 ">
+						 	<img class='img-responsive' src="{{ asset('images/firmas/'.$user->firma)}}" />
 					</div>
  				</div>
 				@endif           

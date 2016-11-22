@@ -205,8 +205,8 @@
 		        </div>
 
              	<div class="col-md-12">
-               		<div class="form-group col-md-3">
-					 	{!! Form::label('firma','Firma digital') !!}
+               		<div class="form-group col-md-4">
+					 	{!! Form::label('firma','Firma digital ( sugerido 360x120 pixeles )') !!}
 					    {!! Form::file('firma', old('firma'),['class'=>'form-control']) !!}
 				    </div>
     			</div>

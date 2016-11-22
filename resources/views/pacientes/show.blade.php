@@ -198,9 +198,9 @@
 	              	</div>
 		        </div>
 		        <div class="col-md-12">
-		          	<div class="form-group col-md-1 ">
+		          	<div class="form-group col-md-4 ">
 	               		@if($user->firma != '')
-						 	<img class='profile-user-img img-responsive' src="{{ asset('images/firmas/'.$user->firma)}}" />
+						 	<img class='img-responsive' src="{{ asset('images/firmas/'.$user->firma)}}" />
 	               		@endif
 					</div>
 				</div>

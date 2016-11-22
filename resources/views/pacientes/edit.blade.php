@@ -205,15 +205,15 @@
 				
 				@if($user->firma != '')
  				<div class="col-md-12">
-               		<div class="form-group col-md-1">
-					 	<img class='profile-user-img img-responsive' src="{{ asset('images/firmas/'.$user->firma)}}" />
+               		<div class="form-group col-md-4">
+					 	<img class='img-responsive' src="{{ asset('images/firmas/'.$user->firma)}}" />
 					</div>
     			</div>
            		@endif
 
         		<div class="col-md-12">
-               		<div class="form-group col-md-3">
-					 	{!! Form::label('firma','Firma digital') !!}
+               		<div class="form-group col-md-4">
+					 	{!! Form::label('firma','Firma digital ( sugerido 360x120 pixeles )') !!}
 					    {!! Form::file('firma', null,['class'=>'form-control']) !!}
 				    </div>
 				</div>

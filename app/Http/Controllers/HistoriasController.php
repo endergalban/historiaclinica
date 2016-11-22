@@ -249,26 +249,12 @@ class HistoriasController extends Controller
         }elseif($especialidad_id=='pediatria'){
             $especialidad_id=2;
         }
-        $medico_paciente = Medico_paciente::withTrashed()->where(['paciente_id' => $paciente_id,'especialidad_id' => $especialidad_id,'medico_id' => $medico_id] )->first();
-        if(is_null($medico_paciente)){
-
-            $medico_paciente= new Medico_paciente;
-            $medico_paciente->paciente()->associate($paciente_id);
-            $medico_paciente->medico()->associate($medico_id);
-            $medico_paciente->especialidad_id=$especialidad_id;
-            $medico_paciente->save();
-        }else{
-            if ($medico_paciente->trashed()) {
-                $medico_paciente->restore();
-            }
-        }
-
         if($especialidad_id==1){
             
-            return redirect()->route('historias.ocupacional.index', ['paciente_id' => $medico_paciente->paciente_id,'medico_paciente_id' => $medico_paciente->id]);
+            return redirect()->route('historias.ocupacional.index', ['paciente_id' => $paciente_id,'medico_id' => $medico_id]);
 
         }elseif($especialidad_id==3){
-            return redirect()->route('historias.ginecologica.index', ['paciente_id' => $medico_paciente->paciente_id,'medico_paciente_id' => $medico_paciente->id]);
+            return redirect()->route('historias.ginecologica.index', ['paciente_id' => $paciente_id,'medico_id' => $medico_id]);
 
         }elseif($especialidad_id==2){
 

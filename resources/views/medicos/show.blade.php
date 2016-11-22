@@ -176,15 +176,17 @@
 
             	
  				<div class="col-md-12">
-	    			<div class="form-group col-md-1">
-	               		@if($user->firma != '')
-						 	<img class='profile-user-img img-responsive' src="{{ asset('images/firmas/'.$user->firma)}}" />
-	               		@endif
-					</div>
+	    			
+               		@if($user->firma != '')
+               		<div class="form-group col-md-3">
+					 	<img class='img-responsive' src="{{ asset('images/firmas/'.$user->firma)}}" />
+					 </div>
+               		@endif
+					
 
 					@if(file_exists( public_path().'/images/banner/'.$user->medico->banner) && $user->medico->banner != '')
-						<div class="form-group col-md-12 ">
-						 	<img class='profile-user-img img-responsive' src="{{ asset('images/banner/'.$user->medico->banner)}}" />
+						<div class="form-group col-md-12">
+						 	<img class='img-responsive' src="{{ asset('images/banner/'.$user->medico->banner)}}" />
 						</div>
 					@endif
 				</div>

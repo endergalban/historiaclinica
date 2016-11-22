@@ -49,7 +49,7 @@
               <div class="col-md-12">
                 <div class="form-group col-md-12 ">
                 @if(file_exists( public_path().'/images/banner/'.$medico->banner) &&  $medico->banner!='' )
-                    <img class='profile-user-img img-responsive' src="{{ asset('images/banner/'.$medico->banner)}}" />
+                    <img class='img-responsive' src="{{ asset('images/banner/'.$medico->banner)}}" />
                 @endif
                 </div>
               </div>
@@ -71,7 +71,7 @@
 
               <div class="col-md-12">
                   <div class="form-group col-md-3">
-                  {!! Form::label('banner','Banner') !!}
+                  {!! Form::label('banner','Banner ( sugerido 1080x170 pixeles )') !!}
                   {!! Form::file('banner', null,['class'=>'form-control']) !!}
                 </div>
               </div>

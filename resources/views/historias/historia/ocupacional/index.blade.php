@@ -93,9 +93,9 @@
         <!-- /.box-body -->
         <div class="box-footer">
             @if($acciones==true)
-                <a class="btn btn-default btn-sm pull-right open-modal" data-toggle="modal" data-url="{{ route('historias.ocupacional.create',[$paciente->id,$medico_paciente->id]) }}" href="#myAlert" >Crear Nueva Historia Ocupacional</a>
+                <a class="btn btn-default btn-sm pull-right open-modal" data-toggle="modal" data-url="{{ route('historias.ocupacional.create',[$paciente->id,$medico->id]) }}" href="#myAlert" >Crear Nueva Historia Ocupacional</a>
             @endif
-             Total: {{ $historia_ocupacionales->count() }}
+          
         </div>
     </div>
 

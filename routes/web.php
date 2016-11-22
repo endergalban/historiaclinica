@@ -106,9 +106,9 @@ Route::group(['middleware' => 'roles','site'=>'historias'], function () {
 
 
 /////////////////	//GINECOLOGICA//   ///////////////////////////////////////////////
-	Route::get('historias/{id}/ginecologica/{medico_paciente}/index',['uses'=>'HistoriasGinecologicaController@index','as'=>'historias.ginecologica.index']);
+	Route::get('historias/{id}/ginecologica/{medico_id}/index',['uses'=>'HistoriasGinecologicaController@index','as'=>'historias.ginecologica.index']);
 	
-	Route::get('historias/{id}/ginecologica/{medico_paciente}/create',['uses'=>'HistoriasGinecologicaController@ginecologica_create','as'=>'historias.ginecologica.create']);
+	Route::get('historias/{id}/ginecologica/{medico_id}/create',['uses'=>'HistoriasGinecologicaController@ginecologica_create','as'=>'historias.ginecologica.create']);
 
 	Route::get('historias/{id}/ginecologica/{medico_id}/{historia_ginecologica_id}/destroy',['uses'=>'HistoriasGinecologicaController@destroy_ginecologica','as'=>'historias.destroy_ginecologica']);
 
@@ -283,6 +283,8 @@ Route::group(['middleware' => 'roles','site'=>'all'], function () {
 	Route::get('reportes/{historia_ocupacional_id}/historia',['uses'=>'ReportsController@historia','as'=>'reporte.historia']);
 	Route::get('reportes/{historia_ocupacional_id}/consentimiento_informado',['uses'=>'ReportsController@consentimiento_informado','as'=>'reporte.consentimiento_informado']);
 	Route::get('reportes/{historia_ocupacional_id}/aptitud_laboral',['uses'=>'ReportsController@aptitud_laboral','as'=>'reporte.aptitud_laboral']);
+
+	Route::get('reportes/{historia_ocupacional_id}/ginecologia_consulta',['uses'=>'ReportsGinecologiaController@ginecologia_consulta','as'=>'reporte.ginecologia_consulta']);
 });
 
 /*Usuarios*/
