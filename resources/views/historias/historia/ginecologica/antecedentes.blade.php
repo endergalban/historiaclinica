@@ -34,7 +34,7 @@
                  <div class="col-md-12">
                     <div class="form-group col-md-12">
                         {!! Form::label('alergias','Alergias a Medicamentos') !!}
-                        {!! Form::textarea('alergias',$datos['alergias'],['placeholder' => '','class'=>'form-control','rows'=> '3']) !!}
+                        {!! Form::text('alergias',$datos['alergias'],['placeholder' => '','class'=>'form-control']) !!}
                     </div>
                      <!-- /.form-group -->
                 </div>
@@ -42,7 +42,7 @@
                  <div class="col-md-12">
                     <div class="form-group col-md-12">
                         {!! Form::label('ingresos','Ingresos Previos y Cirugias') !!}
-                        {!! Form::textarea('ingresos',$datos['ingresos'],['placeholder' => '','class'=>'form-control','rows'=> '3']) !!}
+                        {!! Form::text('ingresos',$datos['ingresos'],['placeholder' => '','class'=>'form-control']) !!}
                     </div>
                      <!-- /.form-group -->
                 </div>
@@ -50,7 +50,7 @@
                  <div class="col-md-12">
                     <div class="form-group col-md-12">
                         {!! Form::label('traumatismos','Traumas y Accidentes') !!}
-                        {!! Form::textarea('traumatismos',$datos['traumatismos'],['placeholder' => '','class'=>'form-control','rows'=> '3']) !!}
+                        {!! Form::text('traumatismos',$datos['traumatismos'],['placeholder' => '','class'=>'form-control']) !!}
                     </div>
                      <!-- /.form-group -->
                 </div>
@@ -58,7 +58,7 @@
                  <div class="col-md-12">
                     <div class="form-group col-md-12">
                         {!! Form::label('tratamientos','Tratamientos Habituales') !!}
-                        {!! Form::textarea('tratamientos',$datos['tratamientos'],['placeholder' => '','class'=>'form-control','rows'=> '3']) !!}
+                        {!! Form::text('tratamientos',$datos['tratamientos'],['placeholder' => '','class'=>'form-control']) !!}
                     </div>
                      <!-- /.form-group -->
                 </div>
@@ -102,7 +102,7 @@
                 <div class="col-md-12">
                     <div class="form-group col-md-12">
                         {!! Form::label('otros','Otros') !!}
-                        {!! Form::textarea('otros',$datos['otros'],['placeholder' => '','class'=>'form-control','rows'=> '3']) !!}
+                        {!! Form::text('otros',$datos['otros'],['placeholder' => '','class'=>'form-control']) !!}
                     </div>
                      <!-- /.form-group -->
                 </div>
@@ -110,7 +110,7 @@
                  <div class="col-md-12">
                     <div class="form-group col-md-12">
                         {!! Form::label('habitos','Habitos Tóxicos') !!}
-                        {!! Form::textarea('habitos',$datos['habitos'],['placeholder' => '','class'=>'form-control','rows'=> '3']) !!}
+                        {!! Form::text('habitos',$datos['habitos'],['placeholder' => '','class'=>'form-control']) !!}
                     </div>
                      <!-- /.form-group -->
                 </div>
@@ -118,7 +118,7 @@
                  <div class="col-md-12">
                     <div class="form-group col-md-12">
                         {!! Form::label('situacion','Situación Basal (Crónicos)') !!}
-                        {!! Form::textarea('situacion',$datos['situacion'],['placeholder' => '','class'=>'form-control','rows'=> '3']) !!}
+                        {!! Form::text('situacion',$datos['situacion'],['placeholder' => '','class'=>'form-control']) !!}
                     </div>
                      <!-- /.form-group -->
                 </div>
@@ -126,7 +126,7 @@
                  <div class="col-md-12">
                     <div class="form-group col-md-12">
                         {!! Form::label('familiares','Antecedentes familiares de interes') !!}
-                        {!! Form::textarea('familiares',$datos['familiares'],['placeholder' => '','class'=>'form-control','rows'=> '3']) !!}
+                        {!! Form::text('familiares',$datos['familiares'],['placeholder' => '','class'=>'form-control']) !!}
                     </div>
                      <!-- /.form-group -->
                 </div>

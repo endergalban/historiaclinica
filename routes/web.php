@@ -10,10 +10,12 @@
 	| to using a Closure or controller method. Build something great!
 	|
 	*/
-
+//Escritorio
 Route::group(['middleware' => 'roles','site'=>'home'], function () {
-	Route::get('/',	function(){	return	view('home');})->name('home');
+	Route::get('/',['uses'=>'EscritorioController@verificar_usuario','as'=>'home']);
 });	
+
+Route::get('/logout', 'Auth\LoginController@logout');
 
 /*Afps*/
 Route::group(['middleware' => 'roles','site'=>'afps'], function () {
@@ -70,10 +72,11 @@ Route::group(['middleware' => 'roles','site'=>'all'], function () {
 	})->name('getDataEspecialidades');
 
 	Route::get('/getTipoDiagnostico/{descripcion?}',function($descripcion = ''){	
-        $dataTipoDiagnosticos= App\Tipo_diagnostico::ofType($descripcion)->limit(15)->pluck('descripcion','id');
+        $dataTipoDiagnosticos= App\Tipo_diagnostico::ofType($descripcion)->limit(15)->get();
         $valid_tags=array();
-        foreach ($dataTipoDiagnosticos as $id => $dataTipoDiagnostico) {
-            $valid_tags[] = ['id' => $id, 'text' => $dataTipoDiagnostico];
+        
+        foreach ($dataTipoDiagnosticos as $dataTipoDiagnostico) {
+            $valid_tags[] = ['id' => $dataTipoDiagnostico->id, 'text' => $dataTipoDiagnostico->codigo.' > '.$dataTipoDiagnostico->descripcion];
         }
    		return Response::json($valid_tags);
 	})->name('dataTipoDiagnostico');
@@ -139,6 +142,11 @@ Route::group(['middleware' => 'roles','site'=>'historias'], function () {
 	Route::get('historias/{id}/ginecologica/{historia_ginecologica_id}/diagnosticos',['uses'=>'HistoriasGinecologicaController@ginecologica_diagnosticos','as'=>'historias.ginecologica.diagnosticos']);
 	Route::post('historias/{id}/ginecologica/{historia_ginecologica_id}/diagnosticos/store',['uses'=>'HistoriasGinecologicaController@ginecologica_diagnosticos_store','as'=>'historias.ginecologica.diagnosticos.store']);
 	Route::get('historias/{id}/ginecologica/{historia_ginecologica_id}/diagnosticos/{ginecologia_diagnostico_id}/destroy',['uses'=>'HistoriasGinecologicaController@ginecologica_diagnosticos_destroy','as'=>'historias.ginecologica.diagnosticos.destroy']);
+
+	//MEDICAMENTOS
+	Route::get('historias/{id}/ginecologica/{historia_ginecologica_id}/medicamentos',['uses'=>'HistoriasGinecologicaController@ginecologica_medicamentos','as'=>'historias.ginecologica.medicamentos']);
+	Route::post('historias/{id}/ginecologica/{historia_ginecologica_id}/medicamentos/store',['uses'=>'HistoriasGinecologicaController@ginecologica_medicamentos_store','as'=>'historias.ginecologica.medicamentos.store']);
+	Route::get('historias/{id}/ginecologica/{historia_ginecologica_id}/medicamentos/{ginecologia_medicamento_id}/destroy',['uses'=>'HistoriasGinecologicaController@ginecologica_medicamentos_destroy','as'=>'historias.ginecologica.medicamentos.destroy']);
 
 	//ANALISIS Y PROCEDIMIENTOS
 	Route::get('historias/{id}/ginecologica/{historia_ginecologica_id}/procedimientos',['uses'=>'HistoriasGinecologicaController@ginecologica_procedimientos','as'=>'historias.ginecologica.procedimientos']);
@@ -285,6 +293,7 @@ Route::group(['middleware' => 'roles','site'=>'all'], function () {
 	Route::get('reportes/{historia_ocupacional_id}/aptitud_laboral',['uses'=>'ReportsController@aptitud_laboral','as'=>'reporte.aptitud_laboral']);
 
 	Route::get('reportes/{historia_ocupacional_id}/ginecologia_consulta',['uses'=>'ReportsGinecologiaController@ginecologia_consulta','as'=>'reporte.ginecologia_consulta']);
+	Route::get('reportes/{historia_ocupacional_id}/historia_ginecologica',['uses'=>'ReportsGinecologiaController@historia_ginecologica','as'=>'reporte.historia_ginecologica']);
 });
 
 /*Usuarios*/

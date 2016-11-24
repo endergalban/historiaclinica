@@ -12,7 +12,7 @@ class Ginecologia_ginecobstetrico extends Model
     protected $table='ginecologia_ginecobstetricos';
 
     protected $fillable = [
-		'medico_paciente_id','gestante', 'fum', 'seguridad', 'cesarias', 'partos', 'abortos', 'gestaciones', 'fpp',
+		'medico_paciente_id','gestante', 'fum', 'seguridad', 'cesarias', 'partos', 'abortos', 'gestaciones', 'fpp', 'getante',
 		 ];
 	protected $dates = ['deleted_at','fum','fpp'];
 

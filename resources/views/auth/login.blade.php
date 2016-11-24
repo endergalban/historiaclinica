@@ -17,6 +17,7 @@
             {{ $errors->first('password') }}
         @else
             Ingrese los datos a continuación
+            @include('flash::message')
         @endif
         </p>
         <form class="" role="form" method="POST" action="{{ url('/login') }}">

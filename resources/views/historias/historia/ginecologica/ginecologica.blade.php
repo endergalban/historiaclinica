@@ -48,7 +48,7 @@
 
                <div class="col-md-12">
                     <div class="box-footer">
-                        <button type="submit" class="btn btn-primary btn-sm open-modal">Actualizar</button>
+                        <button type="submit" class="btn btn-primary btn-sm open-modal">Guardar</button>
                     </div>
                 </div>
                 {!! Form::close() !!}

@@ -18,6 +18,7 @@ class CreateGinecologiaMedicamentosTable extends Migration
             $table->integer('historia_ginecologica_id')->unsigned(); $table->foreign('historia_ginecologica_id')->references('id')->on('historia_ginecologicas')->onDelete('restrict');
             $table->string('descripcion');
             $table->string('dosis');
+            $table->text('observacion');
             $table->softDeletes();
             $table->timestamps();
         });

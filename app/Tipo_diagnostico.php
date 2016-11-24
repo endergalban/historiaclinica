@@ -24,6 +24,6 @@ class Tipo_diagnostico extends Model
 
     public function scopeOfType($query, $type){
         
-        return $query->where('descripcion', 'like' , '%'.$type.'%');
+        return $query->where('descripcion', 'like' , '%'.$type.'%')->orWhere('codigo', 'like' , '%'.$type.'%');
     }
 }

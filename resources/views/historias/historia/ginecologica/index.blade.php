@@ -77,7 +77,8 @@
                             @endif
                         </td>
                          <td class="text-right"> 
-                             <a href="{{ route('reporte.ginecologia_consulta',[$historia->id]) }}" target="_BLANK"><span class="label label-primary" >Indicaciones</span></a>
+                           
+                              <a href="{{ route('reporte.historia_ginecologica',[$historia->id]) }}" target="_BLANK"><span class="label label-primary" >Historia</span></a>
                         </td> 
                     </tr>
                     @endforeach

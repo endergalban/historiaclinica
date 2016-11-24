@@ -50,12 +50,12 @@ class Medico_paciente extends Model
 
     public function ginecologia_ginecobstetrico()
     {
-        return $this->hasMany('App\Ginecologia_ginecobstetrico','medico_paciente_id');
+        return $this->hasOne('App\Ginecologia_ginecobstetrico','medico_paciente_id');
     }
 
-    public function ginecologia_antecedentes()
+    public function ginecologia_antecedente()
     {
-        return $this->hasMany('App\Ginecologia_antecedentes','medico_paciente_id');
+        return $this->hasOne('App\Ginecologia_antecedente','medico_paciente_id');
     }
     
 

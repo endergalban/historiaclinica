@@ -22,6 +22,7 @@ use App\Ginecologia_ginecobstetrico;
 use App\Ginecologia_exploracion;
 use App\Ginecologia_diagnostico;
 use App\Ginecologia_incapacidad;
+use App\Ginecologia_medicamento;
 use Auth;
 
 
@@ -468,8 +469,8 @@ class HistoriasGinecologicaController extends Controller
         $Historia_ginecologica = Historia_ginecologica::where(['id' => $request->historia_ginecologica_id] )->with('medico_paciente')->first();
         
          $validator = Validator::make($request->all(), [
-            'motivo_consulta' => 'required|string|max:250',
-            'enfermedad_actual' => 'required|string|max:250', 
+            'motivo_consulta' => 'required|string|max:500',
+            'enfermedad_actual' => 'required|string|max:500', 
            
         ]);
         if ($validator->fails()) {
@@ -548,7 +549,7 @@ class HistoriasGinecologicaController extends Controller
             'ta' => 'required|string|max:10', 
             'fc' => 'required|string|max:10', 
             'fr' => 'required|string|max:10', 
-            'otros' => 'required|string|max:250', 
+            'otros' => 'required|string|max:500', 
             'aspectogeneral' => 'required|string|max:2000', 
             
         ]);
@@ -699,12 +700,84 @@ class HistoriasGinecologicaController extends Controller
        }
     }
 
+      //MEDICAMENTOS
+     /**
+     * .
+     * Muestra los datos de los medicamentos de la historia ginecológica seleccionada
+     * @param $paciente_id,$historia_historia_ginecologica_id
+     */
+    public function ginecologica_medicamentos($paciente_id,$historia_ginecologica_id)
+    {
+        $historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
+        if(is_null($historia_ginecologica)){
+            abort(404);
+        }
+        $paciente = Paciente::where(['id'=> $historia_ginecologica->medico_paciente->paciente_id])->with('user')->first();
+        $medico = Medico::where(['id'=> $historia_ginecologica->medico_paciente->medico_id])->with('user')->first();
+
+        $combos=array();
+        $medicamentos= Ginecologia_medicamento::where(['historia_ginecologica_id' => $historia_ginecologica->id])->orderBy('id')->get();
+       
+        $combos=[ 'medicamentos' => $medicamentos];
+
+        return  view('historias.historia.ginecologica.medicamentos')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ginecologica'=>$historia_ginecologica,'combos'=>$combos ]);
+    }
+        /**
+     * .
+     * Registra los datos del medicamento de la historia ginecologica seleccionada
+     * @param $request los datos del medicamento individual
+     */
+    public function ginecologica_medicamentos_store(Request $request)
+    {
+        $historia_ginecologica = Historia_ginecologica::where(['id' => $request->historia_ginecologica_id] )->with('medico_paciente')->first();
+
+
+        $validator = Validator::make($request->all(), [
+            'descripcion' => 'required|string|max:250', 
+            'dosis' => 'required|string|max:250',   
+            'observacion' => 'string|max:2500',   
+            
+        ]);
+        if ($validator->fails()) {
+            flash(implode('<br>',$validator->errors()->all()), 'danger');
+            return redirect()->route('historias.ginecologica.medicamentos',[$historia_ginecologica->medico_paciente->paciente_id,$historia_ginecologica->id])->withInput();
+        }else{
+            
+            $Ginecologia_medicamento=new Ginecologia_medicamento;
+            $Ginecologia_medicamento->historia_ginecologica()->associate($historia_ginecologica);
+            $Ginecologia_medicamento->descripcion=$request->descripcion;
+            $Ginecologia_medicamento->dosis=$request->dosis;
+            $Ginecologia_medicamento->observacion=$request->observacion;
+            $Ginecologia_medicamento->save();
+            flash('Se ha registrado el medicamento de forma exitosa!', 'success');
+            return redirect()->route('historias.ginecologica.medicamentos',[$historia_ginecologica->medico_paciente->paciente_id,$historia_ginecologica->id]);
+        }
+    }
+    /**
+     * .
+     * Elimina un medicamento individual de la historia ginecologica seleccionada
+     * @param $paciente_id,$historia_ginecologica_id,$medicamento_id
+     */
+    public function ginecologica_medicamentos_destroy($paciente_id,$historia_ginecologica_id,$medicamento_id)
+    {
+        $historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
+        if(is_null($historia_ginecologica)){
+            abort(404);
+        }
+        $Ginecologia_medicamento = Ginecologia_medicamento::find($medicamento_id);
+        $Ginecologia_medicamento->delete();
+        flash('El registro se ha eliminado de forma exitosa!', 'danger');
+        return redirect()->route('historias.ginecologica.medicamentos',[$historia_ginecologica->medico_paciente->paciente->id,$historia_ginecologica->id]);
+
+    }
+
+
 
      //RECOMENDACIONES
     /**
      * .
      * Muestra las recomendaciones de la historia ginecológica seleccionada
-     * @param $paciente_id,$historia_ginecologica_id,$diagnostico_id
+     * @param $paciente_id,$historia_ginecologica_id
      */
     public function ginecologica_recomendaciones($paciente_id,$historia_ginecologica_id)
     {

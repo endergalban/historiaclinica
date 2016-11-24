@@ -68,6 +68,14 @@
             btn-default btn-sm ">Análisis y Procedimientos</a>
             @endif
 
+            @if(Route::currentRouteName() == 'historias.ginecologica.medicamentos')
+                <a href="{{ route('historias.ginecologica.medicamentos',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
+            btn-primary btn-sm ">Medicamentos</a>
+            @else
+                <a href="{{ route('historias.ginecologica.medicamentos',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
+            btn-default btn-sm ">Medicamentos</a>
+            @endif
+
             @if(Route::currentRouteName() == 'historias.ginecologica.recomendaciones')
                 <a href="{{ route('historias.ginecologica.recomendaciones',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
             btn-primary btn-sm ">Recomendaciones</a>
