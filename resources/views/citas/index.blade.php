@@ -41,7 +41,7 @@
                 </ul>
               </div>
               <!-- /btn-group -->
-              <div class="input-group">
+              <!--<div class="input-group">-->
                     <div class="form-group col-md-12">
                         {!! Form::select('medico_id',$medicos,0,['class' => 'form-control select2','style' => 'width:   100%','id' => 'medico_id' ]) !!}
                     </div>
@@ -69,7 +69,7 @@
                           <option value="55">55 min</option>
                         </select>
                     </div>
-              </div>
+            <!--  </div>-->
              
               <div class="form-group col-md-12">
                     <button id="add-new-event" type="button" class="btn btn-primary btn-flat">Guardar</button>
