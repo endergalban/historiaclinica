@@ -92,7 +92,7 @@ class HistoriasOcupacionalController extends Controller
             $medico_paciente= new Medico_paciente;
             $medico_paciente->paciente()->associate($paciente_id);
             $medico_paciente->medico()->associate($medico_id);
-            $medico_paciente->especialidad_id=3;
+            $medico_paciente->especialidad_id=1;
             $medico_paciente->save();
         }else{
             if ($medico_paciente->trashed()) {

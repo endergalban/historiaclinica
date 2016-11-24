@@ -23,7 +23,7 @@ class CreateGinecologiaExploracionesTable extends Migration
             $table->float('peso');
             $table->float('talla');
             $table->text('otros');
-            $table->tex('aspectogeneral');
+            $table->text('aspectogeneral');
             $table->softDeletes();
             $table->timestamps();
         });
