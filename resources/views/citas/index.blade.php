@@ -39,7 +39,7 @@
                   <li><a class="text-muted" href="#"><i class="fa fa-square"></i></a></li>
                   <li><a class="text-navy" href="#"><i class="fa fa-square"></i></a></li>
                 </ul>
-              </div>
+              </div> 
               <!-- /btn-group -->
               <!--<div class="input-group">-->
                     <div class="form-group col-md-12">
