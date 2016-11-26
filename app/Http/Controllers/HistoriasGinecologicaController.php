@@ -23,6 +23,10 @@ use App\Ginecologia_exploracion;
 use App\Ginecologia_diagnostico;
 use App\Ginecologia_incapacidad;
 use App\Ginecologia_medicamento;
+use App\Ginecologia_exploracion_inicial;
+use App\Ginecologia_exploracion_periodica;
+use App\Ginecologia_exploracion_periodo;
+
 use Auth;
 
 
@@ -58,7 +62,7 @@ class HistoriasGinecologicaController extends Controller
             $medico_paciente= new Medico_paciente;
             $medico_paciente->paciente()->associate($paciente_id);
             $medico_paciente->medico()->associate($medico_id);
-            $medico_paciente->especialidad_id=3;
+            $medico_paciente->especialidad()->associate(3);
             $medico_paciente->save();
         }else{
             if ($medico_paciente->trashed()) {
@@ -87,7 +91,7 @@ class HistoriasGinecologicaController extends Controller
 			$Ginecologia_antecedente->save();
 
 			$Ginecologia_ginecobstetrico= new Ginecologia_ginecobstetrico;
-			$Ginecologia_ginecobstetrico->medico_paciente()->associate($medico_paciente);
+			$Ginecologia_ginecobstetrico->medico_paciente()->associate($medico_paciente->id);
 			$Ginecologia_ginecobstetrico->gestante=0;
 			$Ginecologia_ginecobstetrico->fum=Carbon::now();
 			$Ginecologia_ginecobstetrico->seguridad=0;
@@ -98,7 +102,7 @@ class HistoriasGinecologicaController extends Controller
 			$Ginecologia_ginecobstetrico->fpp=Carbon::now();
 			$Ginecologia_ginecobstetrico->save();
 		}
-        Historia_ginecologica::where('medico_paciente_id', '=', $medico_paciente->id)->update(['activa' => 0]);
+        Historia_ginecologica::where(['medico_paciente_id'=> $medico_paciente->id])->update(['activa' => 0]);
         $Historia_ginecologica= new Historia_ginecologica;
         $Historia_ginecologica->motivo_consulta='';
         $Historia_ginecologica->enfermedad_actual='';
@@ -106,12 +110,12 @@ class HistoriasGinecologicaController extends Controller
         $Historia_ginecologica->analisis='';
         $Historia_ginecologica->procedimientos='';
         $Historia_ginecologica->recomendaciones='';
-        $Historia_ginecologica->medico_paciente()->associate($medico_paciente);
+        $Historia_ginecologica->medico_paciente()->associate($medico_paciente->id);
         $Historia_ginecologica->activa=1;
         $Historia_ginecologica->save();
 
         $Ginecologia_exploracion=new Ginecologia_exploracion;
-       	$Ginecologia_exploracion->historia_ginecologica()->associate($Historia_ginecologica);
+       	$Ginecologia_exploracion->historia_ginecologica()->associate($Historia_ginecologica->id);
         $Ginecologia_exploracion->pa= '';
         $Ginecologia_exploracion->ta= '';
         $Ginecologia_exploracion->fc= '';
@@ -670,7 +674,28 @@ class HistoriasGinecologicaController extends Controller
         $paciente = Paciente::where(['id'=> $historia_ginecologica->medico_paciente->paciente_id])->with('user')->first();
         $medico = Medico::where(['id'=> $historia_ginecologica->medico_paciente->medico_id])->with('user')->first();
 
-        return  view('historias.historia.ginecologica.procedimientos')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ginecologica'=>$historia_ginecologica ]);
+        $combos=array();
+        $medicamentos= Ginecologia_medicamento::where(['historia_ginecologica_id' => $historia_ginecologica->id])->orderBy('id')->get();
+
+        $Ginecologia_incapacidad = Ginecologia_incapacidad::where(['historia_ginecologica_id' => $historia_ginecologica->id] )->first();
+        if(!is_null($Ginecologia_incapacidad))
+        {
+            $fechainicial=$Ginecologia_incapacidad->fechainicial;
+            $fechafinal=$Ginecologia_incapacidad->fechafinal;
+            $observacion=$Ginecologia_incapacidad->observacion;
+            
+        }else{
+
+            $fechainicial=Carbon::createFromFormat('d/m/Y',date('d/m/Y')); 
+            $fechafinal=Carbon::createFromFormat('d/m/Y',date('d/m/Y')); 
+            $observacion='';
+        }
+        $combos=[
+           
+            'fechainicial'=>$fechainicial,'fechafinal'=>$fechafinal,'observacion'=>$observacion,'medicamentos'=>$medicamentos,
+        ];
+
+        return  view('historias.historia.ginecologica.procedimientos')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ginecologica'=>$historia_ginecologica,'combos'=>$combos ]);
     }
 
     /**
@@ -682,7 +707,6 @@ class HistoriasGinecologicaController extends Controller
     {
         $historia_ginecologica = Historia_ginecologica::where(['id' => $request->historia_ginecologica_id] )->with('medico_paciente')->first();
         $validator = Validator::make($request->all(), [
-            'analisis' => 'string|max:2500',   
             'procedimientos' => 'string|max:2500',
             
         ]);
@@ -691,8 +715,32 @@ class HistoriasGinecologicaController extends Controller
             flash(implode('<br>',$validator->errors()->all()), 'danger');
             return redirect()->route('historias.ginecologica.procedimientos',[$historia_ginecologica->medico_paciente->paciente_id,$historia_ginecologica->id])->withInput();
         }else{
-			$historia_ginecologica->analisis=$request->analisis;
             $historia_ginecologica->procedimientos=$request->procedimientos;
+            $historia_ginecologica->save();
+            flash('Se ha registrado la información de forma exitosa!', 'success');
+            return redirect()->route('historias.ginecologica.procedimientos',[$historia_ginecologica->medico_paciente->paciente_id,$historia_ginecologica->id]);
+
+       }
+    }
+
+     /**
+     * .
+     * Actualiza el analisis de la historia ginecológica seleccionada
+     * @param $request con el analisis
+     */
+      public function ginecologica_analisis_store(Request $request)
+    {
+        $historia_ginecologica = Historia_ginecologica::where(['id' => $request->historia_ginecologica_id] )->with('medico_paciente')->first();
+        $validator = Validator::make($request->all(), [
+            'analisis' => 'string|max:2500',   
+            
+        ]);
+
+         if ($validator->fails()) {
+            flash(implode('<br>',$validator->errors()->all()), 'danger');
+            return redirect()->route('historias.ginecologica.procedimientos',[$historia_ginecologica->medico_paciente->paciente_id,$historia_ginecologica->id])->withInput();
+        }else{
+            $historia_ginecologica->analisis=$request->analisis;
             $historia_ginecologica->save();
             flash('Se ha registrado la información de forma exitosa!', 'success');
             return redirect()->route('historias.ginecologica.procedimientos',[$historia_ginecologica->medico_paciente->paciente_id,$historia_ginecologica->id]);
@@ -705,7 +753,7 @@ class HistoriasGinecologicaController extends Controller
      * .
      * Muestra los datos de los medicamentos de la historia ginecológica seleccionada
      * @param $paciente_id,$historia_historia_ginecologica_id
-     */
+     *//*
     public function ginecologica_medicamentos($paciente_id,$historia_ginecologica_id)
     {
         $historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
@@ -721,7 +769,7 @@ class HistoriasGinecologicaController extends Controller
         $combos=[ 'medicamentos' => $medicamentos];
 
         return  view('historias.historia.ginecologica.medicamentos')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ginecologica'=>$historia_ginecologica,'combos'=>$combos ]);
-    }
+    }*/
         /**
      * .
      * Registra los datos del medicamento de la historia ginecologica seleccionada
@@ -750,7 +798,7 @@ class HistoriasGinecologicaController extends Controller
             $Ginecologia_medicamento->observacion=$request->observacion;
             $Ginecologia_medicamento->save();
             flash('Se ha registrado el medicamento de forma exitosa!', 'success');
-            return redirect()->route('historias.ginecologica.medicamentos',[$historia_ginecologica->medico_paciente->paciente_id,$historia_ginecologica->id]);
+            return redirect()->route('historias.ginecologica.procedimientos',[$historia_ginecologica->medico_paciente->paciente_id,$historia_ginecologica->id]);
         }
     }
     /**
@@ -767,7 +815,7 @@ class HistoriasGinecologicaController extends Controller
         $Ginecologia_medicamento = Ginecologia_medicamento::find($medicamento_id);
         $Ginecologia_medicamento->delete();
         flash('El registro se ha eliminado de forma exitosa!', 'danger');
-        return redirect()->route('historias.ginecologica.medicamentos',[$historia_ginecologica->medico_paciente->paciente->id,$historia_ginecologica->id]);
+        return redirect()->route('historias.ginecologica.procedimientos',[$historia_ginecologica->medico_paciente->paciente->id,$historia_ginecologica->id]);
 
     }
 
@@ -779,7 +827,7 @@ class HistoriasGinecologicaController extends Controller
      * Muestra las recomendaciones de la historia ginecológica seleccionada
      * @param $paciente_id,$historia_ginecologica_id
      */
-    public function ginecologica_recomendaciones($paciente_id,$historia_ginecologica_id)
+   /* public function ginecologica_recomendaciones($paciente_id,$historia_ginecologica_id)
     {
         $historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
         if(is_null($historia_ginecologica)){
@@ -806,13 +854,13 @@ class HistoriasGinecologicaController extends Controller
 
          if ($validator->fails()) {
             flash(implode('<br>',$validator->errors()->all()), 'danger');
-            return redirect()->route('historias.ginecologica.recomendaciones',[$historia_ginecologica->medico_paciente->paciente_id,$historia_ginecologica->id])->withInput();
+            return redirect()->route('historias.ginecologica.procedimientos',[$historia_ginecologica->medico_paciente->paciente_id,$historia_ginecologica->id])->withInput();
         }else{
 
             $historia_ginecologica->recomendaciones=$request->recomendaciones;
             $historia_ginecologica->save();
             flash('Se ha registrado la información de forma exitosa!', 'success');
-            return redirect()->route('historias.ginecologica.recomendaciones',[$historia_ginecologica->medico_paciente->paciente_id,$historia_ginecologica->id]);
+            return redirect()->route('historias.ginecologica.procedimientos',[$historia_ginecologica->medico_paciente->paciente_id,$historia_ginecologica->id]);
 
        }
     }
@@ -823,7 +871,7 @@ class HistoriasGinecologicaController extends Controller
      * Muestra los datos de incapacidad de la historia ginecológica seleccionada
      * @param $paciente_id,$historia_ginecologica_id
      */
-    public function ginecologica_incapacidad($paciente_id,$historia_ginecologica_id)
+   /* public function ginecologica_incapacidad($paciente_id,$historia_ginecologica_id)
     {
         $Historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
         if(is_null($Historia_ginecologica)){
@@ -874,7 +922,8 @@ class HistoriasGinecologicaController extends Controller
         ]);
         if ($validator->fails()) {
             flash(implode('<br>',$validator->errors()->all()), 'danger');
-            return redirect()->route('historias.ginecologica.incapacidad',[$Historia_ginecologica->medico_paciente->paciente_id,$Historia_ginecologica->id]);
+            return redirect()->route('historias.ginecologica.procedimientos',[$Historia_ginecologica->medico_paciente->paciente_id,$Historia_ginecologica->id])->withInput();
+
         }else{
             
            
@@ -890,9 +939,299 @@ class HistoriasGinecologicaController extends Controller
 
 
             flash('Se ha registrado la información de forma exitosa!', 'success');
-            return redirect()->route('historias.ginecologica.incapacidad',[$Historia_ginecologica->medico_paciente->paciente_id,$Historia_ginecologica->id]);
+            return redirect()->route('historias.ginecologica.procedimientos',[$Historia_ginecologica->medico_paciente->paciente_id,$Historia_ginecologica->id]);
         }
     }
+
+     /**
+     * .
+     * Muestra las gestaciones registradas de la paciente
+     * @param $paciente_id,$historia_ginecologica_id
+     */
+    public function ginecologica_gestaciones($paciente_id,$historia_ginecologica_id)
+    {
+        $historia_ginecologica = Historia_ginecologica::where(['id' => $historia_ginecologica_id] )->with('medico_paciente.ginecologia_ginecobstetrico')->first();
+        if(is_null($historia_ginecologica)){
+            abort(404);
+        }
+        $paciente = Paciente::where(['id'=> $historia_ginecologica->medico_paciente->paciente_id])->with('user')->first();
+        $medico = Medico::where(['id'=> $historia_ginecologica->medico_paciente->medico_id])->with('user')->first();
+        $ginecologia_exploracion_inicial=Ginecologia_exploracion_inicial::where('medico_paciente_id', '=', $historia_ginecologica->medico_paciente->id)->orderBy('id','DESC')->get();
+        $combos=['ginecologia_exploracion_iniciales'=>$ginecologia_exploracion_inicial];
+        return  view('historias.historia.ginecologica.gestaciones')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ginecologica'=>$historia_ginecologica,'combos'=>$combos ]);
+     
+    }
+    /**
+     * .
+     * Registra una gestación vacía de la historia seleccionada
+     * @param $paciente_id,$historia_ginecologica_id
+     */
+    public function ginecologica_gestaciones_store($paciente_id,$historia_ginecologica_id)
+    {
+        $Historia_ginecologica = Historia_ginecologica::where(['id' => $historia_ginecologica_id] )->with('medico_paciente.ginecologia_ginecobstetrico')->first();
+
+        if($Historia_ginecologica->medico_paciente->ginecologia_ginecobstetrico->gestante==1){
+            $fum=$Historia_ginecologica->medico_paciente->ginecologia_ginecobstetrico->fum;
+            $semanas=$fum->diffInWeeks(Carbon::now());
+            if($semanas!=0){
+                $dias=$fum->diffInDays(Carbon::now()->subWeeks($semanas));      
+            }else{
+                $dias=$fum->diffInDays(Carbon::now());
+            }
+            $semanaamenorrea='';
+            if($semanas!=0)
+            {
+                 $semanaamenorrea=$semanaamenorrea.$semanas.' semana(s)';
+            }
+            if($dias!=0)
+            {
+                if($semanaamenorrea!='')
+                {
+                    $semanaamenorrea=$semanaamenorrea.' y ';
+                }
+                $semanaamenorrea=$semanaamenorrea.$dias.' día(s)';
+            }
+            
+            Ginecologia_exploracion_inicial::where('medico_paciente_id', '=', $Historia_ginecologica->medico_paciente->id)->update(['activa' => 0]);
+            $Ginecologia_exploracion_inicial=new Ginecologia_exploracion_inicial;
+            $Ginecologia_exploracion_inicial->medico_paciente()->associate($Historia_ginecologica->medico_paciente->id);
+            $Ginecologia_exploracion_inicial->semanaamenorrea=$semanaamenorrea;
+            $Ginecologia_exploracion_inicial->sacogestacional='';
+            $Ginecologia_exploracion_inicial->formasaco='';
+            $Ginecologia_exploracion_inicial->visualizacionembrion=0;
+            $Ginecologia_exploracion_inicial->numeroembriones=0;
+            $Ginecologia_exploracion_inicial->actividadmotora=0;
+            $Ginecologia_exploracion_inicial->actividadcardiaca=0;
+            $Ginecologia_exploracion_inicial->longitud=0;
+            $Ginecologia_exploracion_inicial->corionanterior=0;
+            $Ginecologia_exploracion_inicial->corionposterior=0;
+            $Ginecologia_exploracion_inicial->corioncervix=0;
+            $Ginecologia_exploracion_inicial->ecocardiagrama='';
+            $Ginecologia_exploracion_inicial->observaciones='';
+            $Ginecologia_exploracion_inicial->fechaparto=$Historia_ginecologica->medico_paciente->ginecologia_ginecobstetrico->fpp;
+            $Ginecologia_exploracion_inicial->activa=1;
+            $Ginecologia_exploracion_inicial->save();
+            flash('Se ha registrado la información de forma exitosa!', 'success');
+            return redirect()->route('historias.ginecologica.gestaciones',[$Historia_ginecologica->medico_paciente->paciente_id,$Historia_ginecologica->id])->withInput();
+        }else{
+
+            flash('La paciente no tiene el estatus de gestante activo!', 'danger');
+            return redirect()->route('historias.ginecologica.gestaciones',[$Historia_ginecologica->medico_paciente->paciente_id,$Historia_ginecologica->id]);
+
+        }
+    }
+     /**
+     * .
+     * Elimnia una gestación de la historia
+     * @param $paciente_id,$historia_ginecologica_id,$ginecologia_exploracion_inicial_id
+     */
+    public function ginecologica_destroy_gestaciones($paciente_id,$historia_ginecologica_id,$ginecologia_exploracion_inicial_id)
+    {
+        $historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
+        if(is_null($historia_ginecologica)){
+            abort(404);
+        }
+        $Ginecologia_exploracion_inicial = Ginecologia_exploracion_inicial::find($ginecologia_exploracion_inicial_id);
+        $Ginecologia_exploracion_inicial->delete();
+        flash('El registro se ha eliminado de forma exitosa!', 'danger');
+        return redirect()->route('historias.ginecologica.gestaciones',[$historia_ginecologica->medico_paciente->paciente->id,$historia_ginecologica->id]);
+    }
+    /**
+     * .
+     * Muestra las exploraciones de la gestación seleccioanda
+     * @param $paciente_id,$historia_ginecologica_id,$ginecologia_exploracion_inicial_id
+     */
+    public function ginecologica_exploraciones($paciente_id,$historia_ginecologica_id,$ginecologia_exploracion_inicial_id)
+    {
+        $historia_ginecologica = Historia_ginecologica::where(['id' => $historia_ginecologica_id] )->with('medico_paciente.ginecologia_ginecobstetrico')->first();
+        if(is_null($historia_ginecologica)){
+            abort(404);
+        }
+      
+        $paciente = Paciente::where(['id'=> $historia_ginecologica->medico_paciente->paciente_id])->with('user')->first();
+        $medico = Medico::where(['id'=> $historia_ginecologica->medico_paciente->medico_id])->with('user')->first();
+
+        $ginecologia_exploracion_inicial=Ginecologia_exploracion_inicial::where('id', '=', $ginecologia_exploracion_inicial_id)->first();
+
+        if($historia_ginecologica->medico_paciente->ginecologia_ginecobstetrico->gestante==0 || $ginecologia_exploracion_inicial->activa==0){
+            $disabled="disabled";
+        }else{
+            $disabled='';
+        }
+
+        $ginecologia_exploracion_periodica=Ginecologia_exploracion_periodica::where('ginecologia_exploracion_inicial_id', '=', $ginecologia_exploracion_inicial_id)->with('ginecologia_exploracion_periodo')->orderBy('id','DESC')->get();
+
+        $ginecologia_exploracion_periodo=Ginecologia_exploracion_periodo::all()->pluck('descripcion','id');
+
+        $combos=['ginecologia_exploracion_inicial'=>$ginecologia_exploracion_inicial,'ginecologia_exploracion_periodicas'=>$ginecologia_exploracion_periodica, 'ginecologia_exploracion_periodo'=> $ginecologia_exploracion_periodo];
+        
+        return  view('historias.historia.ginecologica.gestaciones.periodos')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ginecologica'=>$historia_ginecologica,'combos'=>$combos,'disabled'=>$disabled ]);
+     
+    }
+
+     /**
+     * .
+     * Actualiza la exploración inicial de la gestación seleccioanda
+     * @param $request con los datos de la exploración inicial
+     */
+
+    public function ginecologica_exploraciones_store(Request $request)
+    {
+        $Historia_ginecologica = Historia_ginecologica::where(['id' => $request->historia_ginecologica_id] )->with('medico_paciente')->first();
+        
+         $validator = Validator::make($request->all(), [
+
+            'sacogestacional' => 'required|string|max:10',  
+            'formasaco' => 'required|string|max:20',  
+            'visualizacionembrion' => 'required|integer|max:1',  
+            'numeroembriones' => 'required|integer',
+            'actividadmotora' => 'required|integer|max:1',  
+            'actividadcardiaca' =>'required|integer|max:1',  
+            'longitud' => 'required|integer',
+            'corionanterior' => 'required|integer|max:1',  
+            'corionposterior' => 'required|integer|max:1',  
+            'corioncervix' => 'required|integer|max:1',  
+            'ecocardiagrama' => 'string|max:2500',
+            'observaciones' => 'string|max:2500',
+           
+        ]);
+        if ($validator->fails()) {
+            flash(implode('<br>',$validator->errors()->all()), 'danger');
+            return redirect()->route('historias.ginecologica.exploraciones',[$Historia_ginecologica->medico_paciente->paciente_id,$Historia_ginecologica->id,$request->ginecologia_exploracion_inicial_id])->withInput();
+        }else{
+            
+           
+           $Ginecologia_exploracion_inicial = Ginecologia_exploracion_inicial::where(['id' => $request->ginecologia_exploracion_inicial_id] )->first();
+            if(!is_null($Ginecologia_exploracion_inicial)){
+
+                
+                $Ginecologia_exploracion_inicial->sacogestacional=$request->sacogestacional;
+                $Ginecologia_exploracion_inicial->formasaco=$request->formasaco;
+                $Ginecologia_exploracion_inicial->visualizacionembrion=$request->visualizacionembrion;
+                $Ginecologia_exploracion_inicial->numeroembriones=$request->numeroembriones;
+                $Ginecologia_exploracion_inicial->actividadmotora=$request->actividadmotora;
+                $Ginecologia_exploracion_inicial->actividadcardiaca=$request->actividadcardiaca;
+                $Ginecologia_exploracion_inicial->longitud=$request->longitud;
+                $Ginecologia_exploracion_inicial->corionanterior=$request->corionanterior;
+                $Ginecologia_exploracion_inicial->corionposterior=$request->corionposterior;
+                $Ginecologia_exploracion_inicial->corioncervix=$request->corioncervix;
+                $Ginecologia_exploracion_inicial->ecocardiagrama=$request->ecocardiagrama;
+                $Ginecologia_exploracion_inicial->observaciones=$request->observaciones;
+                $Ginecologia_exploracion_inicial->save();
+             }
+
+
+            flash('Se ha registrado la información de forma exitosa!', 'success');
+            return redirect()->route('historias.ginecologica.exploraciones',[$Historia_ginecologica->medico_paciente->paciente_id,$Historia_ginecologica->id,$request->ginecologia_exploracion_inicial_id]);
+        }
+    }
+     /**
+     * .
+     * Registra una nueva exploración periodica de la gestación seleccioanda
+     * @param $request con los datos de la exploración
+     */
+    public function ginecologica_exploraciones_periodicas_store(Request $request)
+    {
+        $Historia_ginecologica = Historia_ginecologica::where(['id' => $request->historia_ginecologica_id] )->with('medico_paciente.ginecologia_ginecobstetrico')->first();
+        
+         $validator = Validator::make($request->all(), [
+
+           
+            'ginecologia_exploracion_periodo_id' =>'required|exists:ginecologia_exploracion_periodos,id',
+            'situacionfetal' =>'string|max:250',
+            'dorso' =>'string|max:250',
+            'dbp' =>'required|numeric', 
+            'lf' =>'required|numeric', 
+            'pabdominal' =>'required|numeric', 
+            'actividadmotora' =>'required|integer|max:1',  
+            'actividadcardiaca' =>'required|integer|max:1',  
+            'actividadrespiratoria' =>'required|integer|max:1',  
+            'semanaecografia' =>'required|integer', 
+            'localizacion' =>'required|string|max:250',
+            'madurez' =>'required|string|max:250',
+            'liquidovolumen' =>'required|string|max:250',
+            'liquidoobservaciones' =>'required|string|max:250',
+           
+        ]);
+        if ($validator->fails()) {
+            flash(implode('<br>',$validator->errors()->all()), 'danger');
+            return redirect()->route('historias.ginecologica.exploraciones',[$Historia_ginecologica->medico_paciente->paciente_id,$Historia_ginecologica->id,$request->ginecologia_exploracion_inicial_id])->withInput();
+        }else{
+            
+           
+           $Ginecologia_exploracion_periodica = Ginecologia_exploracion_periodica::where(['ginecologia_exploracion_inicial_id' => $request->ginecologia_exploracion_inicial_id,'ginecologia_exploracion_periodo_id' => $request->ginecologia_exploracion_periodo_id] )->first();
+
+            if(is_null($Ginecologia_exploracion_periodica)){
+
+                $fum=$Historia_ginecologica->medico_paciente->ginecologia_ginecobstetrico->fum;
+                $semanas=$fum->diffInWeeks(Carbon::now());
+                if($semanas!=0){
+                    $dias=$fum->diffInDays(Carbon::now()->subWeeks($semanas));      
+                }else{
+                    $dias=$fum->diffInDays(Carbon::now());
+                }
+                $semanaamenorrea='';
+                if($semanas!=0)
+                {
+                     $semanaamenorrea=$semanaamenorrea.$semanas.' semana(s)';
+                }
+                if($dias!=0)
+                {
+                    if($semanaamenorrea!='')
+                    {
+                        $semanaamenorrea=$semanaamenorrea.' y ';
+                    }
+                    $semanaamenorrea=$semanaamenorrea.$dias.' día(s)';
+                }
+                $Ginecologia_exploracion_periodica=new Ginecologia_exploracion_periodica;
+                $Ginecologia_exploracion_periodica->ginecologia_exploracion_periodo()->associate($request->ginecologia_exploracion_periodo_id);
+                 $Ginecologia_exploracion_periodica->ginecologia_exploracion_inicial()->associate($request->ginecologia_exploracion_inicial_id);
+                $Ginecologia_exploracion_periodica->semanaamenorrea=$semanaamenorrea;
+                $Ginecologia_exploracion_periodica->situacionfetal=$request->situacionfetal;
+                $Ginecologia_exploracion_periodica->dorso=$request->dorso;
+                $Ginecologia_exploracion_periodica->dbp=$request->dbp;
+                $Ginecologia_exploracion_periodica->lf=$request->lf;
+                $Ginecologia_exploracion_periodica->pabdominal=$request->pabdominal;
+                $Ginecologia_exploracion_periodica->actividadmotora =$request->actividadmotora;
+                $Ginecologia_exploracion_periodica->actividadcardiaca=$request->actividadcardiaca;
+                $Ginecologia_exploracion_periodica->actividadrespiratoria =$request->actividadrespiratoria;
+                $Ginecologia_exploracion_periodica->semanaecografia=$request->semanaecografia;
+                $Ginecologia_exploracion_periodica->localizacion=$request->localizacion;
+                $Ginecologia_exploracion_periodica->madurez=$request->madurez;
+                $Ginecologia_exploracion_periodica->liquidovolumen=$request->liquidovolumen;
+                $Ginecologia_exploracion_periodica->liquidoobservaciones=$request->liquidoobservaciones;
+                $Ginecologia_exploracion_periodica->save();
+                flash('Se ha registrado la información de forma exitosa!', 'success');
+                return redirect()->route('historias.ginecologica.exploraciones',[$Historia_ginecologica->medico_paciente->paciente_id,$Historia_ginecologica->id,$request->ginecologia_exploracion_inicial_id]);
+
+             }else{
+
+                flash('Ya exite un registro de exploración para ese periodo!', 'danger');
+                return redirect()->route('historias.ginecologica.exploraciones',[$Historia_ginecologica->medico_paciente->paciente_id,$Historia_ginecologica->id,$request->ginecologia_exploracion_inicial_id])->withInput();
+           
+            }
+        }
+    }
+    /**
+     * .
+     * Elimina una exploración periodica de la gestación seleccioanda
+     * @param $paciente_id,$historia_ginecologica_id,$ginecologia_exploracion_inicial_id,$ginecologia_exploracion_periodica_id
+     */
+    public function ginecologica_destroy_exploraciones($paciente_id,$historia_ginecologica_id,$ginecologia_exploracion_inicial_id,$ginecologia_exploracion_periodica_id)
+    {
+        $historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
+        if(is_null($historia_ginecologica)){
+            abort(404);
+        }
+        $Ginecologia_exploracion_periodica = Ginecologia_exploracion_periodica::find($ginecologia_exploracion_periodica_id);
+        $Ginecologia_exploracion_periodica->delete();
+        flash('El registro se ha eliminado de forma exitosa!', 'danger');
+        return redirect()->route('historias.ginecologica.exploraciones',[$historia_ginecologica->medico_paciente->paciente_id,$historia_ginecologica->id,$ginecologia_exploracion_inicial_id])->withInput();
+           
+    }
+
+   
+ 
 
 
 }

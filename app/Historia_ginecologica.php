@@ -36,23 +36,4 @@ class Historia_ginecologica extends Model
         return $this->hasOne('App\Ginecologia_incapacidad','historia_ginecologica_id');
     }
 
-    public function ginecologia_antecedente()
-    {
-        return $this->hasOne('App\Ginecologia_antecedente','historia_ginecologica_id');
-    }
-
-    public function ginecologia_ginecobstetrico()
-    {
-        return $this->hasOne('App\Ginecologia_exploracion','historia_ginecologica_id');
-    }
-
-    public function ginecologia_exploracion_inicial()
-    {
-        return $this->hasOne('App\Ginecologia_exploracion_inicial','historia_ginecologica_id');
-    }
-
-    public function ginecologia_exploracion_periodicas()
-    {
-        return $this->hasMany('App\Ginecologia_exploracion_periodica','historia_ginecologica_id');
-    }
 }

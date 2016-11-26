@@ -57,8 +57,13 @@ class Medico_paciente extends Model
     {
         return $this->hasOne('App\Ginecologia_antecedente','medico_paciente_id');
     }
-    
 
+    public function ginecologia_exploracion_iniciales()
+    {
+        return $this->hasMany('App\Ginecologia_exploracion_inicial','medico_paciente_id');
+    }
+
+   
 	public function scopeOfType($query, $type){
 		
 		return $query->where('descripcion', 'like' , '%'.$type.'%')->orwhere('site', 'like' , '%'.$type.'%');

@@ -148,9 +148,12 @@ Route::group(['middleware' => 'roles','site'=>'historias'], function () {
 	Route::post('historias/{id}/ginecologica/{historia_ginecologica_id}/medicamentos/store',['uses'=>'HistoriasGinecologicaController@ginecologica_medicamentos_store','as'=>'historias.ginecologica.medicamentos.store']);
 	Route::get('historias/{id}/ginecologica/{historia_ginecologica_id}/medicamentos/{ginecologia_medicamento_id}/destroy',['uses'=>'HistoriasGinecologicaController@ginecologica_medicamentos_destroy','as'=>'historias.ginecologica.medicamentos.destroy']);
 
-	//ANALISIS Y PROCEDIMIENTOS
+	//PROCEDIMIENTOS
 	Route::get('historias/{id}/ginecologica/{historia_ginecologica_id}/procedimientos',['uses'=>'HistoriasGinecologicaController@ginecologica_procedimientos','as'=>'historias.ginecologica.procedimientos']);
 	Route::post('historias/{id}/ginecologica/{historia_ginecologica_id}/procedimientos/store',['uses'=>'HistoriasGinecologicaController@ginecologica_procedimientos_store','as'=>'historias.ginecologica.procedimientos.store']);
+
+	//ANALISIS
+	Route::post('historias/{id}/ginecologica/{historia_ginecologica_id}/analisis/store',['uses'=>'HistoriasGinecologicaController@ginecologica_analisis_store','as'=>'historias.ginecologica.analisis.store']);
 
 	//RECOMEDACIONES
 	Route::get('historias/{id}/ginecologica/{historia_ginecologica_id}/recomendaciones',['uses'=>'HistoriasGinecologicaController@ginecologica_recomendaciones','as'=>'historias.ginecologica.recomendaciones']);
@@ -159,6 +162,16 @@ Route::group(['middleware' => 'roles','site'=>'historias'], function () {
 	//INCAPACIDAD
 	Route::get('historias/{id}/ginecologica/{historia_ginecologica_id}/incapacidad',['uses'=>'HistoriasGinecologicaController@ginecologica_incapacidad','as'=>'historias.ginecologica.incapacidad']);
 	Route::post('historias/{id}/ginecologica/{historia_ginecologica_id}/incapacidad/store',['uses'=>'HistoriasGinecologicaController@ginecologica_incapacidad_store','as'=>'historias.ginecologica.incapacidad.store']);
+
+	//GESTACIONES
+	Route::get('historias/{id}/ginecologica/{historia_ginecologica_id}/gestaciones',['uses'=>'HistoriasGinecologicaController@ginecologica_gestaciones','as'=>'historias.ginecologica.gestaciones']);
+	Route::get('historias/{id}/ginecologica/{historia_ginecologica_id}/gestaciones/store',['uses'=>'HistoriasGinecologicaController@ginecologica_gestaciones_store','as'=>'historias.ginecologica.gestaciones.store']);
+	Route::get('historias/{id}/ginecologica/{historia_ginecologica_id}/{exploracion_inicial_id}/destroy_gestaciones',['uses'=>'HistoriasGinecologicaController@ginecologica_destroy_gestaciones','as'=>'historias.ginecologica.destroy_gestaciones']);
+	Route::get('historias/{id}/ginecologica/{historia_ginecologica_id}/exploraciones/{exploracion_inicial_id}',['uses'=>'HistoriasGinecologicaController@ginecologica_exploraciones','as'=>'historias.ginecologica.exploraciones']);
+	Route::post('historias/{id}/ginecologica/{historia_ginecologica_id}/exploraciones/{exploracion_inicial_id}/store',['uses'=>'HistoriasGinecologicaController@ginecologica_exploraciones_store','as'=>'historias.ginecologica.exploraciones.store']);
+	Route::post('historias/{id}/ginecologica/{historia_ginecologica_id}/exploraciones/{exploracion_inicial_id}/periodicas_store',['uses'=>'HistoriasGinecologicaController@ginecologica_exploraciones_periodicas_store','as'=>'historias.ginecologica.exploraciones.periodicas.store']);
+
+	Route::get('historias/{id}/ginecologica/{historia_ginecologica_id}/{inicial_id}/{periodica_id}/destroy_exploraciones',['uses'=>'HistoriasGinecologicaController@ginecologica_destroy_exploraciones','as'=>'historias.ginecologica.destroy_exploraciones']);
 
 
 /////////////////	//OCUPACIONAL//   ///////////////////////////////////////////////

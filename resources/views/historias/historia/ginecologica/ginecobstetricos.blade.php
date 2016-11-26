@@ -75,8 +75,13 @@
                             '1' => 'Si'
                             ], $datos['gestante'],['class' => 'form-control','style' => 'width: 100%']) !!}
                     </div>
+
+                    @if($datos['gestante']==1)
+                        <div class="form-group col-md-2" id="capa">
+                    @else
+                        <div class="form-group col-md-2" id="capa" style="display: none;">
+                    @endif
                     
-                    <div class="form-group col-md-2">
                         {!! Form::label('fpp','FPP') !!}
                         {!! Form::text('fpp',date("d/m/Y", strtotime($datos['fpp'])),['placeholder' => 'DD/MM/YYYY','class'=>'form-control datepicker']) !!}
                     </div>
@@ -94,4 +99,21 @@
           <!-- /.row -->
     </div>
     <!-- /.box-body -->
+@endsection
+
+
+@section('javascript')
+<script>
+$(document).on("change", "#gestante", function () {
+    texto=$("#gestante option:selected").html();
+    if(texto == 'No'){
+    
+        $('#capa').hide();
+ 
+    }else{
+         $('#capa').show();
+    }
+});
+
+</script>
 @endsection

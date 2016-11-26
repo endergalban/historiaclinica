@@ -4,6 +4,50 @@
 		"selected_items":
 		[
 			[
+				"wit",
+				"withInput"
+			],
+			[
+				"Ginecologia_explo",
+				"Ginecologia_exploracion_inicial"
+			],
+			[
+				"ginecologia",
+				"Ginecologia_antecedente"
+			],
+			[
+				"medi",
+				"medico_paciente"
+			],
+			[
+				"His",
+				"Historia_ginecologica"
+			],
+			[
+				"gesta",
+				"gestante"
+			],
+			[
+				"pa",
+				"partos"
+			],
+			[
+				"tra",
+				"tratamientos"
+			],
+			[
+				"historia",
+				"historia_ginecologica"
+			],
+			[
+				"che",
+				"CheckPageBreak"
+			],
+			[
+				"medic",
+				"medicamentos"
+			],
+			[
 				"in",
 				"informe"
 			],
@@ -140,10 +184,6 @@
 				"cargoactual"
 			],
 			[
-				"historia",
-				"Historia_ocupacional"
-			],
-			[
 				"Tipo_factor",
 				"Tipo_factor_riesgo"
 			],
@@ -256,28 +296,28 @@
 	"buffers":
 	[
 		{
-			"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/ReportsGinecologiaController.php",
-			"settings":
-			{
-				"buffer_size": 22604,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/ReportsController.php",
-			"settings":
-			{
-				"buffer_size": 78997,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
 			"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/HistoriasGinecologicaController.php",
 			"settings":
 			{
-				"buffer_size": 37279,
+				"buffer_size": 55748,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_17_143347_create_ginecologia_exploracion_periodicas_table.php",
+			"settings":
+			{
+				"buffer_size": 1852,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/opt/lampp/htdocs/historiaclinica/database/seeds/DatabaseSeeder.php",
+			"settings":
+			{
+				"buffer_size": 1851,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -328,27 +368,55 @@
 		"/opt/lampp/htdocs/historiaclinica/app/Http/Middleware",
 		"/opt/lampp/htdocs/historiaclinica/database",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations",
+		"/opt/lampp/htdocs/historiaclinica/database/seeds",
+		"/opt/lampp/htdocs/historiaclinica/resources",
 		"/opt/lampp/htdocs/historiaclinica/resources/views",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ginecologica",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/antecedente"
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ginecologica/gestaciones",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional",
+		"/opt/lampp/htdocs/historiaclinica/routes"
 	],
 	"file_history":
 	[
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_17_142541_create_ginecologia_exploraciones_table.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Providers/AuthServiceProvider.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/auth/login.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Http/Middleware/RedirectIfAuthenticated.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ginecologica/index.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/routes/web.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ginecologica/gestaciones.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Ginecologia_exploracion_periodica.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ginecologica/gestaciones/periodos.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_17_143346_create_ginecologia_exploracion_iniciales_table.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Ginecologia_ginecobstetrico.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Ginecologia_exploracion_inicial.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Medico_paciente.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Historia_ginecologica.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ginecologica/procedimientos.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ginecologica/cabecera.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_17_143347_create_ginecologia_exploracion_periodicas_table.php",
+		"/opt/lampp/htdocs/historiaclinica/public/index.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ginecologica/gestaciones.php",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_17_150402_create_ginecologia_exploracion_iniciales_table.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/auth/login.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/citas/index.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/EscritorioController.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/HistoriasOcupacionalController.php",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_17_142541_create_ginecologia_exploraciones_table.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/ReportsGinecologiaController.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Http/Middleware/CheckRole.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ginecologica/ginecologica.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ginecologica/index.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Tipo_diagnostico.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Ginecologia_antecedente.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/HistoriasGinecologicaController.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ginecologica/antecedentes.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ginecologica/medicamentos.blade.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Ginecologia_medicamento.php",
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_18_001519_create_ginecologia_medicamentos_table.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Providers/AuthServiceProvider.php",
+		"/opt/lampp/htdocs/historiaclinica/app/Http/Middleware/RedirectIfAuthenticated.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/Auth/LoginController.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/asistentes/show.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Http/Middleware/CheckRole.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/HistoriasController.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/index.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/HistoriasGinecologicaController.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/HistoriasOcupacionalController.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/asistentes/edit.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/users/medico.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/pacientes/show.blade.php",
@@ -359,7 +427,6 @@
 		"/opt/lampp/htdocs/historiaclinica/resources/views/asistentes/create.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/config/session.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/medicos/show.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/ReportsGinecologiaController.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/users/edit.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/users/create.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/medicos/edit.blade.php",
@@ -370,7 +437,6 @@
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/reciclaje.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/pacientes/index.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_175805_create_medico_pacientes_table.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Medico_paciente.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Especialidad.php",
 		"/home/ender/Descargas/tipo_diagnosticos.sql",
 		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/EmpresasController.php",
@@ -382,7 +448,6 @@
 		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/ModulosController.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/PacientesController.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/PerfilController.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/citas/index.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/layouts/main.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/ocupacional.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/AfpsController.php",
@@ -402,39 +467,27 @@
 		"/opt/lampp/htdocs/historiaclinica/resources/views/medicos/index.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/ReportsController.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/cabecera.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ginecologica/cabecera.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/antecedente/riesgos.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/antecedente/traumatologicos.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_17_141616_create_historia_ginecologicas_table.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_10_28_175923_create_historia_ocupacionales_table.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Historia_ginecologica.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Historia_ocupacional.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/errors/404.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ginecologica/documentos.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/config/filesystems.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ginecologica/fisicos.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ginecologica/antecedentes.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ginecologica/incapacidad.blade.php",
 		"/opt/lampp/htdocs/ejemplos/template4/pages/forms/advanced.html",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_17_142630_create_ginecologia_incapacidades_table.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Ginecologia_ginecobstetrico.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_17_143255_create_ginecologia_ginecobstetricos_table.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Ginecologia_antecedente.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_17_143242_create_ginecologia_antecedentes_table.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ginecologica/diagnosticos.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ginecologica/procedimientos.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ginecologica/ginecologica.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ginecologica/recomendaciones.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/recomendaciones.blade.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Ginecologia_exploracion.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Ginecologia_incapacidad.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Ginecologia_medicamentos.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Ginecologia_diagnostico.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Ginecologia_exploracion_inicial.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Ginecologia_exploracion_periodica.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_17_150402_create_ginecologia_exploracion_iniciales_table.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_18_001519_create_ginecologia_medicamentos_table.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_17_143347_create_ginecologia_exploracion_periodicas_table.php",
 		"/opt/lampp/htdocs/historiaclinica/database/seeds/GinecologiaExploracionPeriodosTableSeeder.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Ginecologia_exploracion_periodo.php",
 		"/opt/lampp/htdocs/historiaclinica/app/Historia_ginecologia.php",
@@ -454,16 +507,7 @@
 		"/opt/lampp/htdocs/historiaclinica/app/Tipo_condicion.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_10_174815_create_condicion_diagnosticos_table.php",
 		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_10_174834_create_condicion_alturas_table.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_16_140037_create_tipo_condiciones_table.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/consentimientos.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/resources/views/historias/historia/ocupacional/examenes.blade.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Consentimiento.php",
-		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_15_173326_create_tipo_consentimientos_table.php",
-		"/opt/lampp/htdocs/historiaclinica/database/seeds/TipoExamenesTableSeeder.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Tipo_consentimiento.php",
-		"/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/DescargasController.php",
-		"/opt/lampp/htdocs/ordenarDataNotas/planes.csv",
-		"/home/ender/1990-1991/alumnos.csv"
+		"/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_16_140037_create_tipo_condiciones_table.php"
 	],
 	"find":
 	{
@@ -481,6 +525,47 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"localizacion",
+			"motora",
+			"Motora",
+			"motora",
+			"cardiaca",
+			"repiratoria",
+			"cardiaca",
+			"motora",
+			"Motora",
+			"motora",
+			"visualizacionembrion",
+			"lf",
+			"LF",
+			"lf",
+			"dorso",
+			"situacionfetal",
+			"3",
+			"ginecologia_ginecobstetrico",
+			"ginecolocica",
+			"gestaciones",
+			"procedimientos",
+			"medicamentos",
+			"procedimientos",
+			"datos",
+			"8",
+			"ginecologia_ginecobsterico",
+			"'alergias', 'ingresos', 'traumatismos', 'tratamientos', 'hta', 'displidemia', 'dm', 'otros', 'habitos', 'familiares','situacion',",
+			",'rows'=> '3'",
+			"textarea",
+			"dosis",
+			"Dosis",
+			"dosis",
+			"concepto",
+			"Concepto",
+			"concepto",
+			"Concepto",
+			"concepto",
+			"diagnostico",
+			"ginecologica_diagnosticos",
+			"diagnosticos",
+			"dia",
 			"DIAGNOS",
 			"15",
 			"$alto-1",
@@ -567,48 +652,7 @@
 			"L",
 			"SetFillColor",
 			"LC",
-			"exists",
-			"diagnos",
-			"diagno",
-			"consentimi",
-			"conset",
-			"labora",
-			"4",
-			",",
-			"examenes",
-			"navy",
-			"gine",
-			"fisico",
-			"arrayfinal",
-			"ojo",
-			"array_observaciones",
-			"condicion_diagnostico",
-			"condicion",
-			"observacion",
-			"apto",
-			"Ocupacional_actual_factor_riesgo",
-			"35",
-			"functio",
-			"use",
-			"Row",
-			"fpdf",
-			"new",
-			"rota",
-			"this",
-			"SetWidths",
-			"GINECOBS",
-			"l",
-			"L",
-			"historia_ocupacional_id",
-			"get",
-			"escolaridad",
-			"tipoexa",
-			"L",
-			"l",
-			"L",
-			"6",
-			"medico",
-			"condicion"
+			"exists"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -633,82 +677,24 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 2,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/ReportsGinecologiaController.php",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 22604,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								19003,
-								19003
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/PHP/PHP.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 7449.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/ReportsController.php",
-					"semi_transient": true,
-					"settings":
-					{
-						"buffer_size": 78997,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								38753,
-								38753
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/PHP/PHP.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 14207.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
 					"file": "/opt/lampp/htdocs/historiaclinica/app/Http/Controllers/HistoriasGinecologicaController.php",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 37279,
+						"buffer_size": 55748,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								23958,
-								23958
+								53393,
+								53393
 							]
 						],
 						"settings":
@@ -718,10 +704,70 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 7449.0,
+						"translation.y": 15312.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/opt/lampp/htdocs/historiaclinica/database/migrations/2016_11_17_143347_create_ginecologia_exploracion_periodicas_table.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1852,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								652,
+								652
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/opt/lampp/htdocs/historiaclinica/database/seeds/DatabaseSeeder.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1851,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1833,
+								1833
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
 					"type": "text"
 				}
 			]
@@ -808,7 +854,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 358.0,
+	"side_bar_width": 430.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

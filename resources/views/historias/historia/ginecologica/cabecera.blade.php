@@ -62,20 +62,20 @@
 
             @if(Route::currentRouteName() == 'historias.ginecologica.procedimientos')
                 <a href="{{ route('historias.ginecologica.procedimientos',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
-            btn-primary btn-sm ">Análisis y Procedimientos</a>
+            btn-primary btn-sm ">Indicaciones</a>
             @else
                 <a href="{{ route('historias.ginecologica.procedimientos',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
-            btn-default btn-sm ">Análisis y Procedimientos</a>
+            btn-default btn-sm ">Indicaciones</a>
             @endif
 
-            @if(Route::currentRouteName() == 'historias.ginecologica.medicamentos')
-                <a href="{{ route('historias.ginecologica.medicamentos',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
-            btn-primary btn-sm ">Medicamentos</a>
+            @if(Route::currentRouteName() == 'historias.ginecologica.gestaciones')
+                <a href="{{ route('historias.ginecologica.gestaciones',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
+            btn-primary btn-sm ">Gestaciones</a>
             @else
-                <a href="{{ route('historias.ginecologica.medicamentos',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
-            btn-default btn-sm ">Medicamentos</a>
+                <a href="{{ route('historias.ginecologica.gestaciones',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
+            btn-default btn-sm ">Gestaciones</a>
             @endif
-
+            <!--
             @if(Route::currentRouteName() == 'historias.ginecologica.recomendaciones')
                 <a href="{{ route('historias.ginecologica.recomendaciones',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
             btn-primary btn-sm ">Recomendaciones</a>
@@ -90,7 +90,7 @@
             @else
                 <a href="{{ route('historias.ginecologica.incapacidad',[$paciente->id,$historia_ginecologica->id]) }}" class="btn 
             btn-default btn-sm ">Incapacidad</a>
-            @endif
+            @endif-->
             
         </div>
     </div>

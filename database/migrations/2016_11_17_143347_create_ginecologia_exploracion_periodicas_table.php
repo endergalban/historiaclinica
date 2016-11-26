@@ -15,8 +15,8 @@ class CreateGinecologiaExploracionPeriodicasTable extends Migration
     {
         Schema::create('ginecologia_exploracion_periodicas', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('historia_ginecologica_id')->unsigned(); $table->foreign('historia_ginecologica_id','gin_exp_per_his_gin_01')->references('id')->on('historia_ginecologicas')->onDelete('restrict');
             $table->integer('ginecologia_exploracion_periodo_id')->unsigned(); $table->foreign('ginecologia_exploracion_periodo_id','gin_exp_per_gin_exp_per_01')->references('id')->on('ginecologia_exploracion_periodos')->onDelete('restrict');
+            $table->integer('ginecologia_exploracion_inicial_id')->unsigned(); $table->foreign('ginecologia_exploracion_inicial_id','gin_exp_ini_gin_exp_per_01')->references('id')->on('ginecologia_exploracion_iniciales')->onDelete('restrict');
             $table->string('semanaamenorrea');
             $table->text('situacionfetal');
             $table->text('dorso');
@@ -27,9 +27,8 @@ class CreateGinecologiaExploracionPeriodicasTable extends Migration
             $table->boolean('actividadcardiaca');
             $table->boolean('actividadrespiratoria');
             $table->integer('semanaecografia');
-            $table->boolean('corionanterior');
             $table->string('localizacion');
-            $table->boolean('madurez');
+            $table->string('madurez');
             $table->text('liquidovolumen');
             $table->text('liquidoobservaciones');
             $table->softDeletes();

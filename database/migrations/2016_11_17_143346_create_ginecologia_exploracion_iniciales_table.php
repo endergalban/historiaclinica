@@ -15,7 +15,7 @@ class CreateGinecologiaExploracionInicialesTable extends Migration
     {
         Schema::create('ginecologia_exploracion_iniciales', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('historia_ginecologica_id')->unsigned(); $table->foreign('historia_ginecologica_id','gin_exp_ini_his_gin_01')->references('id')->on('historia_ginecologicas')->onDelete('restrict');
+            $table->integer('medico_paciente_id')->unsigned(); $table->foreign('medico_paciente_id','gin_exp_ini_med_pa_01')->references('id')->on('medico_pacientes')->onDelete('restrict');
             $table->string('semanaamenorrea');
             $table->string('sacogestacional');
             $table->string('formasaco');
@@ -29,6 +29,8 @@ class CreateGinecologiaExploracionInicialesTable extends Migration
             $table->boolean('corioncervix');
             $table->text('ecocardiagrama');
             $table->text('observaciones');
+            $table->text('fechaparto');
+            $table->boolean('activa');
             $table->softDeletes();
             $table->timestamps();
         });

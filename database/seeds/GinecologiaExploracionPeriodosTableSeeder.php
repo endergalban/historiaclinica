@@ -13,11 +13,11 @@ class GinecologiaExploracionPeriodosTableSeeder extends Seeder
     public function run()
     {
         $Ginecologia_exploracion_periodo= New Ginecologia_exploracion_periodo;
-        $Ginecologia_exploracion_periodo->descripcion = 'PRIMER TRIMESTRE';
+        $Ginecologia_exploracion_periodo->descripcion = 'Primer Trimestre';
         $Ginecologia_exploracion_periodo->save();
 
         $Ginecologia_exploracion_periodo= New Ginecologia_exploracion_periodo;
-    	$Ginecologia_exploracion_periodo->descripcion = 'SEGUNDO TRIMESTRE';
+    	$Ginecologia_exploracion_periodo->descripcion = 'Segundo Trimestre';
 		$Ginecologia_exploracion_periodo->save();
     }
 }

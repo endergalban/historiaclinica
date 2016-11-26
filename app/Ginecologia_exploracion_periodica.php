@@ -12,14 +12,14 @@ class Ginecologia_exploracion_periodica extends Model
     protected $table='ginecologia_exploracion_periodicas';
 
     protected $fillable = [
-		'historia_ginecologica_id','ginecologia_exploracion_periodo_id','peso','semanaamenorrea', 'situacionfetal', 'dorso', 'dbp', 'lf', 'pabdominal', 'actividadmotora', 'actividadcardiaca', 'actividadrespiratoria', 'semanaecografia', 'corionanterior', 'localizacion', 'madurez', 'liquidovolumen', 'liquidoobservaciones', 
+		'ginecologia_exploracion_inicial_id','ginecologia_exploracion_periodo_id','semanaamenorrea', 'situacionfetal', 'dorso', 'dbp', 'lf', 'pabdominal', 'actividadmotora', 'actividadcardiaca', 'actividadrespiratoria', 'semanaecografia', 'corionanterior', 'localizacion', 'madurez', 'liquidovolumen', 'liquidoobservaciones', 
 	];
 
 	protected $dates = ['deleted_at'];
 
-	public function historia_ginecologica()
+	public function ginecologia_exploracion_inicial()
     {
-        return $this->belongsTo('App\Historia_ginecologica','historia_ginecologica_id');
+        return $this->belongsTo('App\Ginecologia_exploracion_inicial','ginecologia_exploracion_inicial_id');
     }
     
     public function ginecologia_exploracion_periodo()
