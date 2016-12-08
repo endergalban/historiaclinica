@@ -47,6 +47,9 @@
                                     <td class="text-center">{{ date("d/m/Y", strtotime($exploracion_inicial->fechaparto)) }}</td>
                                     <td>{{ $exploracion_inicial->observaciones }}</td>
                                     <td class="text-center">
+                                   
+                                         <a  href="{{ route('reporte.historia_ginecologica_gestacion',$exploracion_inicial->id) }}"><span class="label label-primary">Descargar</span></a>
+
                                         <a  href="{{ route('historias.ginecologica.exploraciones',[$paciente->id,$historia_ginecologica->id,$exploracion_inicial->id]) }}"><span class="label label-warning">Exploración</span></a>
 
                                         @if($exploracion_inicial->activa==1 && $historia_ginecologica->medico_paciente->ginecologia_ginecobstetrico->gestante==1)

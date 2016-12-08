@@ -151,6 +151,7 @@ Route::group(['middleware' => 'roles','site'=>'historias'], function () {
 	//PROCEDIMIENTOS
 	Route::get('historias/{id}/ginecologica/{historia_ginecologica_id}/procedimientos',['uses'=>'HistoriasGinecologicaController@ginecologica_procedimientos','as'=>'historias.ginecologica.procedimientos']);
 	Route::post('historias/{id}/ginecologica/{historia_ginecologica_id}/procedimientos/store',['uses'=>'HistoriasGinecologicaController@ginecologica_procedimientos_store','as'=>'historias.ginecologica.procedimientos.store']);
+	Route::get('historias/{id}/ginecologica/{historia_ginecologica_id}/procedimientos/{ginecologia_procedimiento_id}/destroy',['uses'=>'HistoriasGinecologicaController@ginecologica_procedimientos_destroy','as'=>'historias.ginecologica.procedimientos.destroy']);
 
 	//ANALISIS
 	Route::post('historias/{id}/ginecologica/{historia_ginecologica_id}/analisis/store',['uses'=>'HistoriasGinecologicaController@ginecologica_analisis_store','as'=>'historias.ginecologica.analisis.store']);
@@ -305,8 +306,11 @@ Route::group(['middleware' => 'roles','site'=>'all'], function () {
 	Route::get('reportes/{historia_ocupacional_id}/consentimiento_informado',['uses'=>'ReportsController@consentimiento_informado','as'=>'reporte.consentimiento_informado']);
 	Route::get('reportes/{historia_ocupacional_id}/aptitud_laboral',['uses'=>'ReportsController@aptitud_laboral','as'=>'reporte.aptitud_laboral']);
 
-	Route::get('reportes/{historia_ocupacional_id}/ginecologia_consulta',['uses'=>'ReportsGinecologiaController@ginecologia_consulta','as'=>'reporte.ginecologia_consulta']);
+	Route::get('reportes/{historia_ocupacional_id}/ginecologia_medicamentos',['uses'=>'ReportsGinecologiaController@ginecologia_medicamentos','as'=>'reporte.ginecologia_medicamentos']);
 	Route::get('reportes/{historia_ocupacional_id}/historia_ginecologica',['uses'=>'ReportsGinecologiaController@historia_ginecologica','as'=>'reporte.historia_ginecologica']);
+	Route::get('reportes/{historia_ocupacional_id}/historia_ginecologica_indicaciones/{tipo}',['uses'=>'ReportsGinecologiaController@historia_ginecologica_indicaciones','as'=>'reporte.historia_ginecologica_indicaciones']);
+	Route::get('reportes/{exploracion_inicial_id}/historia_ginecologica_gestacion',['uses'=>'ReportsGinecologiaController@historia_ginecologica_gestacion','as'=>'reporte.historia_ginecologica_gestacion']);
+
 });
 
 /*Usuarios*/

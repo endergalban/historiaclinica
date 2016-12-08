@@ -15,6 +15,41 @@
 
 @section('content')
     @include('historias/historia/ginecologica/cabecera')
+
+
+     @include('flash::message')
+    <div class="box box-default ">
+        <div class="box-header with-border">
+            <h3 class="box-title">Análisis</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="row">
+                 {!! Form::open(['class' => '','method' => 'POST','route' => ['historias.ginecologica.analisis.store',$paciente->id,$historia_ginecologica->id],'role' => 'form']) !!}
+                 {!! Form::hidden('historia_ginecologica_id', $historia_ginecologica->id) !!}
+                <div class="col-md-12">
+                    <div class="form-group col-md-12">
+                        {!! Form::textarea('analisis',$historia_ginecologica->analisis,['placeholder' => '','class'=>'form-control','rows'=>'4']) !!}
+                    </div>
+                </div>
+                
+
+                
+               <div class="col-md-12">
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary btn-sm open-modal">Guardar</button>
+                        <a  class="btn btn-default btn-sm" target="_BLANK" href="{{ route('reporte.historia_ginecologica_indicaciones',[$historia_ginecologica->id,'analisis']) }}">Descargar</a>
+                    </div>
+                </div>
+                {!! Form::close() !!}
+            </div>
+        </div>
+    </div>
+
+
     <div class="box box-default">
         <div class="box-header with-border">
             <h3 class="box-title">Diagnóstico del Médico</h3>
@@ -24,7 +59,7 @@
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-          @include('flash::message')
+      
             <div class="row">
                <div class="col-md-12">
                     <div class="box-body table-responsive">

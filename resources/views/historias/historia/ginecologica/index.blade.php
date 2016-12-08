@@ -76,7 +76,7 @@
                                 <a href="#" ><span class="label label-default">Eliminar</span></a>
                             @endif
                         </td>
-                         <td class="text-right"> 
+                         <td class="text-center"> 
                            
                               <a href="{{ route('reporte.historia_ginecologica',[$historia->id]) }}" target="_BLANK"><span class="label label-primary" >Historia</span></a>
                         </td> 

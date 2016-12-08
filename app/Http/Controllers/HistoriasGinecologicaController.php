@@ -23,6 +23,7 @@ use App\Ginecologia_exploracion;
 use App\Ginecologia_diagnostico;
 use App\Ginecologia_incapacidad;
 use App\Ginecologia_medicamento;
+use App\Ginecologia_procedimiento;
 use App\Ginecologia_exploracion_inicial;
 use App\Ginecologia_exploracion_periodica;
 use App\Ginecologia_exploracion_periodo;
@@ -108,7 +109,6 @@ class HistoriasGinecologicaController extends Controller
         $Historia_ginecologica->enfermedad_actual='';
         $Historia_ginecologica->informe='';
         $Historia_ginecologica->analisis='';
-        $Historia_ginecologica->procedimientos='';
         $Historia_ginecologica->recomendaciones='';
         $Historia_ginecologica->medico_paciente()->associate($medico_paciente->id);
         $Historia_ginecologica->activa=1;
@@ -585,6 +585,30 @@ class HistoriasGinecologicaController extends Controller
         }
     }
 
+     /**
+     * .
+     * Actualiza el analisis de la historia ginecológica seleccionada
+     * @param $request con el analisis
+     */
+      public function ginecologica_analisis_store(Request $request)
+    {
+        $historia_ginecologica = Historia_ginecologica::where(['id' => $request->historia_ginecologica_id] )->with('medico_paciente')->first();
+        $validator = Validator::make($request->all(), [
+            'analisis' => 'string|max:2500',   
+            
+        ]);
+
+         if ($validator->fails()) {
+            flash(implode('<br>',$validator->errors()->all()), 'danger');
+            return redirect()->route('historias.ginecologica.diagnosticos',[$historia_ginecologica->medico_paciente->paciente_id,$historia_ginecologica->id])->withInput();
+        }else{
+            $historia_ginecologica->analisis=$request->analisis;
+            $historia_ginecologica->save();
+            flash('Se ha registrado la información de forma exitosa!', 'success');
+            return redirect()->route('historias.ginecologica.diagnosticos',[$historia_ginecologica->medico_paciente->paciente_id,$historia_ginecologica->id]);
+
+       }
+    }
      //DIAGNOSTICOS
      /**
      * .
@@ -677,6 +701,8 @@ class HistoriasGinecologicaController extends Controller
         $combos=array();
         $medicamentos= Ginecologia_medicamento::where(['historia_ginecologica_id' => $historia_ginecologica->id])->orderBy('id')->get();
 
+        $procedimientos= Ginecologia_procedimiento::where(['historia_ginecologica_id' => $historia_ginecologica->id])->orderBy('id')->get();
+
         $Ginecologia_incapacidad = Ginecologia_incapacidad::where(['historia_ginecologica_id' => $historia_ginecologica->id] )->first();
         if(!is_null($Ginecologia_incapacidad))
         {
@@ -692,7 +718,7 @@ class HistoriasGinecologicaController extends Controller
         }
         $combos=[
            
-            'fechainicial'=>$fechainicial,'fechafinal'=>$fechafinal,'observacion'=>$observacion,'medicamentos'=>$medicamentos,
+            'fechainicial'=>$fechainicial,'fechafinal'=>$fechafinal,'observacion'=>$observacion,'medicamentos'=>$medicamentos,'procedimientos'=>$procedimientos
         ];
 
         return  view('historias.historia.ginecologica.procedimientos')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ginecologica'=>$historia_ginecologica,'combos'=>$combos ]);
@@ -701,76 +727,52 @@ class HistoriasGinecologicaController extends Controller
     /**
      * .
      * Actualiza las recomendaciones de la historia ginecológica seleccionada
-     * @param $request con la recomendación
+     * @param $request con el procedimiento
      */
     public function ginecologica_procedimientos_store(Request $request)
     {
-        $historia_ginecologica = Historia_ginecologica::where(['id' => $request->historia_ginecologica_id] )->with('medico_paciente')->first();
+         $historia_ginecologica = Historia_ginecologica::where(['id' => $request->historia_ginecologica_id] )->with('medico_paciente')->first();
+
+
         $validator = Validator::make($request->all(), [
-            'procedimientos' => 'string|max:2500',
+            'descripcion' => 'required|string|max:250', 
+            'observacion' => 'string|max:2500',   
             
         ]);
-
-         if ($validator->fails()) {
+        if ($validator->fails()) {
             flash(implode('<br>',$validator->errors()->all()), 'danger');
             return redirect()->route('historias.ginecologica.procedimientos',[$historia_ginecologica->medico_paciente->paciente_id,$historia_ginecologica->id])->withInput();
         }else{
-            $historia_ginecologica->procedimientos=$request->procedimientos;
-            $historia_ginecologica->save();
-            flash('Se ha registrado la información de forma exitosa!', 'success');
+            
+            $Ginecologica_procedimiento=new Ginecologia_procedimiento;
+            $Ginecologica_procedimiento->historia_ginecologica()->associate($historia_ginecologica);
+            $Ginecologica_procedimiento->descripcion=$request->descripcion;
+            $Ginecologica_procedimiento->observacion=$request->observacion;
+            $Ginecologica_procedimiento->save();
+            flash('Se ha registrado el procedimiento de forma exitosa!', 'success');
             return redirect()->route('historias.ginecologica.procedimientos',[$historia_ginecologica->medico_paciente->paciente_id,$historia_ginecologica->id]);
+        }
 
-       }
     }
 
      /**
      * .
-     * Actualiza el analisis de la historia ginecológica seleccionada
-     * @param $request con el analisis
+     * Elimina un medicamento individual de la historia ginecologica seleccionada
+     * @param $paciente_id,$historia_ginecologica_id,$medicamento_id
      */
-      public function ginecologica_analisis_store(Request $request)
-    {
-        $historia_ginecologica = Historia_ginecologica::where(['id' => $request->historia_ginecologica_id] )->with('medico_paciente')->first();
-        $validator = Validator::make($request->all(), [
-            'analisis' => 'string|max:2500',   
-            
-        ]);
-
-         if ($validator->fails()) {
-            flash(implode('<br>',$validator->errors()->all()), 'danger');
-            return redirect()->route('historias.ginecologica.procedimientos',[$historia_ginecologica->medico_paciente->paciente_id,$historia_ginecologica->id])->withInput();
-        }else{
-            $historia_ginecologica->analisis=$request->analisis;
-            $historia_ginecologica->save();
-            flash('Se ha registrado la información de forma exitosa!', 'success');
-            return redirect()->route('historias.ginecologica.procedimientos',[$historia_ginecologica->medico_paciente->paciente_id,$historia_ginecologica->id]);
-
-       }
-    }
-
-      //MEDICAMENTOS
-     /**
-     * .
-     * Muestra los datos de los medicamentos de la historia ginecológica seleccionada
-     * @param $paciente_id,$historia_historia_ginecologica_id
-     *//*
-    public function ginecologica_medicamentos($paciente_id,$historia_ginecologica_id)
+    public function ginecologica_procedimientos_destroy($paciente_id,$historia_ginecologica_id,$procedimiento_id)
     {
         $historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
         if(is_null($historia_ginecologica)){
             abort(404);
         }
-        $paciente = Paciente::where(['id'=> $historia_ginecologica->medico_paciente->paciente_id])->with('user')->first();
-        $medico = Medico::where(['id'=> $historia_ginecologica->medico_paciente->medico_id])->with('user')->first();
+        $Ginecologia_procedimiento = Ginecologia_procedimiento::find($procedimiento_id);
+        $Ginecologia_procedimiento->delete();
+        flash('El registro se ha eliminado de forma exitosa!', 'danger');
+        return redirect()->route('historias.ginecologica.procedimientos',[$historia_ginecologica->medico_paciente->paciente->id,$historia_ginecologica->id]);
+    }
 
-        $combos=array();
-        $medicamentos= Ginecologia_medicamento::where(['historia_ginecologica_id' => $historia_ginecologica->id])->orderBy('id')->get();
-       
-        $combos=[ 'medicamentos' => $medicamentos];
-
-        return  view('historias.historia.ginecologica.medicamentos')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ginecologica'=>$historia_ginecologica,'combos'=>$combos ]);
-    }*/
-        /**
+    /**
      * .
      * Registra los datos del medicamento de la historia ginecologica seleccionada
      * @param $request los datos del medicamento individual
@@ -778,8 +780,6 @@ class HistoriasGinecologicaController extends Controller
     public function ginecologica_medicamentos_store(Request $request)
     {
         $historia_ginecologica = Historia_ginecologica::where(['id' => $request->historia_ginecologica_id] )->with('medico_paciente')->first();
-
-
         $validator = Validator::make($request->all(), [
             'descripcion' => 'required|string|max:250', 
             'dosis' => 'required|string|max:250',   
@@ -788,7 +788,7 @@ class HistoriasGinecologicaController extends Controller
         ]);
         if ($validator->fails()) {
             flash(implode('<br>',$validator->errors()->all()), 'danger');
-            return redirect()->route('historias.ginecologica.medicamentos',[$historia_ginecologica->medico_paciente->paciente_id,$historia_ginecologica->id])->withInput();
+            return redirect()->route('historias.ginecologica.procedimientos',[$historia_ginecologica->medico_paciente->paciente_id,$historia_ginecologica->id])->withInput();
         }else{
             
             $Ginecologia_medicamento=new Ginecologia_medicamento;
@@ -818,27 +818,7 @@ class HistoriasGinecologicaController extends Controller
         return redirect()->route('historias.ginecologica.procedimientos',[$historia_ginecologica->medico_paciente->paciente->id,$historia_ginecologica->id]);
 
     }
-
-
-
-     //RECOMENDACIONES
-    /**
-     * .
-     * Muestra las recomendaciones de la historia ginecológica seleccionada
-     * @param $paciente_id,$historia_ginecologica_id
-     */
-   /* public function ginecologica_recomendaciones($paciente_id,$historia_ginecologica_id)
-    {
-        $historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
-        if(is_null($historia_ginecologica)){
-            abort(404);
-        }
-        $paciente = Paciente::where(['id'=> $historia_ginecologica->medico_paciente->paciente_id])->with('user')->first();
-        $medico = Medico::where(['id'=> $historia_ginecologica->medico_paciente->medico_id])->with('user')->first();
-
-        return  view('historias.historia.ginecologica.recomendaciones')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ginecologica'=>$historia_ginecologica ]);
-    }
-
+    //RECOMENDACIONES
     /**
      * .
      * Actualiza las recomendaciones de la historia ginecológica seleccionada
@@ -866,42 +846,6 @@ class HistoriasGinecologicaController extends Controller
     }
 
       //INCAPACIDAD
-     /**
-     * .
-     * Muestra los datos de incapacidad de la historia ginecológica seleccionada
-     * @param $paciente_id,$historia_ginecologica_id
-     */
-   /* public function ginecologica_incapacidad($paciente_id,$historia_ginecologica_id)
-    {
-        $Historia_ginecologica = Historia_ginecologica::where(['id'=>$historia_ginecologica_id,'activa'=>1])->with('medico_paciente')->first();
-        if(is_null($Historia_ginecologica)){
-            abort(404);
-        }
-        $paciente = Paciente::where(['id'=> $Historia_ginecologica->medico_paciente->paciente_id])->with('user')->first();
-        $medico = Medico::where(['id'=> $Historia_ginecologica->medico_paciente->medico_id])->with('user')->first();
-
-		$Ginecologia_incapacidad = Ginecologia_incapacidad::where(['historia_ginecologica_id' => $Historia_ginecologica->id] )->first();
-        if(!is_null($Ginecologia_incapacidad))
-        {
-			$fechainicial=$Ginecologia_incapacidad->fechainicial;
-			$fechafinal=$Ginecologia_incapacidad->fechafinal;
-			$observacion=$Ginecologia_incapacidad->observacion;
-			
-        }else{
-
-        	$fechainicial=Carbon::createFromFormat('d/m/Y',date('d/m/Y')); 
-			$fechafinal=Carbon::createFromFormat('d/m/Y',date('d/m/Y')); 
-			$observacion='';
-		}
-        $datos=[
-           
-			'fechainicial'=>$fechainicial,'fechafinal'=>$fechafinal,'observacion'=>$observacion
-        ];
-
-        return  view('historias.historia.ginecologica.incapacidad')->with(['paciente'=>$paciente,'medico'=>$medico,'historia_ginecologica'=>$Historia_ginecologica,'datos'=> $datos ]);
-    }
-
-
      /**
      * .
      * Actualiza los datos de incapacidad de la historia ginecologica seleccionada

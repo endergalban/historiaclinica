@@ -44,7 +44,7 @@
 									<td class="text-center">{{$medico->email }}</td>
 									<td class="text-center">{{$medico->telefono }}</td>
 						
-									<td class="text-left">
+									<td class="text-center">
 
 									@foreach( $medico->medico->especialidades as $especialidad )
 									@if($paciente->user->genero=='Masculino')

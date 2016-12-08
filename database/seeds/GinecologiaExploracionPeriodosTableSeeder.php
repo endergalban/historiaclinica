@@ -19,5 +19,9 @@ class GinecologiaExploracionPeriodosTableSeeder extends Seeder
         $Ginecologia_exploracion_periodo= New Ginecologia_exploracion_periodo;
     	$Ginecologia_exploracion_periodo->descripcion = 'Segundo Trimestre';
 		$Ginecologia_exploracion_periodo->save();
+
+        $Ginecologia_exploracion_periodo= New Ginecologia_exploracion_periodo;
+        $Ginecologia_exploracion_periodo->descripcion = 'Tercer Trimestre';
+        $Ginecologia_exploracion_periodo->save();
     }
 }

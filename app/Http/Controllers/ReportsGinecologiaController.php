@@ -16,6 +16,11 @@ use App\Medico_paciente;
 use App\Ginecologia_diagnostico;
 use App\Ginecologia_medicamento;
 use App\Ginecologia_antecedente;
+use App\Ginecologia_incapacidad;
+use App\Ginecologia_exploracion_inicial;
+use App\Ginecologia_exploracion_periodica;
+use App\Ginecologia_exploracion_periodo;
+use App\Ginecologia_procedimiento;
 
 
 class PDF extends Fpdf
@@ -147,7 +152,7 @@ class ReportsGinecologiaController extends Controller
 {
 
 //--------------CONSULTA----------------//
-	public function ginecologia_consulta($historia_ginecologica_id)
+	public function ginecologia_medicamentos($historia_ginecologica_id)
 	{
 		$dia='';
     	$mes='';
@@ -194,7 +199,7 @@ class ReportsGinecologiaController extends Controller
 			$dia=$historia_ginecologica->created_at->format('d');
 			$mes=$historia_ginecologica->created_at->format('m');
 			$anio=$historia_ginecologica->created_at->format('Y');
-			$trabajador=$historia_ginecologica->medico_paciente->paciente->user->primerapellido.' '.$historia_ginecologica->medico_paciente->paciente->user->primernombre;
+			$trabajador=utf8_decode($historia_ginecologica->medico_paciente->paciente->user->primernombre.' '.$historia_ginecologica->medico_paciente->paciente->user->primerapellido);
 			$empresa=$historia_ginecologica->empresa;
 			$cedula=$historia_ginecologica->medico_paciente->paciente->user->tipodocumento.' '.$historia_ginecologica->medico_paciente->paciente->user->numerodocumento;
 			$ocupacion=$historia_ginecologica->medico_paciente->paciente->user->ocupacion;
@@ -217,28 +222,9 @@ class ReportsGinecologiaController extends Controller
 				}
 			}
 			$firmatrabajador=$historia_ginecologica->medico_paciente->paciente->user->firma;
-		//	$cargo=$historia_ocupacional->ocupacional_actual->cargoactual;
-			
-		/*	$query_eps = Empresa::where('id',$historia_ocupacional->empresa_id)->first();
-			if(!is_null($query_eps)){ $eps=utf8_decode($query_eps->descripcion);}else{$eps='N/A';}
-
-			$afp=$historia_ocupacional->afp->descripcion;
-			$arl=$historia_ocupacional->arl->descripcion;
-
-			
-
-			/*$peso=$historia_ocupacional->examen_fisico->peso;
-	    	$talla=$historia_ocupacional->examen_fisico->talla;
-	    	$imc=$historia_ocupacional->examen_fisico->imc;
-	    	$ta=$historia_ocupacional->examen_fisico->ta;
-	    	$fc=$historia_ocupacional->examen_fisico->fc;
-	    	$fr=$historia_ocupacional->examen_fisico->fr;
-	    	$lateralidad=$historia_ocupacional->examen_fisico->lateralidad->descripcion;
-			$tipoexamen=utf8_decode($historia_ocupacional->tipo_examen->descripcion);
-			$condicion=$historia_ocupacional->condicion_diagnostico->tipo_condicion->descripcion;
-	    	$observacion=$historia_ocupacional->condicion_diagnostico->observacion;*/
+		
 	    	
-	    	$medico=utf8_decode($historia_ginecologica->medico_paciente->medico->user->primerapellido.' '.$historia_ginecologica->medico_paciente->medico->user->primernombre);
+	    	$medico=utf8_decode($historia_ginecologica->medico_paciente->medico->user->primernombre.' '.$historia_ginecologica->medico_paciente->medico->user->primerapellido);
 	    	$registro=utf8_decode($historia_ginecologica->medico_paciente->medico->registro);
 	    	$firmamedico=utf8_decode($historia_ginecologica->medico_paciente->medico->user->firma);
 	    	$banner=utf8_decode($historia_ginecologica->medico_paciente->medico->banner);
@@ -249,146 +235,72 @@ class ReportsGinecologiaController extends Controller
         $fpdf->AddPage();
         $fpdf->SetTextColor(0,0,0);
 		$fpdf->SetFillColor(255,255,255);
+		$fpdf->SetTitle("Indicaciones");
 
         if(file_exists( public_path().'/images/banner/'.$banner) &&  $banner!='' ){
-			$fpdf->Image(asset('images/banner/'.$banner),10,8,95,15);
+			$fpdf->Image(asset('images/banner/'.$banner),10,8,120,20);
 		}
+
+		if(file_exists( public_path().'/images/banner/'.$banner) &&  $banner!='' ){
+			$fpdf->Image(asset('images/banner/'.$banner),150,8,120,20);
+		}
+
+		
 
         
         $fpdf->SetY(40);
-		$fpdf->SetTitle("Certificado Laboral");
-		$fpdf->SetFont('Arial','B',10);
-		$fpdf->Cell(100,6,'RECOMENDACIONES',1,0,'C',0);
-		$fpdf->Ln();
 
+        $Ginecologia_medicamentos = Ginecologia_medicamento::where('historia_ginecologica_id',$historia_ginecologica_id)->get();
+	
+		foreach ($Ginecologia_medicamentos as $Ginecologia_medicamento) {
+			$fpdf->SetFont('Arial','',11);
+			$fpdf->MultiCell(120,5,utf8_decode($Ginecologia_medicamento->descripcion),0,'L',0);
+			$fpdf->Ln(4);
+		}
 
-
-
-		$fpdf->SetFont('Arial','B',9);
-		$fpdf->Cell(190,5,'Datos Personales ',1,0,'C',0);
-		$fpdf->Ln();
-
-	/*	$fpdf->SetWidths(array(100,55,35));
-		$fpdf->SetAligns(array('L','C','C'));
-		$fpdf->SetFont('Arial','B',9);
-		$fpdf->Row(array('Nombre y Apellido','Documento','Edad'));
-		$fpdf->SetFont('Arial','',9);
-		$fpdf->Row(array($trabajador,$cedula,$edad));
-
-
-		$fpdf->SetWidths(array(30,30,30,100));
-		$fpdf->SetAligns(array('C','C','C','C'));
-		$fpdf->SetFont('Arial','B',9);
-		$fpdf->Row(array('Fecha Nac.','Genero','Estado Civil','Ocupacion'));
-		$fpdf->SetFont('Arial','',9);
-		$fpdf->Row(array($fechanacimiento,$genero,$estadocivil,$ocupacion));
-
-
+		$fpdf->SetY(40);
+		foreach ($Ginecologia_medicamentos as $Ginecologia_medicamento) {
+			$fpdf->SetFont('Arial','',10);
+			$fpdf->SetX(150);
+			$fpdf->MultiCell(120,5,utf8_decode($Ginecologia_medicamento->descripcion.' '.$Ginecologia_medicamento->dosis.' '.$Ginecologia_medicamento->observacion ),0,'L',0);
+			$fpdf->Ln(4);
+		}
 		
-		$fpdf->SetWidths(array(30,60,100));
-		$fpdf->SetAligns(array('C','C','L'));
-		$fpdf->SetFont('Arial','B',9);
-		$fpdf->Row(array('Teléfono','Ciudad','Dirección'));
-		$fpdf->SetFont('Arial','',9);
-		$fpdf->Row(array($telefono,$municipio,$direccion));
 
 
-		$fpdf->SetFont('Arial','B',9);
-		$fpdf->Cell(190,5,'Datos Ocupacionales ',1,0,'C',0);
-		$fpdf->Ln();
+		$fpdf->SetY(140);
 
-		$fpdf->SetWidths(array(120,70));
-		$fpdf->SetAligns(array('L','C'));
-		$fpdf->SetFont('Arial','B',9);
-		$fpdf->Row(array('Empresa','Cargo'));
-		$fpdf->SetFont('Arial','',9);
-		$fpdf->Row(array($empresa,$cargo));
-
-		$fpdf->SetWidths(array(63.3,63.3,63.3));
-		$fpdf->SetAligns(array('L','L','L'));
-		$fpdf->SetFont('Arial','B',9);
-		$fpdf->Row(array('AFP','ARL','EPS'));
-		$fpdf->SetFont('Arial','',9);
-		$fpdf->Row(array($afp,$arl,$eps));
-
-		$fpdf->Ln();
-		$fpdf->SetFont('Arial','B',8);
-		$fpdf->Cell(190,5,utf8_decode('CONCEPTO MÉDICO DE APTITUD  OCUPACIONAL'),1,0,'C',0);
-		$fpdf->Ln();
-
-		$fpdf->SetWidths(array(75,40,75));
-		$fpdf->SetAligns(array('L','C','C'));
-		$fpdf->SetFont('Arial','B',9);
-		$fpdf->Row(array('Tipo de Certificado','Fecha','Condición'));
-		$fpdf->SetFont('Arial','',9);
-		$fpdf->Row(array($tipoexamen,$dia.'/'.$mes.'/'.$anio,$condicion));
-
-		$alto=$fpdf->GetY()+20;
-		$fpdf->SetFont('Arial','',8);
-		$fpdf->Rect(10,$fpdf->GetY(),190,15,'D');
-		$fpdf->MultiCell(190,4,utf8_decode(''.$observacion),0,'J',0);
-
-		$fpdf->SetY($alto);
-		$fpdf->SetFont('Arial','B',8);
-		$fpdf->Cell(190,6,utf8_decode('AYUDAS DIAGNÓSTICAS'),1,0,'C',0);
-
+		if($recomendaciones!=''){
+			$fpdf->SetFont('Arial','',10);
+			$fpdf->MultiCell(120,5,'Recomendaciones:',0,'L',0);
+			$fpdf->Ln(2);
+			$fpdf->MultiCell(120,5,$recomendaciones,0,'L',0);
+		}
 		
-		$fpdf->Ln();
 
-		$fpdf->SetWidths(array(80,25,85));
-		$fpdf->SetAligns(array('L','C','L'));
-		$fpdf->Row(array('Examen','Fecha','Resultado'));
-		$fpdf->SetFont('Arial','',8);
-		$Examen_laboratorios= Examen_laboratorio::where(['historia_ocupacional_id' => $historia_ocupacional->id])->orderBy('id')->get();
-		$i=0;
-		foreach($Examen_laboratorios as $Examen_laboratorio){
-
-			$fpdf->Row(array($Examen_laboratorio->examen,$Examen_laboratorio->fecha->format('d/m/Y'),$Examen_laboratorio->resultado));
-			$i=$i+1;
-		}
-
-		for($i=$i;$i<10;$i++)
-		{
-			$fpdf->Row(array('','',''));
-		}
-
-		$ancho_reco=$fpdf->GetY();
-		$fpdf->Ln();
-		$fpdf->SetFont('Arial','B',8);
-		$fpdf->Cell(190,5,utf8_decode('RECOMENDACIONES MÉDICO LABORAL'),1,0,'C',0);
-		$fpdf->Ln();
-
-
-		$fpdf->Rect(10,$fpdf->GetY(),190,20,'D');
-		$fpdf->SetFont('Arial','',8);
-		$fpdf->MultiCell(190,4,$recomendaciones,0,'J',0);
-		$fpdf->SetY($ancho_reco+35);
-		$fpdf->SetFont('Arial','',7);
-		$fpdf->Rect(10,$fpdf->GetY()-2,190,22,'D');
-		$fpdf->MultiCell(190,3,utf8_decode('CONSIDERACIONES LEGALES RELATIVAS A LOS EXAMENES DE INGRESO: Las resoluciones 2346 de 2007 y 1818 de 2009 del Ministerio de la Protección Social actualmente Ministerios de Trabajo y de Salud y Protección Social reglamentan la práctica y contenido de las evaluaciones médicas ocupacionales. Se establece que la empresa solo puede conocer el CERTIFICADO MEDICO DE APTITUD del aspirante.  Los resultados de los exámenes se dan a conocer en el certificado con la autorización del aspirante. Los documentos completos de la Historia Clínica Ocupacional están  sometidos a reserva profesional y quedan bajo nuestra custodia según lo establecido en la Resolución 1918 de 2009. El trabajador puede obtener copia en el momento que lo requiera, entendiendo que hacen parte integral de su historial 
-			NOTA: Bajo la gravedad del juramento afirmo que toda la información anteriormente suministrada es correcta y que no he ocultado nada sobre mi historia de salud.'),0,'J',0);
-
-
-		$fpdf->SetY(265);
-		if(file_exists( public_path().'/images/firmas/'.$firmatrabajador) &&  $firmatrabajador!='' ){
-			$fpdf->Image(asset('images/firmas/'.$firmatrabajador),130,252,45,15);
-		}
-		if(file_exists( public_path().'/images/firmas/'.$firmamedico) &&  $firmamedico!='' ){
-			$fpdf->Image(asset('images/firmas/'.$firmamedico),35,252,45,15);
-		}
-		$fpdf->SetFont('Arial','',9);
-
-		$fpdf->Cell(95,3,'_______________________________',0,0,'C',0);
-		$fpdf->Cell(95,3,'_______________________________',0,0,'C',0);
+	
+		$fpdf->SetY(185);
 		
-		$fpdf->Ln();
-		$fpdf->Cell(95,5,$medico,0,0,'C',0);
-		$fpdf->Cell(95,5,$trabajador,0,0,'C',0);*/
+		$fpdf->SetFont('Arial','',11);
+		$fpdf->MultiCell(120,5,utf8_decode('Médico: '.$medico.' - RM:'.$registro),0,'L',0);
 
-		$fpdf->Ln();
-		$fpdf->SetFont('Arial','',9);
-		$fpdf->Cell(95,3,utf8_decode('Registro Médico ').$registro,0,0,'C',0);
-		$fpdf->Cell(95,3,$cedula,0,0,'C',0);
+		$fpdf->SetY(185);
+		$fpdf->SetX(150);
+	
+		$fpdf->MultiCell(120,5,utf8_decode('Médico: '.$medico.' - RM:'.$registro),0,'L',0);
+
+
+		$fpdf->SetY(190);
+		
+		$fpdf->MultiCell(120,5,utf8_decode('Paciente: '.$trabajador.' - '.$cedula),0,'L',0);
+		$fpdf->SetY(190);
+		$fpdf->SetX(150);
+		
+		$fpdf->MultiCell(120,5,utf8_decode('Paciente: '.$trabajador.' - '.$cedula),0,'L',0);
+
+
+
+		$fpdf->SetTextColor(255,255,255);
     	$fpdf->Output();
         exit;
 
@@ -396,7 +308,7 @@ class ReportsGinecologiaController extends Controller
 
 	}
 
-//--------------CUESTIONARIO PARA TRABAJO EN ALTURAS----------------//
+//--------------HISTORIA----------------//
     public function historia_ginecologica($historia_ginecologica_id){
 
     	$dia='';
@@ -482,7 +394,7 @@ class ReportsGinecologiaController extends Controller
 	    	$enfermedad_actual=$historia_ginecologica->enfermedad_actual;
 	    	$informe=$historia_ginecologica->informe;
 	    	$analisis=$historia_ginecologica->analisis;
-	    	$procedimientos=$historia_ginecologica->procedimientos;
+	    	
 	    	$recomendaciones=$historia_ginecologica->recomendaciones;
 
 	    	 $alergias=$historia_ginecologica->medico_paciente->ginecologia_antecedente->alergias;
@@ -528,7 +440,7 @@ class ReportsGinecologiaController extends Controller
 
         $fpdf->AliasNbPages();
         $fpdf->SetY(40);
-		$fpdf->SetTitle("Cuestionario Altura");
+		$fpdf->SetTitle(utf8_decode("Historia Ginecológica"));
 		$fpdf->SetFont('Arial','B',$letra);
 		$fpdf->Cell(190,5,utf8_decode('HISTORIA GINECOLÓGICA'),1,0,'C',0);
 		$fpdf->Ln();
@@ -684,14 +596,26 @@ class ReportsGinecologiaController extends Controller
 			}
 			
 		}
-	
+
 		$fpdf->SetFont('Arial','B',$letra);
 		$fpdf->Cell(190,5,utf8_decode('PROCEDIMIENTOS'),1,0,'C',0);
 		$fpdf->Ln();
+		$fpdf->SetFont('Arial','B',$letra-1);
+		$fpdf->Cell(80,5,utf8_decode('Descripción'),1,0,'C',0);
+		$fpdf->Cell(110,5,utf8_decode('Observación'),1,0,'C',0);
+		$fpdf->Ln();
+		$Procedimientos=Ginecologia_procedimiento::where(['historia_ginecologica_id'=>$historia_ginecologica_id])->orderby('id')->limit(10)->get();
 		$fpdf->SetFont('Arial','',$letra-1);
-		$fpdf->SetWidths(array(190));
-		$fpdf->SetAligns(array('L'));
-		$fpdf->Row(array($procedimientos));
+		$fpdf->SetWidths(array(80,110));
+		$fpdf->SetAligns(array('L','L'));
+		if(!is_null($Procedimientos))
+		{
+			$i=0;
+			foreach ($Procedimientos as $Procedimiento) {
+				$fpdf->Row(array($Procedimiento->descripcion,$Procedimiento->observacion));
+			}
+			
+		}
 
 		$fpdf->CheckPageBreak(30);
 		$fpdf->SetFont('Arial','B',$letra);
@@ -781,6 +705,460 @@ class ReportsGinecologiaController extends Controller
         exit;
 
     }
+	//--------------HISTORIA INDICACIONES----------------//
+ 	public function historia_ginecologica_indicaciones($historia_ginecologica_id,$tipo)
+	{
+		$dia='';
+    	$mes='';
+    	$anio='';
+    	$trabajador='';
+    	$empresa='';
+    	$cedula='';
+    	$cargo='';
+    	$edad='';
+    	$ocupacion='';
+    	$estadocivil='';
+    	$genero='';
+    	$fechanacimiento='';
+		$telefono='';
+		$direccion='';
 
- 
+    	$eps='';
+    	$afp='';
+    	$arl='';
+    	$municipio='';
+    	$firmatrabajador='';
+    	$tipoexamen='';
+
+    	$peso='';
+    	$talla='';
+    	$imc='';
+    	$ta='';
+    	$fc='';
+    	$fr='';
+    	$lateralidad='';
+    	$condicion='';
+	    $observacion='';
+	    $medico='';
+	    $registro='';
+	    $firmamedico='';
+	    $banner='';
+	    $recomendaciones='';
+		$historia_ginecologica = Historia_ginecologica::where('id',$historia_ginecologica_id)->with('medico_paciente.paciente.user')->with('medico_paciente.medico.user')->first();
+		if(!is_null($historia_ginecologica))
+		{
+
+			$dia=$historia_ginecologica->created_at->format('d');
+			$mes=$historia_ginecologica->created_at->format('m');
+			$anio=$historia_ginecologica->created_at->format('Y');
+			$trabajador=$historia_ginecologica->medico_paciente->paciente->user->primerapellido.' '.$historia_ginecologica->medico_paciente->paciente->user->primernombre;
+			$empresa=$historia_ginecologica->empresa;
+			$cedula=$historia_ginecologica->medico_paciente->paciente->user->tipodocumento.' '.$historia_ginecologica->medico_paciente->paciente->user->numerodocumento;
+			$ocupacion=$historia_ginecologica->medico_paciente->paciente->user->ocupacion;
+			$estadocivil=$historia_ginecologica->medico_paciente->paciente->user->estadocivil;
+			$fechanacimiento=$historia_ginecologica->medico_paciente->paciente->user->fechanacimiento->format('d/m/Y');
+			$edad=$historia_ginecologica->medico_paciente->paciente->user->fechanacimiento->diff(Carbon::now())->format('%y años');
+			$genero=$historia_ginecologica->medico_paciente->paciente->user->genero;
+			$telefono=$historia_ginecologica->medico_paciente->paciente->user->telefono;
+			$direccion=$historia_ginecologica->medico_paciente->paciente->user->direccion;
+			$municipio=$historia_ginecologica->medico_paciente->paciente->municipio_id;
+			if($municipio==0){
+				$municipio='N/A';
+			}else{
+				$municipio_residencia = municipio::where('id',$municipio)->first();
+				if(!is_null($municipio_residencia))
+				{
+					$municipio=$municipio_residencia->descripcion;
+				}else{
+					$municipio='N/A';
+				}
+			}
+			$firmatrabajador=$historia_ginecologica->medico_paciente->paciente->user->firma;
+	    	$medico=utf8_decode($historia_ginecologica->medico_paciente->medico->user->primerapellido.' '.$historia_ginecologica->medico_paciente->medico->user->primernombre);
+	    	$registro=utf8_decode($historia_ginecologica->medico_paciente->medico->registro);
+	    	$firmamedico=utf8_decode($historia_ginecologica->medico_paciente->medico->user->firma);
+	    	$banner=utf8_decode($historia_ginecologica->medico_paciente->medico->banner);
+	    	$analisis=utf8_decode($historia_ginecologica->analisis);
+	    	
+	    	$recomendaciones=utf8_decode($historia_ginecologica->recomendaciones);
+		}
+
+		$fpdf = new PDF('P','mm','letter');
+        $fpdf->AddPage();
+   		$fpdf->SetTextColor(0,0,0);
+		$fpdf->SetFillColor(255,255,255);
+		$letra=8;
+        if(file_exists( public_path().'/images/banner/'.$banner) &&  $banner!='' ){
+			$fpdf->Image(asset('images/banner/'.$banner),10,8,190,30);
+		}
+
+        $fpdf->AliasNbPages();
+        $fpdf->SetY(40);
+		$fpdf->SetTitle("Historia_Ginecologica");
+	     
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Cell(190,5,'Datos Personales ',1,0,'C',0);
+		$fpdf->Ln();
+
+		$fpdf->SetWidths(array(100,55,35));
+		$fpdf->SetAligns(array('L','C','C'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Nombre y Apellido','Documento','Edad'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($trabajador,$cedula,$edad));
+
+		$fpdf->SetWidths(array(30,30,30,100));
+		$fpdf->SetAligns(array('C','C','C','C'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Fecha Nac.','Genero','Estado Civil','Ocupacion'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($fechanacimiento,$genero,$estadocivil,$ocupacion));
+		
+		$fpdf->SetWidths(array(30,60,100));
+		$fpdf->SetAligns(array('C','C','L'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Teléfono','Ciudad','Dirección'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($telefono,$municipio,$direccion));
+
+		if($tipo=='analisis')
+		{
+			$fpdf->Ln(10);
+			$fpdf->Rect(10,$fpdf->GetY(),190,100,'D');
+			$fpdf->SetFont('Arial','B',9);
+			$fpdf->MultiCell(190,5,utf8_decode('ANÁLISIS'),1,'C',0);
+			$fpdf->SetFont('Arial','',9);
+			$fpdf->MultiCell(190,5,$analisis,0,'J',0);
+
+		}elseif($tipo=='procedimientos'){
+
+		
+			$fpdf->SetFont('Arial','B',$letra);
+			$fpdf->Cell(190,5,utf8_decode('PROCEDIMIENTOS'),1,0,'C',0);
+			$fpdf->Ln();
+			$fpdf->SetFont('Arial','B',$letra);
+			$fpdf->Cell(80,5,utf8_decode('Descripción'),1,0,'C',0);
+			$fpdf->Cell(110,5,utf8_decode('Observación'),1,0,'C',0);
+			$fpdf->Ln();
+			$Procedimientos=Ginecologia_procedimiento::where(['historia_ginecologica_id'=>$historia_ginecologica_id])->orderby('id')->limit(10)->get();
+			$fpdf->SetFont('Arial','',$letra-1);
+			$fpdf->SetWidths(array(80,110));
+			$fpdf->SetAligns(array('L','L'));
+			if(!is_null($Procedimientos))
+			{
+				$i=0;
+				foreach ($Procedimientos as $Procedimiento) {
+					$fpdf->Row(array($Procedimiento->descripcion,$Procedimiento->observacion));
+				}
+				
+			}
+
+
+
+		}elseif($tipo=='recomendaciones'){
+
+			$fpdf->Ln(10);
+			$fpdf->Rect(10,$fpdf->GetY(),190,100,'D');
+			$fpdf->SetFont('Arial','B',9);
+			$fpdf->MultiCell(190,5,utf8_decode('RECOMENDACIONES'),1,'C',0);
+			$fpdf->SetFont('Arial','',9);
+			$fpdf->MultiCell(190,5,$recomendaciones,0,'J',0);
+
+		}elseif($tipo=='incapacidad'){
+
+			$Ginecologia_incapacidad = Ginecologia_incapacidad::where('historia_ginecologica_id',$historia_ginecologica_id)->first();
+			if(!is_null($Ginecologia_incapacidad)){
+				$fecha_inicial=$Ginecologia_incapacidad->fechainicial->format('d/m/Y');
+				$fecha_final=$Ginecologia_incapacidad->fechafinal->format('d/m/Y');
+				$observacion=$Ginecologia_incapacidad->observacion;
+			}else{
+				$fecha_inicial='';
+				$fecha_final='';
+				$observacion='';
+			}
+
+			$fpdf->Ln(10);
+			
+			$fpdf->SetFont('Arial','B',9);
+			$fpdf->Cell(190,6,utf8_decode('INCAPACIDAD'),1,0,'C',0);
+			$fpdf->Ln();
+			$fpdf->Ln();
+			$fpdf->Cell(28,6,utf8_decode('Fecha de Inicio'),1,0,'C',0);
+			$fpdf->SetFont('Arial','',9);
+			$fpdf->Cell(20,6,utf8_decode($fecha_inicial),1,0,'C',0);
+			$fpdf->SetFont('Arial','B',9);
+			$fpdf->Cell(25,6,utf8_decode('Fecha Final'),1,0,'C',0);
+			$fpdf->SetFont('Arial','',9);
+			$fpdf->Cell(20,6,utf8_decode($fecha_final),1,0,'C',0);
+			$fpdf->Ln();
+			$fpdf->Rect(10,$fpdf->GetY(),190,100,'D');
+			
+			$fpdf->MultiCell(190,5,utf8_decode($observacion),0,'J',0);
+		}
+	
+	
+		
+		$fpdf->SetY(220);
+		if(file_exists( public_path().'/images/firmas/'.$firmamedico) &&  $firmamedico!='' ){
+			$fpdf->Image(asset('images/firmas/'.$firmamedico),80,208,45,15);
+		}
+		$fpdf->SetFont('Arial','',10);
+		$fpdf->Cell(190,3,'_______________________________',0,0,'C',0);
+		
+		
+		$fpdf->Ln();
+		$fpdf->Cell(190,5,$medico,0,0,'C',0);
+		$fpdf->Ln();
+		$fpdf->SetFont('Arial','',10);
+		$fpdf->Cell(190,3,utf8_decode('Registro Médico ').$registro,0,0,'C',0);
+    	$fpdf->Output();
+        exit;
+	}
+
+	//--------------HISTORIA GESTACIONES----------------//
+ 	public function historia_ginecologica_gestacion($ginecologia_exploracion_inicial_id)
+	{
+		$dia='';
+    	$mes='';
+    	$anio='';
+    	$trabajador='';
+    	$empresa='';
+    	$cedula='';
+    	$cargo='';
+    	$edad='';
+    	$ocupacion='';
+    	$estadocivil='';
+    	$genero='';
+    	$fechanacimiento='';
+		$telefono='';
+		$direccion='';
+
+    	$eps='';
+    	$afp='';
+    	$arl='';
+    	$municipio='';
+    	$firmatrabajador='';
+    	$tipoexamen='';
+
+    	$peso='';
+    	$talla='';
+    	$imc='';
+    	$ta='';
+    	$fc='';
+    	$fr='';
+    	$lateralidad='';
+    	$condicion='';
+	    $observacion='';
+	    $medico='';
+	    $registro='';
+	    $firmamedico='';
+	    $banner='';
+	    $recomendaciones='';
+
+	    $Ginecologia_exploracion_inicial = Ginecologia_exploracion_inicial::where('id',$ginecologia_exploracion_inicial_id)->with('medico_paciente.paciente.user')->with('medico_paciente.medico.user')->first();
+		
+		if(!is_null($Ginecologia_exploracion_inicial))
+		{
+
+			$fecha=$Ginecologia_exploracion_inicial->created_at->format('d/m/Y');
+			$trabajador=$Ginecologia_exploracion_inicial->medico_paciente->paciente->user->primerapellido.' '.$Ginecologia_exploracion_inicial->medico_paciente->paciente->user->primernombre;
+			$empresa=$Ginecologia_exploracion_inicial->empresa;
+			$cedula=$Ginecologia_exploracion_inicial->medico_paciente->paciente->user->tipodocumento.' '.$Ginecologia_exploracion_inicial->medico_paciente->paciente->user->numerodocumento;
+			$ocupacion=$Ginecologia_exploracion_inicial->medico_paciente->paciente->user->ocupacion;
+			$estadocivil=$Ginecologia_exploracion_inicial->medico_paciente->paciente->user->estadocivil;
+			$fechanacimiento=$Ginecologia_exploracion_inicial->medico_paciente->paciente->user->fechanacimiento->format('d/m/Y');
+			$edad=$Ginecologia_exploracion_inicial->medico_paciente->paciente->user->fechanacimiento->diff(Carbon::now())->format('%y años');
+			$genero=$Ginecologia_exploracion_inicial->medico_paciente->paciente->user->genero;
+			$telefono=$Ginecologia_exploracion_inicial->medico_paciente->paciente->user->telefono;
+			$direccion=$Ginecologia_exploracion_inicial->medico_paciente->paciente->user->direccion;
+			$municipio=$Ginecologia_exploracion_inicial->medico_paciente->paciente->municipio_id;
+			if($municipio==0){
+				$municipio='N/A';
+			}else{
+				$municipio_residencia = municipio::where('id',$municipio)->first();
+				if(!is_null($municipio_residencia))
+				{
+					$municipio=$municipio_residencia->descripcion;
+				}else{
+					$municipio='N/A';
+				}
+			}
+			$firmatrabajador=$Ginecologia_exploracion_inicial->medico_paciente->paciente->user->firma;
+	    	$medico=utf8_decode($Ginecologia_exploracion_inicial->medico_paciente->medico->user->primerapellido.' '.$Ginecologia_exploracion_inicial->medico_paciente->medico->user->primernombre);
+	    	$registro=utf8_decode($Ginecologia_exploracion_inicial->medico_paciente->medico->registro);
+	    	$firmamedico=utf8_decode($Ginecologia_exploracion_inicial->medico_paciente->medico->user->firma);
+	    	$banner=utf8_decode($Ginecologia_exploracion_inicial->medico_paciente->medico->banner);
+
+	    	$semanaamenorrea=$Ginecologia_exploracion_inicial->semanaamenorrea;
+	    	$sacogestacional=$Ginecologia_exploracion_inicial->sacogestacional;
+	    	$formasaco=$Ginecologia_exploracion_inicial->formasaco;
+	    	$visualizacionembrion=$Ginecologia_exploracion_inicial->visualizacionembrion;
+	    	$numeroembriones=$Ginecologia_exploracion_inicial->numeroembriones;
+	    	$actividadmotora=$Ginecologia_exploracion_inicial->actividadmotora;
+	    	$actividadcardiaca=$Ginecologia_exploracion_inicial->actividadcardiaca;
+	    	$longitud=$Ginecologia_exploracion_inicial->longitud;
+	    	$corionanterior=$Ginecologia_exploracion_inicial->corionanterior;
+	    	$corionposterior=$Ginecologia_exploracion_inicial->corionposterior;
+	    	$corioncervix=$Ginecologia_exploracion_inicial->corioncervix;
+	    	$ecocardiagrama=$Ginecologia_exploracion_inicial->ecocardiagrama;
+	    	$observaciones=$Ginecologia_exploracion_inicial->observaciones;
+	    	$fechaparto=$Ginecologia_exploracion_inicial->fechaparto->format('d/m/Y');
+	
+		}
+
+		$fpdf = new PDF('P','mm','letter');
+        $fpdf->AddPage();
+   		$fpdf->SetTextColor(0,0,0);
+		$fpdf->SetFillColor(255,255,255);
+		$letra=8;
+        if(file_exists( public_path().'/images/banner/'.$banner) &&  $banner!='' ){
+			$fpdf->Image(asset('images/banner/'.$banner),10,8,190,30);
+		}
+
+        $fpdf->AliasNbPages();
+        $fpdf->SetY(40);
+		$fpdf->SetTitle("Historia_Ginecologica");
+	     
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Cell(190,5,'Datos Personales ',1,0,'C',0);
+		$fpdf->Ln();
+
+		$fpdf->SetWidths(array(100,55,35));
+		$fpdf->SetAligns(array('L','C','C'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Nombre y Apellido','Documento','Edad'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($trabajador,$cedula,$edad));
+
+		$fpdf->SetWidths(array(30,30,30,100));
+		$fpdf->SetAligns(array('C','C','C','C'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Fecha Nac.','Genero','Estado Civil','Ocupacion'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($fechanacimiento,$genero,$estadocivil,$ocupacion));
+		
+		$fpdf->SetWidths(array(30,60,100));
+		$fpdf->SetAligns(array('C','C','L'));
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Row(array('Teléfono','Ciudad','Dirección'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($telefono,$municipio,$direccion));
+
+		$fpdf->Ln();
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->MultiCell(190,5,utf8_decode('EXPLORACIÓN INICIAL'),1,'C',0);
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->SetWidths(array(25,25,40	,30,25,25,20));
+		$fpdf->SetAligns(array('C','C','C','C','C','C','C'));
+		$fpdf->Row(array('Fecha','Fecha P. Parto','Semana Amenorrea','Saco Gestacional','Forma de Saco','Visualización','Embriones'));
+		$fpdf->SetFont('Arial','',9);
+		if($visualizacionembrion!=0){$visualizacionembrion='Si';}else{$visualizacionembrion='No';}
+		$fpdf->Row(array($fecha,$fechaparto,$semanaamenorrea,$sacogestacional,$formasaco,$visualizacionembrion,$numeroembriones));
+
+		$fpdf->SetFont('Arial','B',9);
+		$fpdf->Cell(95,5,utf8_decode('Actividad Embrionaria'),1,0,'C',0);
+		$fpdf->Cell(95,5,utf8_decode('Corion Velloso'),1,0,'C',0);
+
+		if($actividadmotora!=0){$actividadmotora='Si';}else{$actividadmotora='No';}
+		if($actividadcardiaca!=0){$actividadcardiaca='Si';}else{$actividadcardiaca='No';}
+		if($corionanterior!=0){$corionanterior='Si';}else{$corionanterior='No';}
+		if($corionposterior!=0){$corionposterior='Si';}else{$corionposterior='No';}
+		if($corioncervix!=0){$corioncervix='Si';}else{$corioncervix='No';}
+		$fpdf->Ln();
+		$fpdf->SetWidths(array(30,30,35,30,30,35));
+		$fpdf->SetAligns(array('C','C','C','C','C','C'));
+		$fpdf->Row(array('Actividad Motora','Actividad Cardiaca','Longitud Cefalo-Caudal','Anterior','Posterior','Cubre el Cervix'));
+		$fpdf->SetFont('Arial','',9);
+		$fpdf->Row(array($actividadmotora,$actividadcardiaca,$longitud,$corionanterior,$corionposterior,$corioncervix));
+
+		$fpdf->SetWidths(array(190));
+		$fpdf->SetAligns(array('J'));
+		$fpdf->SetFont('Arial','',8);
+		$fpdf->Row(array('EG Por Ecografía: '.$ecocardiagrama));
+		$fpdf->Row(array('Observaciones: '.$observaciones));
+
+ 		
+ 		$Ginecologia_exploracion_periodicas = Ginecologia_exploracion_periodica::where(['ginecologia_exploracion_inicial_id'=>$ginecologia_exploracion_inicial_id])->with('ginecologia_exploracion_periodo')->get();
+ 		foreach($Ginecologia_exploracion_periodicas as $ginecologia_exploracion_periodica){
+ 			$fpdf->Ln();
+			$fpdf->CheckPageBreak(60);
+ 			$fpdf->SetFont('Arial','B',9);
+			$fpdf->MultiCell(190,5,utf8_decode('EXPLORACIÓN '.strtoupper($ginecologia_exploracion_periodica->ginecologia_exploracion_periodo->descripcion)),1,'C',0);
+			$fpdf->SetFont('Arial','B',9);
+			$fpdf->SetWidths(array(35,90));
+			$fpdf->SetAligns(array('C','C'));
+			$fpdf->Row(array('Fecha',' Semana Amenorrea'));
+			$fpdf->SetFont('Arial','',9);
+			$fpdf->Row(array($ginecologia_exploracion_periodica->created_at->format('d/m/Y'),$ginecologia_exploracion_periodica->semanaamenorrea));
+
+			$fpdf->SetWidths(array(190));
+			$fpdf->SetAligns(array('L',));
+			$fpdf->Row(array('Situación Fetal: '.$ginecologia_exploracion_periodica->situacionfetal));
+
+			$fpdf->SetWidths(array(190));
+			$fpdf->SetAligns(array('L',));
+			$fpdf->Row(array('Dorso: '.$ginecologia_exploracion_periodica->dorso));
+
+			$fpdf->SetWidths(array(20,20,30,25,25,35,35));
+			$fpdf->SetAligns(array('C','C','C','C','C','C','C'));
+			$fpdf->SetFont('Arial','B',9);
+			$fpdf->Row(array('DBP','LF','P-Abdominal','Act. Motora','Act. Cardíaca','Act. Respiratoria','Sem. por Ecografía'));
+			$fpdf->SetFont('Arial','',9);
+			
+			$actividadmotora=$ginecologia_exploracion_periodica->actividadmotora;
+			$actividadcardiaca=$ginecologia_exploracion_periodica->actividadcardiaca;
+			$actividadrespiratoria=$ginecologia_exploracion_periodica->actividadrespiratoria;
+
+			if($actividadmotora!=0){$actividadmotora='Si';}else{$actividadmotora='No';}
+			if($actividadrespiratoria!=0){$actividadrespiratoria='Si';}else{$actividadrespiratoria='No';}
+			if($actividadcardiaca!=0){$actividadcardiaca='Si';}else{$actividadcardiaca='No';}
+
+			$fpdf->Row(array($ginecologia_exploracion_periodica->dbp,$ginecologia_exploracion_periodica->lf,$ginecologia_exploracion_periodica->pabdominal,$actividadmotora,$actividadcardiaca,$actividadrespiratoria,$ginecologia_exploracion_periodica->semanaecografia));
+
+
+			$fpdf->SetWidths(array(95,95));
+			$fpdf->SetAligns(array('C','C'));
+			$fpdf->SetFont('Arial','B',9);
+			$fpdf->Row(array('Localización Placentaria','Madurez'));
+			$fpdf->SetAligns(array('L','L'));
+			$fpdf->SetFont('Arial','',9);
+			$fpdf->Row(array($ginecologia_exploracion_periodica->localizacion,$ginecologia_exploracion_periodica->madurez));
+
+			$fpdf->SetFont('Arial','B',9);
+			$fpdf->Cell(190,5,utf8_decode('Liquido Amniotico'),1,0,'C',0);
+			$fpdf->Ln();
+
+			$fpdf->SetWidths(array(95,95));
+			$fpdf->SetAligns(array('C','C'));
+			$fpdf->Row(array('Volumen','Observaciones'));
+			$fpdf->SetAligns(array('L','L'));
+			$fpdf->SetFont('Arial','',9);
+			$fpdf->Row(array($ginecologia_exploracion_periodica->liquidovolumen,$ginecologia_exploracion_periodica->liquidoobservaciones));
+
+
+ 		}
+	
+	
+	
+	
+		$fpdf->CheckPageBreak(32);
+		$fpdf->Ln(20);
+		if(file_exists( public_path().'/images/firmas/'.$firmamedico) &&  $firmamedico!='' ){
+			$fpdf->Image(asset('images/firmas/'.$firmamedico),80,$fpdf->GetY()-12,45,15);
+		}
+		$fpdf->SetFont('Arial','',10);
+		$fpdf->Cell(190,3,'_______________________________',0,0,'C',0);
+		
+		
+		$fpdf->Ln();
+		$fpdf->Cell(190,5,$medico,0,0,'C',0);
+		$fpdf->Ln();
+		$fpdf->SetFont('Arial','',10);
+		$fpdf->Cell(190,3,utf8_decode('Registro Médico ').$registro,0,0,'C',0);
+    	$fpdf->Output();
+        exit;
+
+
+
+	}
 }

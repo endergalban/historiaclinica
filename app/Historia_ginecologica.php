@@ -12,7 +12,7 @@ class Historia_ginecologica extends Model
     protected $table='historia_ginecologicas';
 
     protected $fillable = [
-        'medico_paciente_id','motivo_consulta', 'enfermedad_actual', 'informe', 'analisis', 'procedimientos', 'recomendaciones', 'activa',
+        'medico_paciente_id','motivo_consulta', 'enfermedad_actual', 'informe', 'analisis', 'recomendaciones', 'activa',
         ];
     protected $dates = ['deleted_at'];
 
@@ -34,6 +34,16 @@ class Historia_ginecologica extends Model
     public function ginecologia_incapacidad()
     {
         return $this->hasOne('App\Ginecologia_incapacidad','historia_ginecologica_id');
+    }
+
+    public function ginecologia_medicamentos()
+    {
+        return $this->hasOne('App\Ginecologia_medicamento','historia_ginecologica_id');
+    }
+
+    public function ginecologia_procedimientos()
+    {
+        return $this->hasOne('App\Ginecologia_procedimiento','historia_ginecologica_id');
     }
 
 }

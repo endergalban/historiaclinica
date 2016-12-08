@@ -35,7 +35,7 @@
                         		<tr>
     								<th>Empresa</th>
     								<th>Tiempo de Servicio</th>
-    								<th>Ocupacion</th>
+    								<th>Ocupación</th>
     								<th class="text-center">Acción</th>
                         		</tr>
                       		</thead>

@@ -20,7 +20,6 @@ class CreateHistoriaGinecologicasTable extends Migration
             $table->text('enfermedad_actual');
             $table->text('informe');
             $table->text('analisis');
-            $table->text('procedimientos');
             $table->text('recomendaciones');
             $table->boolean('activa',1);
             $table->softDeletes();
